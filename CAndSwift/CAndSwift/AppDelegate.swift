@@ -17,15 +17,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        let url = URL(fileURLWithPath: "/Users/kven/Music/M4B/opusDemo.opus")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
         
         let time = measureTime {
          
-            if let trackInfo = Reader.readTrack(url) {
-                
-                print(JSONMapper.map(trackInfo))
-                artView.image = trackInfo.art
-            }
+//            if let trackInfo = Reader.readTrack(url) {
+//
+//                print(JSONMapper.map(trackInfo))
+//                artView.image = trackInfo.art
+//            }
+            
+            Decoder.decodeAndPlay(url)
         }
         
         print("Took \(time * 1000) msec")

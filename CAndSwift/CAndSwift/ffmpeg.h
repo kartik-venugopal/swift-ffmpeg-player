@@ -4,6 +4,7 @@
 #import <libavcodec/avcodec.h>
 #import <libavformat/avformat.h>
 #import <libavutil/avutil.h>
+#import <libavutil/error.h>
 #import <libavutil/dict.h>
 #import <libavfilter/avfilter.h>
 #import <libavresample/avresample.h>
