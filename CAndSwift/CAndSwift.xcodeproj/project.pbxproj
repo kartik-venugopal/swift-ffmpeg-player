@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E0BECBC24C3342B00FF69D7 /* libavfilter in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECB424C3342B00FF69D7 /* libavfilter */; };
+		3E0BECBD24C3342B00FF69D7 /* libavdevice in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECB524C3342B00FF69D7 /* libavdevice */; };
+		3E0BECBE24C3342B00FF69D7 /* libpostproc in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECB624C3342B00FF69D7 /* libpostproc */; };
+		3E0BECBF24C3342B00FF69D7 /* libavutil in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECB724C3342B00FF69D7 /* libavutil */; };
+		3E0BECC024C3342B00FF69D7 /* libavformat in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECB824C3342B00FF69D7 /* libavformat */; };
+		3E0BECC124C3342B00FF69D7 /* libavresample in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECB924C3342B00FF69D7 /* libavresample */; };
+		3E0BECC224C3342B00FF69D7 /* libswresample in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECBA24C3342B00FF69D7 /* libswresample */; };
+		3E0BECC324C3342B00FF69D7 /* libswscale in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECBB24C3342B00FF69D7 /* libswscale */; };
+		3E0BECC524C3353000FF69D7 /* libavcodec in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECC424C3353000FF69D7 /* libavcodec */; };
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
@@ -20,9 +29,19 @@
 		3E5258DF24C248110023F696 /* libpostproc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5251A024C23FD10023F696 /* libpostproc.a */; };
 		3E5258E024C248110023F696 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5251A124C23FD10023F696 /* libswresample.a */; };
 		3E5258E124C248110023F696 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E52519F24C23FD10023F696 /* libswscale.a */; };
+		3E8EF0FE24C2D03E00D68D81 /* 03.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3E8EF0FD24C2D03E00D68D81 /* 03.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3E0BECB424C3342B00FF69D7 /* libavfilter */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavfilter; sourceTree = "<group>"; };
+		3E0BECB524C3342B00FF69D7 /* libavdevice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavdevice; sourceTree = "<group>"; };
+		3E0BECB624C3342B00FF69D7 /* libpostproc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libpostproc; sourceTree = "<group>"; };
+		3E0BECB724C3342B00FF69D7 /* libavutil */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavutil; sourceTree = "<group>"; };
+		3E0BECB824C3342B00FF69D7 /* libavformat */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavformat; sourceTree = "<group>"; };
+		3E0BECB924C3342B00FF69D7 /* libavresample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavresample; sourceTree = "<group>"; };
+		3E0BECBA24C3342B00FF69D7 /* libswresample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswresample; sourceTree = "<group>"; };
+		3E0BECBB24C3342B00FF69D7 /* libswscale */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswscale; sourceTree = "<group>"; };
+		3E0BECC424C3353000FF69D7 /* libavcodec */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavcodec; sourceTree = "<group>"; };
 		3E52510024C23CC30023F696 /* CAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E52510324C23CC30023F696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E52510524C23CC30023F696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -42,6 +61,7 @@
 		3E5251A224C23FD10023F696 /* libavfilter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavfilter.a; path = ../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavfilter.a; sourceTree = "<group>"; };
 		3E5251A324C23FD10023F696 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavcodec.a; sourceTree = "<group>"; };
 		3E5251A424C240FD0023F696 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		3E8EF0FD24C2D03E00D68D81 /* 03.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 03.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,8 +108,18 @@
 				3E52510324C23CC30023F696 /* AppDelegate.swift */,
 				3E52510524C23CC30023F696 /* Assets.xcassets */,
 				3E52510724C23CC30023F696 /* MainMenu.xib */,
+				3E0BECC424C3353000FF69D7 /* libavcodec */,
+				3E0BECB524C3342B00FF69D7 /* libavdevice */,
+				3E0BECB424C3342B00FF69D7 /* libavfilter */,
+				3E0BECB824C3342B00FF69D7 /* libavformat */,
+				3E0BECB924C3342B00FF69D7 /* libavresample */,
+				3E0BECB724C3342B00FF69D7 /* libavutil */,
+				3E0BECB624C3342B00FF69D7 /* libpostproc */,
+				3E0BECBA24C3342B00FF69D7 /* libswresample */,
+				3E0BECBB24C3342B00FF69D7 /* libswscale */,
 				3E52510A24C23CC30023F696 /* Info.plist */,
 				3E52519724C23FA40023F696 /* ffmpeg.c */,
+				3E8EF0FD24C2D03E00D68D81 /* 03.mp3 */,
 				3E52519824C23FA40023F696 /* ffmpeg.h */,
 				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
 				3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */,
@@ -173,7 +203,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E52510624C23CC30023F696 /* Assets.xcassets in Resources */,
+				3E0BECBF24C3342B00FF69D7 /* libavutil in Resources */,
+				3E0BECC524C3353000FF69D7 /* libavcodec in Resources */,
+				3E0BECC024C3342B00FF69D7 /* libavformat in Resources */,
+				3E0BECC124C3342B00FF69D7 /* libavresample in Resources */,
+				3E8EF0FE24C2D03E00D68D81 /* 03.mp3 in Resources */,
+				3E0BECBD24C3342B00FF69D7 /* libavdevice in Resources */,
+				3E0BECC324C3342B00FF69D7 /* libswscale in Resources */,
 				3E52510924C23CC30023F696 /* MainMenu.xib in Resources */,
+				3E0BECC224C3342B00FF69D7 /* libswresample in Resources */,
+				3E0BECBE24C3342B00FF69D7 /* libpostproc in Resources */,
+				3E0BECBC24C3342B00FF69D7 /* libavfilter in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,17 +378,23 @@
 				CODE_SIGN_ENTITLEMENTS = CAndSwift/CAndSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				HEADER_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.3_1/include/**";
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/Cellar/ffmpeg/4.3_1/include/**",
+					"${SOURCE_ROOT}/**",
+				);
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"/usr/local/Cellar/ffmpeg/4.3_1/lib/**",
-					/usr/local/Cellar/ffmpeg/4.3_1/lib,
+				LIBRARY_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.3_1/lib/**";
+				OTHER_LDFLAGS = (
+					"-lavformat",
+					"-lavutil",
+					"-lavcodec",
+					"-lswresample",
+					"-lswscale",
 				);
-				OTHER_LDFLAGS = "-lavcodec";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anon.CAndSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CAndSwift/CAndSwift-Bridging-Header.h";
@@ -365,17 +411,23 @@
 				CODE_SIGN_ENTITLEMENTS = CAndSwift/CAndSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				HEADER_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.3_1/include/**";
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/Cellar/ffmpeg/4.3_1/include/**",
+					"${SOURCE_ROOT}/**",
+				);
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"/usr/local/Cellar/ffmpeg/4.3_1/lib/**",
-					/usr/local/Cellar/ffmpeg/4.3_1/lib,
+				LIBRARY_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.3_1/lib/**";
+				OTHER_LDFLAGS = (
+					"-lavformat",
+					"-lavutil",
+					"-lavcodec",
+					"-lswresample",
+					"-lswscale",
 				);
-				OTHER_LDFLAGS = "-lavcodec";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anon.CAndSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CAndSwift/CAndSwift-Bridging-Header.h";
