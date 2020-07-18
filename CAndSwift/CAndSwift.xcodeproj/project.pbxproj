@@ -16,6 +16,8 @@
 		3E0BECC224C3342B00FF69D7 /* libswresample in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECBA24C3342B00FF69D7 /* libswresample */; };
 		3E0BECC324C3342B00FF69D7 /* libswscale in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECBB24C3342B00FF69D7 /* libswscale */; };
 		3E0BECC524C3353000FF69D7 /* libavcodec in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECC424C3353000FF69D7 /* libavcodec */; };
+		3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC624C3507500FF69D7 /* Reader.swift */; };
+		3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC824C3533800FF69D7 /* Mapper.swift */; };
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
@@ -42,6 +44,8 @@
 		3E0BECBA24C3342B00FF69D7 /* libswresample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswresample; sourceTree = "<group>"; };
 		3E0BECBB24C3342B00FF69D7 /* libswscale */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswscale; sourceTree = "<group>"; };
 		3E0BECC424C3353000FF69D7 /* libavcodec */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavcodec; sourceTree = "<group>"; };
+		3E0BECC624C3507500FF69D7 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
+		3E0BECC824C3533800FF69D7 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
 		3E52510024C23CC30023F696 /* CAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E52510324C23CC30023F696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E52510524C23CC30023F696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -105,9 +109,9 @@
 			isa = PBXGroup;
 			children = (
 				3E5251A424C240FD0023F696 /* module.modulemap */,
-				3E52510324C23CC30023F696 /* AppDelegate.swift */,
-				3E52510524C23CC30023F696 /* Assets.xcassets */,
 				3E52510724C23CC30023F696 /* MainMenu.xib */,
+				3E52510324C23CC30023F696 /* AppDelegate.swift */,
+				3E0BECC624C3507500FF69D7 /* Reader.swift */,
 				3E0BECC424C3353000FF69D7 /* libavcodec */,
 				3E0BECB524C3342B00FF69D7 /* libavdevice */,
 				3E0BECB424C3342B00FF69D7 /* libavfilter */,
@@ -123,6 +127,8 @@
 				3E52519824C23FA40023F696 /* ffmpeg.h */,
 				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
 				3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */,
+				3E52510524C23CC30023F696 /* Assets.xcassets */,
+				3E0BECC824C3533800FF69D7 /* Mapper.swift */,
 			);
 			path = CAndSwift;
 			sourceTree = "<group>";
@@ -224,6 +230,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */,
+				3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */,
 				3E52519924C23FA40023F696 /* ffmpeg.c in Sources */,
 				3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */,
 			);

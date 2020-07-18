@@ -3,6 +3,7 @@ module ffmpeg [system][extern_c] {
     header "libavcodec/avcodec.h"
     header "libavformat/avformat.h"
     header "libavutil/avutil.h"
+    header "libavutil/dict.h"
     header "libavutil/error.h"
     
     export *
