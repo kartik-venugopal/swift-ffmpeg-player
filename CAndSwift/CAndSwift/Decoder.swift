@@ -127,7 +127,7 @@ class Decoder {
         var ctr: Int = 0
         
         // 50 frames gives about 18 seconds of audio
-        decode: while ctr < 500 {
+        decode: while ctr < 50000 {
             
             guard 0 <= av_read_frame(formatContext, &packet) else {
                 break decode
@@ -175,6 +175,8 @@ class Decoder {
         
         avformat_close_input(&self.formatContext)
         avformat_free_context(self.formatContext)
+        
+        print("\nFINISHED decoding and scheduling frames :)\n")
     }
     
     static func decode(ctx: UnsafeMutablePointer<AVCodecContext>, packet: UnsafeMutablePointer<AVPacket>, frame: UnsafeMutablePointer<AVFrame>?, got_frame: inout Int32, length: inout Int32) -> Int32 {
@@ -264,14 +266,22 @@ class Player {
     
     private let audioEngine: AVAudioEngine
     internal let playerNode: AVAudioPlayerNode
+    internal let timeNode: AVAudioUnitVarispeed
     
     init() {
         
         audioEngine = AVAudioEngine()
         playerNode = AVAudioPlayerNode()
+        timeNode = AVAudioUnitVarispeed()
+        
+        timeNode.rate = 1
+        playerNode.volume = 0.75
         
         audioEngine.attach(playerNode)
-        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: nil)
+        audioEngine.attach(timeNode)
+        
+        audioEngine.connect(playerNode, to: timeNode, format: nil)
+        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: nil)
         
         audioEngine.prepare()
         
@@ -285,7 +295,10 @@ class Player {
     func prepare(_ format: AVAudioFormat) {
         
         audioEngine.disconnectNodeOutput(playerNode)
-        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: format)
+        audioEngine.disconnectNodeOutput(timeNode)
+        
+        audioEngine.connect(playerNode, to: timeNode, format: format)
+        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: format)
     }
     
     func scheduleBuffer(_ buffer: AVAudioPCMBuffer) {
