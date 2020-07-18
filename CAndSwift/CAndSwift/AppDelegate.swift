@@ -13,18 +13,28 @@ import ffmpeg
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var artView: NSImageView!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/14.opus")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/M4B/opusDemo.opus")
         
-        if let trackInfo = Reader.readTrack(url) {
-            print(JSONMapper.map(trackInfo))
+        let time = measureTime {
+         
+            if let trackInfo = Reader.readTrack(url) {
+                
+                print(JSONMapper.map(trackInfo))
+                artView.image = trackInfo.art
+            }
         }
-    }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+        
+        print("Took \(time * 1000) msec")
     }
 }
 
+func measureTime(_ task: () -> Void) -> Double {
+    
+    let startTime = CFAbsoluteTimeGetCurrent()
+    task()
+    return CFAbsoluteTimeGetCurrent() - startTime
+}

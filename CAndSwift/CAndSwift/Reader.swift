@@ -1,4 +1,4 @@
-import Foundation
+import Cocoa
 import ffmpeg
 
 class Reader {
@@ -11,6 +11,10 @@ class Reader {
     
     static func readTrack(_ file: URL) -> TrackInfo? {
         
+        var trackInfo: TrackInfo? = nil
+        
+        var chapters: [Chapter] = []
+        
         var codecName: String = ""
         var duration: Double = 0
         var sampleRate: Double = 0
@@ -19,6 +23,7 @@ class Reader {
         var frames: Int64 = 0
         
         var metadata: [String: String] = [:]
+        var coverArt: NSImage? = nil
         
         var formatContext = avformat_alloc_context()
 
@@ -27,21 +32,32 @@ class Reader {
             
             if avformat_find_stream_info(formatContext, nil) == 0, let ctx = formatContext?.pointee, let streams = ctx.streams {
                 
+                if let avChapters = ctx.chapters {
+                 
+                    let theChapters: [AVChapter] = (0..<ctx.nb_chapters).compactMap {avChapters.advanced(by: Int($0)).pointee?.pointee}
+                        .sorted(by: {c1, c2 in c1.start < c2.start})
+                    
+                    var ctr: Int = 1
+                    for chapter in theChapters {
+                        
+                        let conversionFactor: Double = Double(chapter.time_base.num) / Double(chapter.time_base.den)
+                        let startTime = Double(chapter.start) * conversionFactor
+                        let endTime = Double(chapter.end) * conversionFactor
+                        let title = getMetadata(ptr: chapter.metadata)["title"] ?? "Chapter \(ctr)"
+                        
+                        chapters.append(Chapter(startTime: startTime, endTime: endTime, title: title))
+                        
+                        ctr += 1
+                    }
+                }
+                
                 // ---------- METADATA ---------------
                 
-                var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
-                
-                while let tag = av_dict_get(ctx.metadata, "", tagPtr, AV_DICT_IGNORE_SUFFIX) {
-                    
-                    metadata[String(cString: tag.pointee.key)] = String(cString: tag.pointee.value)
-                    tagPtr = tag
+                for (key, value) in getMetadata(ptr: ctx.metadata) {
+                    metadata[key] = value
                 }
                 
                 // -------------------------------------
-                
-                if ctx.iformat != nil {
-                    print("\nCtx Input Format:", String(cString: ctx.iformat.pointee.name), String(cString: ctx.iformat.pointee.long_name))
-                }
                 
                 let theStreams: [AVStream] = (0..<ctx.nb_streams).compactMap {streams.advanced(by: Int($0)).pointee?.pointee}
                 
@@ -63,55 +79,70 @@ class Reader {
                     
                     // ---------- METADATA ---------------
                     
-                    var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
-                    
-                    while let tag = av_dict_get(str.metadata, "", tagPtr, AV_DICT_IGNORE_SUFFIX) {
-                        
-                        metadata[String(cString: tag.pointee.key)] = String(cString: tag.pointee.value)
-                        tagPtr = tag
+                    for (key, value) in getMetadata(ptr: str.metadata) {
+                        metadata[key] = value
                     }
                     
                     // -------------------------------------
                 }
                 
                 // Album Art
-                if let str = theStreams.filter({$0.codecpar.pointee.codec_type == AVMEDIA_TYPE_VIDEO}).first {
-                    
-                    var codecParams: AVCodecParameters = str.codecpar.pointee
-                    
-                    if var codec: AVCodec = avcodec_find_decoder(codecParams.codec_id)?.pointee {
-                        
-                        if codec.name != nil {
-                            
-                            codecName = String(cString: codec.name)
-                            print("Found Album Art of format:", codecName, "\n");
-                        }
-                        
-                        let codecCtx: UnsafeMutablePointer<AVCodecContext>? = avcodec_alloc_context3(&codec)
-                        avcodec_parameters_to_context(codecCtx, &codecParams)
-                        avcodec_open2(codecCtx, &codec, nil)
-                        
-                        let packetPtr: UnsafeMutablePointer<AVPacket> = av_packet_alloc()
-                        av_read_frame(formatContext, packetPtr)
-                        
-                        let fileDir = file.deletingLastPathComponent()
-                        let filename = file.deletingPathExtension().lastPathComponent
-                        let artFilePath = "\(filename)-albumArt.jpg"
-                        
-                        let image_file: UnsafeMutablePointer<FILE> = fopen(fileDir.appendingPathComponent(artFilePath).path, "wb")
-                        _ = fwrite(packetPtr.pointee.data, Int(packetPtr.pointee.size), 1, image_file)
-                        fclose(image_file)
-                    }
+                if let stream = theStreams.filter({$0.codecpar.pointee.codec_type == AVMEDIA_TYPE_VIDEO}).first {
+                    coverArt = getCoverArt(formatCtx: ctx, stream: stream)
                 }
             }
             
-            return TrackInfo(audioInfo: AudioInfo(codec: codecName, duration: duration, sampleRate: sampleRate, bitRate: bitRate, channelCount: channelCount, frames: frames), metadata: metadata)
+            trackInfo = TrackInfo(audioInfo: AudioInfo(codec: codecName, duration: duration, sampleRate: sampleRate, bitRate: bitRate,
+                                                       channelCount: channelCount, frames: frames), metadata: metadata, art: coverArt, chapters: chapters)
         }
         else {
-            
             print("\nERROR:", err)
-            return nil
         }
+        
+        avformat_close_input(&formatContext)
+        avformat_free_context(formatContext)
+        
+        return trackInfo
+    }
+    
+    private static func getMetadata(ptr: OpaquePointer!) -> [String: String] {
+        
+        var metadata: [String: String] = [:]
+        var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
+        
+        while let tag = av_dict_get(ptr, "", tagPtr, AV_DICT_IGNORE_SUFFIX) {
+            
+            metadata[String(cString: tag.pointee.key)] = String(cString: tag.pointee.value)
+            tagPtr = tag
+        }
+        
+        return metadata
+    }
+    
+    private static func getCoverArt(formatCtx: AVFormatContext, stream: AVStream) -> NSImage? {
+        
+        var ctx: AVFormatContext = formatCtx
+        var codecParams: AVCodecParameters = stream.codecpar.pointee
+        
+        if var codec: AVCodec = avcodec_find_decoder(codecParams.codec_id)?.pointee {
+            
+            let codecCtx: UnsafeMutablePointer<AVCodecContext>? = avcodec_alloc_context3(&codec)
+            avcodec_parameters_to_context(codecCtx, &codecParams)
+            avcodec_open2(codecCtx, &codec, nil)
+            
+            let packetPtr: UnsafeMutablePointer<AVPacket> = av_packet_alloc()
+            av_read_frame(&ctx, packetPtr)
+            
+            if packetPtr.pointee.data != nil, packetPtr.pointee.size > 0 {
+                
+                let data: Data = Data(bytes: packetPtr.pointee.data, count: Int(packetPtr.pointee.size))
+                return NSImage(data: data)
+            }
+            
+            av_packet_unref(packetPtr)
+        }
+        
+        return nil
     }
 }
 
@@ -119,6 +150,15 @@ struct TrackInfo {
     
     var audioInfo: AudioInfo
     var metadata: [String: String]
+    var art: NSImage?
+    var chapters: [Chapter]
+}
+
+struct Chapter {
+    
+    var startTime: Double
+    var endTime: Double
+    var title: String
 }
 
 struct AudioInfo {
