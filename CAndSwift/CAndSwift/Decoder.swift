@@ -6,26 +6,63 @@ struct AudioData {
     
     var datas: [Data] = []
     var linesizes: [Int] = []
-    let samples: Int
-    let timeStamp: Double
     
-    init?(timeBase: AVRational, frame: UnsafeMutablePointer<AVFrame>) {
+    let numSamples: Int
+    
+    init?(frame: UnsafeMutablePointer<AVFrame>) {
         
-        self.samples = Int(frame.pointee.nb_samples)
+        self.numSamples = Int(frame.pointee.nb_samples)
         let buffers = frame.pointee.datas()
+        
         for i in 0..<8 {
-            guard let buffer = buffers[i] else {
-                break
-            }
+            
+            guard let buffer = buffers[i] else {break}
+            
             datas.append(Data(bytes: buffer, count: Int(frame.pointee.linesize.0)))
             linesizes.append(Int(frame.pointee.linesize.0))
         }
         
-        if 0 == datas.count {
-            return nil
+//        print("\nCreated AUDIO-DATA:", linesizes, datas[0])
+        
+        if datas.isEmpty {return nil}
+    }
+}
+
+class BufferedAudioData {
+    
+    var datas: [Data] = []
+    var linesizes: [Int] = []
+    
+    var numSamples: Int = 0
+    var sampleRate: Int
+    
+    // Hold up to 5 seconds of samples in one object
+    var isFull: Bool {self.numSamples >= 5 * sampleRate}
+    
+    init(_ audioData: AudioData, _ sampleRate: Int) {
+        
+        self.numSamples = audioData.numSamples
+        self.datas = audioData.datas
+        self.linesizes = audioData.linesizes
+        
+        self.sampleRate = sampleRate
+        
+        print("\nCreated BUFFERED-AUDIO-DATA:", numSamples, sampleRate, linesizes, datas[0].count)
+    }
+    
+    func appendFrame(_ aframe: AudioData) {
+        
+        self.numSamples += aframe.numSamples
+        
+        for i in 0..<8 {
+            
+            guard i < aframe.datas.count else {break}
+            
+            datas[i].append(contentsOf: aframe.datas[i])
+            linesizes[i] += aframe.linesizes[i]
         }
         
-        self.timeStamp = Double(av_frame_get_best_effort_timestamp(frame)) * av_q2d(timeBase)
+        print("\nNOW BUFFERED-AUDIO-DATA:", numSamples, sampleRate, linesizes, datas[0].count, isFull)
     }
 }
 
@@ -53,6 +90,8 @@ class Decoder {
     static var audioStream: UnsafeMutablePointer<AVStream>?
     static var audioCodec: UnsafeMutablePointer<AVCodec>?
     static var audioContext: UnsafeMutablePointer<AVCodecContext>?
+    
+    static var sampleRate: Int = 0
     
     private static func setupFFmpeg(_ file: URL) -> Bool {
         
@@ -91,6 +130,8 @@ class Decoder {
 //        audioQueue = AVFrameQueue(type: AVMEDIA_TYPE_AUDIO, queueCount: 128, time_base: , duration: duration)
         
         timeBase = audioContext!.pointee.time_base
+        
+        sampleRate = Int(audioStream!.pointee.codecpar.pointee.sample_rate)
         
         guard avcodec_open2(audioContext, audioCodec, nil) >= 0 else {
             
@@ -150,7 +191,7 @@ class Decoder {
                 }
                 
                 //                    audio.write(&frame)
-                if let data = AudioData(timeBase: timeBase, frame: &frame) {
+                if let data = AudioData(frame: &frame) {
                     startAudioPlay(data)
                 }
                 
@@ -211,29 +252,47 @@ class Decoder {
     }
     
     static var bufferCount: Int = 0
+    static var bufferedData: BufferedAudioData!
     
     static func startAudioPlay(_ aframe: AudioData) {
         
-        let floatsLen = aframe.linesizes[0] / MemoryLayout<Float>.size
-        let datas: [UnsafePointer<UInt8>] = aframe.datas.flatMap(){$0.withUnsafeBytes(){$0}}
-        
-        if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: datas, floatsLength: floatsLen, samples: aframe.samples) {
+        if bufferedData == nil {
             
-            if bufferCount == 0 {
-                player.prepare(buffer.format)
+            bufferedData = BufferedAudioData(aframe, sampleRate)
+            
+        } else if let theBufferedData = bufferedData, theBufferedData.isFull {
+            
+            let floatsLen = theBufferedData.linesizes[0] / MemoryLayout<Float>.size
+            let datas: [UnsafePointer<UInt8>] = theBufferedData.datas.flatMap(){$0.withUnsafeBytes(){$0}}
+            
+            if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: datas, floatsLength: floatsLen, samples: theBufferedData.numSamples) {
+                
+                if bufferCount == 0 {
+                    player.prepare(buffer.format)
+                }
+                
+                player.scheduleBuffer(buffer)
+                
+                if bufferCount == 0 {
+                    player.play()
+                }
+                
+                bufferCount += 1
             }
             
-            player.scheduleBuffer(buffer)
+            // Create a new BufferedAudioData object with this frame
+            bufferedData = BufferedAudioData(aframe, sampleRate)
             
-            if bufferCount == 0 {
-                player.play()
-            }
+        } else if let data = bufferedData {
             
-            bufferCount += 1
+            // Buffer not full, append frame to it
+            data.appendFrame(aframe)
         }
     }
     
     static func createBuffer(channels numChannels: Int, format: AVAudioFormat, audioDatas datas: [UnsafePointer<UInt8>], floatsLength: Int, samples: Int) -> AVAudioPCMBuffer? {
+        
+        print("\nCreating AVAudioPCMBuffer:", datas.count, floatsLength, samples)
         
         if let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(floatsLength)) {
             
@@ -243,9 +302,7 @@ class Decoder {
             for i in 0..<datas.count {
                 
                 let data = datas[i]
-                guard let channel = channels?[i % numChannels] else {
-                    break
-                }
+                guard let channel = channels?[i % numChannels] else {break}
                 
                 let floats = data.withMemoryRebound(to: Float.self, capacity: floatsLength){$0}
                 if i < numChannels {
@@ -275,7 +332,7 @@ class Player {
         timeNode = AVAudioUnitVarispeed()
         
         timeNode.rate = 1
-        playerNode.volume = 0.75
+        playerNode.volume = 1
         
         audioEngine.attach(playerNode)
         audioEngine.attach(timeNode)
@@ -304,7 +361,7 @@ class Player {
     func scheduleBuffer(_ buffer: AVAudioPCMBuffer) {
         
         playerNode.scheduleBuffer(buffer, completionHandler: {
-            print("\nDONE !", buffer.frameLength, buffer.frameCapacity)
+            print("\nDONE playing buffer:", buffer.frameLength, buffer.frameCapacity)
         })
     }
     

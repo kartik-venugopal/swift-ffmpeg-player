@@ -17,8 +17,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/wma/CD2/08 Track 8.wma")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/wma/CD2/08 Track 8.wma")
         
         let time = measureTime {
          
