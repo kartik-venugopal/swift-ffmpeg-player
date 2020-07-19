@@ -14,13 +14,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var artView: NSImageView!
+    
+    private let player = Player()
+    private var scheduler: Scheduler!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        scheduler = Scheduler(player)
         
         let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/wma/CD2/08 Track 8.wma")
         
         let time = measureTime {
+            
+            scheduler.playTrack(url)
          
 //            if let trackInfo = Reader.readTrack(url) {
 //
@@ -28,8 +35,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //                artView.image = trackInfo.art
 //            }
             
-            Decoder.decodeAndPlay(url)
+//            Decoder.decodeAndPlay(url)
         }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+            
+            self.scheduler.seekToTime(url, 268, true)
+        })
         
         print("Took \(time * 1000) msec")
     }

@@ -18,7 +18,7 @@
 		3E0BECC524C3353000FF69D7 /* libavcodec in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECC424C3353000FF69D7 /* libavcodec */; };
 		3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC624C3507500FF69D7 /* Reader.swift */; };
 		3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC824C3533800FF69D7 /* Mapper.swift */; };
-		3E0BECCD24C386B700FF69D7 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECCC24C386B700FF69D7 /* Decoder.swift */; };
+		3E0BECCD24C386B700FF69D7 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECCC24C386B700FF69D7 /* Player.swift */; };
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
@@ -33,6 +33,8 @@
 		3E5258E024C248110023F696 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5251A124C23FD10023F696 /* libswresample.a */; };
 		3E5258E124C248110023F696 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E52519F24C23FD10023F696 /* libswscale.a */; };
 		3E8EF0FE24C2D03E00D68D81 /* 03.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3E8EF0FD24C2D03E00D68D81 /* 03.mp3 */; };
+		3EDE527D24C4298200F1532E /* SchedulerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */; };
+		3EDE527F24C429CF00F1532E /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDE527E24C429CF00F1532E /* Scheduler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,7 +49,7 @@
 		3E0BECC424C3353000FF69D7 /* libavcodec */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavcodec; sourceTree = "<group>"; };
 		3E0BECC624C3507500FF69D7 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
 		3E0BECC824C3533800FF69D7 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
-		3E0BECCC24C386B700FF69D7 /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
+		3E0BECCC24C386B700FF69D7 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		3E52510024C23CC30023F696 /* CAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E52510324C23CC30023F696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E52510524C23CC30023F696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -68,6 +70,8 @@
 		3E5251A324C23FD10023F696 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavcodec.a; sourceTree = "<group>"; };
 		3E5251A424C240FD0023F696 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		3E8EF0FD24C2D03E00D68D81 /* 03.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 03.mp3; sourceTree = "<group>"; };
+		3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerProtocol.swift; sourceTree = "<group>"; };
+		3EDE527E24C429CF00F1532E /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +118,9 @@
 				3E52510724C23CC30023F696 /* MainMenu.xib */,
 				3E52510324C23CC30023F696 /* AppDelegate.swift */,
 				3E0BECC624C3507500FF69D7 /* Reader.swift */,
-				3E0BECCC24C386B700FF69D7 /* Decoder.swift */,
+				3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */,
+				3E0BECCC24C386B700FF69D7 /* Player.swift */,
+				3EDE527E24C429CF00F1532E /* Scheduler.swift */,
 				3E0BECC424C3353000FF69D7 /* libavcodec */,
 				3E0BECB524C3342B00FF69D7 /* libavdevice */,
 				3E0BECB424C3342B00FF69D7 /* libavfilter */,
@@ -234,9 +240,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */,
+				3EDE527F24C429CF00F1532E /* Scheduler.swift in Sources */,
 				3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */,
 				3E52519924C23FA40023F696 /* ffmpeg.c in Sources */,
-				3E0BECCD24C386B700FF69D7 /* Decoder.swift in Sources */,
+				3EDE527D24C4298200F1532E /* SchedulerProtocol.swift in Sources */,
+				3E0BECCD24C386B700FF69D7 /* Player.swift in Sources */,
 				3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
