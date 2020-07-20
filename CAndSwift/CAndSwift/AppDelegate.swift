@@ -22,26 +22,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         scheduler = Scheduler(player)
         
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/wma/CD2/08 Track 8.wma")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/CDImage.ape")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/test.mpc")
+        
+//        Decoder.decodeAndPlay(url)
+        
+        do {
+            
+            let dec = FFDecoder()
+            try dec.initForFile(url)
+            
+            dec.decodeNSeconds(60)
+            
+        } catch {
+            print("ERROR:")
+            return
+        }
+        
         
         let time = measureTime {
             
-            scheduler.playTrack(url)
-         
 //            if let trackInfo = Reader.readTrack(url) {
 //
 //                print(JSONMapper.map(trackInfo))
 //                artView.image = trackInfo.art
 //            }
             
-//            Decoder.decodeAndPlay(url)
+//            scheduler.playTrack(url)
+            
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
-            
-            self.scheduler.seekToTime(url, 268, true)
-        })
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+//
+//            self.scheduler.seekToTime(url, 268, true)
+//        })
         
         print("Took \(time * 1000) msec")
     }

@@ -14,7 +14,7 @@ class Player {
         timeNode = AVAudioUnitVarispeed()
         
         timeNode.rate = 1
-        playerNode.volume = 1
+        playerNode.volume = 0.3
         
         audioEngine.attach(playerNode)
         audioEngine.attach(timeNode)
@@ -62,7 +62,8 @@ class AudioData {
     var sampleRate: Int = 0
     
     // Hold up to 5 seconds of samples in one object
-    var isFull: Bool {self.numFrames > 0 && self.numSamples >= 5 * sampleRate}
+//    var isFull: Bool {self.numFrames > 0 && self.numSamples >= 5 * sampleRate}
+    var isFull: Bool {self.numFrames > 0}
     
     func reset(_ sampleRate: Int) {
         
@@ -74,7 +75,13 @@ class AudioData {
         self.lineSizes.removeAll()
     }
     
+    static var frames: Int = 0
+    
     func appendFrame(_ frame: UnsafeMutablePointer<AVFrame>) {
+        
+        let fr = frame.pointee
+        
+        print("\nAppendFrame:", fr.channel_layout, fr.channels, fr.format, fr.linesize.0, fr.nb_samples, fr.pkt_duration, fr.pkt_size, fr.sample_rate, "\n")
         
         self.numSamples += Int(frame.pointee.nb_samples)
         let buffers = frame.pointee.datas()
@@ -85,6 +92,10 @@ class AudioData {
         for (index, buffer) in (0..<8).compactMap({buffers[$0]}).enumerated() {
             
             if noFramesYet {
+                
+//                for index in 0..<100000 {
+//                    print(index, ":", buffer[index])
+//                }
                 
                 datas.append(Data(bytes: buffer, count: lineSize))
                 lineSizes.append(lineSize)
@@ -99,6 +110,8 @@ class AudioData {
         numFrames += 1
         
         print("\nNOW BUFFERED-AUDIO-DATA:", numSamples, sampleRate, lineSizes, datas[0].count, isFull)
+        
+        Self.frames += 1
     }
 }
 

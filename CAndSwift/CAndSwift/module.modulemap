@@ -1,10 +1,14 @@
 module ffmpeg [system][extern_c] {
     
+    umbrella header "ffmpeg.h"
+    
     header "libavcodec/avcodec.h"
     header "libavformat/avformat.h"
     header "libavutil/avutil.h"
     header "libavutil/dict.h"
     header "libavutil/error.h"
+    header "libavutil/opt.h"
+    header "libswresample/swresample.h"
     
     export *
 }

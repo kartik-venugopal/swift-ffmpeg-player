@@ -43,6 +43,7 @@ class Reader {
                 // Audio
                 if let stream = theStreams.filter({$0.codecpar.pointee.codec_type == AVMEDIA_TYPE_AUDIO}).first {
                     
+                    
                     let audioStreamInfo = readAudioInfo(stream)
                     audioInfo = audioStreamInfo.audioInfo
                     
