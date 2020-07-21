@@ -53,7 +53,8 @@ class DAudio {
     }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
-        
+
+        guard sampleCount > 0 else {return nil}
         let numSamples = Int(sampleCount)
         
         if let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(sampleCount)) {
@@ -261,7 +262,7 @@ class Decoder {
             ctr += 1
         }
         
-        if buffer.isFull, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
+        if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
             player.scheduleBuffer(audioBuffer, {
                 eof ? NSLog("\nPlayback completed !!!") : decodeFrames()
