@@ -3,26 +3,6 @@ import ffmpeg
 
 class Decoder {
     
-    static func decodeAndPlay(_ file: URL) {
-        
-        do {
-            try setupForFile(file)
-            
-        } catch {
-            
-            print("\nFFmpeg / audio engine setup failure !")
-            return
-        }
-        
-        eof = false
-        
-        decodeFrames(5)
-        player.play()
-        NSLog("Playback Started !\n")
-        
-        decodeFrames(5)
-    }
-    
     static var formatCtx: UnsafeMutablePointer<AVFormatContext>!
     
     static var streamIndex: Int32 = -1
@@ -31,7 +11,34 @@ class Decoder {
     static var codec: UnsafeMutablePointer<AVCodec>!
     static var codecCtx: UnsafeMutablePointer<AVCodecContext>!
     
-    private static func setupForFile(_ file: URL) throws {
+    static var sampleRate: Int32!
+    static var sampleFmt: AVSampleFormat!
+    static var sampleSize: Int!
+    static var timeBase: AVRational!
+    
+    static let player: Player = Player()
+    static var audioFormat: AVAudioFormat!
+    static var eof: Bool = false
+    
+    static func decodeAndPlay(_ file: URL) {
+        
+        do {
+            try setupForFile(file)
+
+        } catch {
+
+            print("\nFFmpeg / audio engine setup failure !")
+            return
+        }
+        
+        decodeFrames(5)
+        player.play()
+        NSLog("Playback Started !\n")
+        
+        decodeFrames(5)
+    }
+    
+    static func setupForFile(_ file: URL) throws {
         
         formatCtx = avformat_alloc_context()
         
@@ -84,18 +91,10 @@ class Decoder {
             print(String(format: "Planar ?:      %7@", String(av_sample_fmt_is_planar(sampleFmt) == 1)))
         }
         
-        audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(sampleRate), channels: AVAudioChannelCount(2), interleaved: false)
-        
-        player = Player()
+        eof = false
+        audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
         player.prepare(audioFormat)
     }
-    
-    static var timeBase: AVRational!
-    
-    static var player: Player!
-    
-    static var audioFormat: AVAudioFormat!
-    static var eof: Bool = false
     
     static func decodeFrames(_ seconds: Double = 10) {
         
@@ -151,127 +150,22 @@ class Decoder {
     
     static func decode(ctx: UnsafeMutablePointer<AVCodecContext>, packet: UnsafeMutablePointer<AVPacket>, frame: UnsafeMutablePointer<AVFrame>?, buffer: SamplesBuffer) {
         
-        var ret: Int32 = 0
+        var resultCode: Int32 = avcodec_send_packet(ctx, packet)
+        av_packet_unref(packet)
         
-        ret = avcodec_send_packet(ctx, packet)
-        if 0 > ret {
+        if resultCode < 0 {
             
-            print("err:", ret)
+            print("err:", resultCode)
             return
         }
         
-        av_packet_unref(packet)
-        ret = avcodec_receive_frame(ctx, frame)
+        resultCode = avcodec_receive_frame(ctx, frame)
         
-        while ret == 0, frame!.pointee.nb_samples > 0 {
+        while resultCode == 0, frame!.pointee.nb_samples > 0 {
             
             buffer.appendFrame(frame: frame!)
-            ret = avcodec_receive_frame(ctx, frame)
+            resultCode = avcodec_receive_frame(ctx, frame)
         }
     }
-    
-    static var sampleRate: Int32!
-    static var sampleFmt: AVSampleFormat!
-    static var sampleSize: Int!
 }
 
-class Player {
-
-    private let audioEngine: AVAudioEngine
-    internal let playerNode: AVAudioPlayerNode
-    internal let timeNode: AVAudioUnitVarispeed
-
-    init() {
-
-        audioEngine = AVAudioEngine()
-        playerNode = AVAudioPlayerNode()
-        
-        timeNode = AVAudioUnitVarispeed()
-        timeNode.rate = 1
-        
-        playerNode.volume = 1
-
-        audioEngine.attach(playerNode)
-        audioEngine.attach(timeNode)
-        
-        audioEngine.connect(playerNode, to: timeNode, format: nil)
-        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: nil)
-
-        audioEngine.prepare()
-
-        do {
-            try audioEngine.start()
-        } catch {
-            print("\nERROR starting audio engine")
-        }
-    }
-
-    func prepare(_ format: AVAudioFormat) {
-
-        audioEngine.disconnectNodeOutput(playerNode)
-        audioEngine.disconnectNodeOutput(timeNode)
-
-        audioEngine.connect(playerNode, to: timeNode, format: format)
-        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: format)
-    }
-
-    func scheduleBuffer(_ buffer: AVAudioPCMBuffer, _ completionHandler: AVAudioNodeCompletionHandler? = nil) {
-
-        playerNode.scheduleBuffer(buffer, completionHandler: completionHandler ?? {
-            print("\nDONE playing buffer:", buffer.frameLength, buffer.frameCapacity)
-        })
-    }
-
-    func play() {
-        playerNode.play()
-    }
-    
-    
-    //
-    //    init() {
-    //
-    //        audioEngine = AVAudioEngine()
-    //        playerNode = AVAudioPlayerNode()
-    
-    //        playerNode.volume = 0.5
-    //
-    //        audioEngine.attach(playerNode)
-//            audioEngine.attach(timeNode)
-    //
-    //        audioEngine.connect(playerNode, to: timeNode, format: nil)
-    //        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: nil)
-    //
-    //        audioEngine.prepare()
-    //
-    //        do {
-    //            try audioEngine.start()
-    //        } catch {
-    //            print("\nERROR starting audio engine")
-    //        }
-    //    }
-    //
-    //    func prepare(_ format: AVAudioFormat) {
-    //
-    //        audioEngine.disconnectNodeOutput(playerNode)
-    //        audioEngine.disconnectNodeOutput(timeNode)
-    //
-    //        audioEngine.connect(playerNode, to: timeNode, format: format)
-    //        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: format)
-    //    }
-}
-
-extension AVFrame {
-
-    mutating func datas() -> [UnsafeMutablePointer<UInt8>?] {
-        let ptr = UnsafeBufferPointer(start: self.extended_data, count: 8)
-        let arr = Array(ptr)
-        return arr
-    }
-
-    var lines: UnsafeMutablePointer<Int32> {
-        var tuple = self.linesize
-        let tuple_ptr = withUnsafeMutablePointer(to: &tuple){$0}
-        let line_ptr = tuple_ptr.withMemoryRebound(to: Int32.self, capacity: 8){$0}
-        return line_ptr
-    }
-}

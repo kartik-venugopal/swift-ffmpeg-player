@@ -153,3 +153,12 @@ class SamplesBuffer {
         return (0..<numSamples).map {Float(Int64(unsafeArr[$0] + byteOffset)) / Float(maxSignedValue)}
     }
 }
+
+extension AVFrame {
+
+    mutating func datas() -> [UnsafeMutablePointer<UInt8>?] {
+        let ptr = UnsafeBufferPointer(start: self.extended_data, count: 8)
+        let arr = Array(ptr)
+        return arr
+    }
+}
