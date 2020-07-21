@@ -48,27 +48,27 @@ class DAudio {
         
         self.sampleCount += frame.pointee.nb_samples
         frames.append(FrameSamples(frame: frame))
-        
-        NSLog("Appended frame#: \(frames.count)\n")
     }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
 
         guard sampleCount > 0 else {return nil}
-        let numSamples = Int(sampleCount)
         
         if let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(sampleCount)) {
+            
+            let numChannels = Int(format.channelCount)
             
             buffer.frameLength = buffer.frameCapacity
             let channels = buffer.floatChannelData
             
-            var samplesSoFar: Int32 = 0
+            var sampleCountSoFar: Int32 = 0
             
             for frame in frames {
                 
+                let frameSampleCount = Int(frame.sampleCount)
                 let dataPointers = frame.byteArrayPointers
             
-                for channelIndex in 0..<dataPointers.count {
+                for channelIndex in 0..<numChannels {
 
                     let bytesForChannel = dataPointers[channelIndex]
                     guard let channel = channels?[channelIndex] else {break}
@@ -85,40 +85,54 @@ class DAudio {
                         case 1:
 
                             // Subtract 127 to make the unsigned byte signed (8-bit samples are always unsigned)
-                            let reboundData: UnsafePointer<Int8> = bytesForChannel.withMemoryRebound(to: Int8.self, capacity: numSamples){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int8.max, numSamples, byteOffset: -127)
+                            let reboundData: UnsafePointer<Int8> = bytesForChannel.withMemoryRebound(to: Int8.self, capacity: frameSampleCount){$0}
+                            frameFloatsForChannel = convertToFloatArray(reboundData, Int8.max, frameSampleCount, byteOffset: -127)
 
                         case 2:
 
-                            let reboundData: UnsafePointer<Int16> = bytesForChannel.withMemoryRebound(to: Int16.self, capacity: numSamples){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int16.max, numSamples)
+                            let reboundData: UnsafePointer<Int16> = bytesForChannel.withMemoryRebound(to: Int16.self, capacity: frameSampleCount){$0}
+                            frameFloatsForChannel = convertToFloatArray(reboundData, Int16.max, frameSampleCount)
 
                         case 4:
 
-                            let reboundData: UnsafePointer<Int32> = bytesForChannel.withMemoryRebound(to: Int32.self, capacity: numSamples){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int32.max, numSamples)
+                            let reboundData: UnsafePointer<Int32> = bytesForChannel.withMemoryRebound(to: Int32.self, capacity: frameSampleCount){$0}
+                            frameFloatsForChannel = convertToFloatArray(reboundData, Int32.max, frameSampleCount)
 
                         case 8:
 
-                            let reboundData: UnsafePointer<Int64> = bytesForChannel.withMemoryRebound(to: Int64.self, capacity: numSamples){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int64.max, numSamples)
+                            let reboundData: UnsafePointer<Int64> = bytesForChannel.withMemoryRebound(to: Int64.self, capacity: frameSampleCount){$0}
+                            frameFloatsForChannel = convertToFloatArray(reboundData, Int64.max, frameSampleCount)
 
                         default: continue
 
                         }
 
-                        cblas_scopy(Int32(numSamples), frameFloatsForChannel, 1, channel.advanced(by: Int(samplesSoFar)), 1)
+                        if channelIndex < numChannels {
+                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
+                        } else {
+                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
+                        }
 
                     case AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP:
 
-                        let frameFloatsForChannel: UnsafePointer<Float> = bytesForChannel.withMemoryRebound(to: Float.self, capacity: Int(frame.sampleCount)){$0}
-                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(samplesSoFar)), 1)
+                        let frameFloatsForChannel: UnsafePointer<Float> = bytesForChannel.withMemoryRebound(to: Float.self, capacity: frameSampleCount){$0}
+                        
+                        if channelIndex < numChannels {
+                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
+                        } else {
+                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
+                        }
 
                     case AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP:
 
-                        let doublesForChannel: UnsafePointer<Double> = bytesForChannel.withMemoryRebound(to: Double.self, capacity: numSamples){$0}
-                        let frameFloatsForChannel: [Float] = (0..<numSamples).map {Float(doublesForChannel[$0])}
-                        cblas_scopy(Int32(numSamples), frameFloatsForChannel, 1, channel.advanced(by: Int(samplesSoFar)), 1)
+                        let doublesForChannel: UnsafePointer<Double> = bytesForChannel.withMemoryRebound(to: Double.self, capacity: frameSampleCount){$0}
+                        let frameFloatsForChannel: [Float] = (0..<frameSampleCount).map {Float(doublesForChannel[$0])}
+                        
+                        if channelIndex < numChannels {
+                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
+                        } else {
+                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
+                        }
 
                     default:
 
@@ -126,7 +140,7 @@ class DAudio {
                     }
                 }
                 
-                samplesSoFar += frame.sampleCount
+                sampleCountSoFar += frame.sampleCount
             }
             
             return buffer
@@ -158,7 +172,7 @@ class Decoder {
         
         decodeFrames(5)
         player.play()
-        NSLog("\nPlayback Started !")
+        NSLog("Playback Started !\n")
         decodeFrames(5)
     }
     
@@ -265,7 +279,7 @@ class Decoder {
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
             player.scheduleBuffer(audioBuffer, {
-                eof ? NSLog("\nPlayback completed !!!") : decodeFrames()
+                eof ? NSLog("Playback completed !!!\n") : decodeFrames()
             })
         }
         
@@ -324,7 +338,7 @@ class Player {
         audioEngine = AVAudioEngine()
         playerNode = AVAudioPlayerNode()
         
-        playerNode.volume = 0.5
+        playerNode.volume = 1
 
         audioEngine.attach(playerNode)
         audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: nil)
