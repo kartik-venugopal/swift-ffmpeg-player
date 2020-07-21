@@ -4,9 +4,7 @@ import ffmpeg
 class Reader {
     
     static func initialize() {
-        
         av_register_all()
-        avfilter_register_all()
     }
     
     static func readTrack(_ file: URL) -> TrackInfo? {

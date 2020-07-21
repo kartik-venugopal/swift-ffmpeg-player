@@ -1,38 +1,48 @@
 //import AVFoundation
+//import Accelerate
 //import ffmpeg
 //
-//class FFDecoder {
-//    
+//class SlowScheduler: SchedulerProtocol {
+//
+//    var seekPosition: Double {0}
+//
+//    let player: Player
+//    let playerNode: AVAudioPlayerNode
+//
+//    init(_ player: Player) {
+//
+//        self.player = player
+//        self.playerNode = player.playerNode
+//
+//        oneTimeSetup()
+//    }
+//
+//    // Variables required by ffmpeg
+//
 //    var formatContext: UnsafeMutablePointer<AVFormatContext>!
 //    var codecContext: UnsafeMutablePointer<AVCodecContext>?
 //    var audioStream: UnsafeMutablePointer<AVStream>?
 //    var codec: UnsafeMutablePointer<AVCodec>?
-//    
+//
 //    var streamIndex: Int32 = -1
 //    var format: AVAudioFormat!
-//    
+//
 //    var timeBase: AVRational!
 //    var sampleRate: Int = 0
 //    var duration: Double = 0
-//    
+//
 //    var got_frame: Int32 = 0
 //    var length: Int32 = 0
 //    var decodeFinished: Bool = false
-//    
+//
 //    var bufferedData: AudioFloatData = AudioFloatData()
-//    
-//    let outfile: UnsafeMutablePointer<FILE> = fopen("/Volumes/MyData/Music/Aural-Test/swift-test.raw", "w+")
-//    
-//    init() {
-//        oneTimeSetup()
-//    }
-//    
+//
 //    private func oneTimeSetup() {
 //        av_register_all()
 //    }
-//    
-//    func initForFile(_ file: URL) throws {
-//        
+//
+//    private func setupForFile(_ file: URL) throws {
+//
 //        formatContext = avformat_alloc_context()
 //        
 //        let path = file.path
@@ -69,6 +79,8 @@
 //                throw AVError(AVError.operationNotAllowed)
 //            }
 //            
+//            format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(codecContext!.pointee.sample_rate), channels: AVAudioChannelCount(min (2, codecContext!.pointee.channels)), interleaved: false)
+//            
 //            // Print stream info
 //            
 //            print("---------- Audio Stream Info ----------\n")
@@ -81,11 +93,17 @@
 //        }
 //    }
 //    
-//    func decodeNSeconds(_ seconds: Double = 15) {
+//    private var swr: OpaquePointer!
+//
+//    private var stopped: Bool = false
+//    
+//    let outfile: UnsafeMutablePointer<FILE> = fopen("/Volumes/MyData/Music/Aural-Test/swift-good-test.raw", "w+")
+//
+//    func scheduleOneBuffer(_ seconds: Double = 5) {
 //        
 //        var packet = AVPacket()
 //        var frame = AVFrame()
-////        var eof: Bool = false
+//        //        var eof: Bool = false
 //        
 //        bufferedData.reset(Int(codecContext!.pointee.channels), Int(codecContext!.pointee.sample_rate), Int(seconds * Double(codecContext!.pointee.sample_rate)))
 //        
@@ -107,12 +125,12 @@
 //            } else {
 //                return
 //            }
-//                
+//            
 //            let ret = receiveAndHandle(ctx: ctx, frame: &frame)
 //            
 //            guard 0 <= ret else {
-//
-//                print("ERROR:", ret)
+//                
+////                print("ERROR:", ret)
 //                continue
 //            }
 //            
@@ -121,23 +139,45 @@
 //        
 //        if bufferedData.isFull {
 //            
-//            // Return buffer
-////            var sms = bufferedData.floats
+//            let numSamples = bufferedData.numSamples
 //            
-////            print("\nAbout to write: \(sms.count) x \(sms[0].count) values")
+//            if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, audioFormat: format, numSamples: numSamples) {
+//                
+//                let data = buffer.floatChannelData
+//
+//                for s in 0..<numSamples {
+//
+//                    for i in 0..<bufferedData.channelCount {
+//
+//                        let sample = data![i][s]
+//                        fwrite(&data![i][s], MemoryLayout<Float>.size, 1, outfile)
+//                        ctr += 1
+//                        
+//                        if (ctr > 44100 && ctr < 44200) {
+//                            print("\(ctr): \(sample)")
+//                        }
+//                    }
+//                }
+//                
+////                player.scheduleBuffer(buffer, {
 ////
-//////            for sampleIndex in 0..<Int(frame.nb_samples) {
-////                for sampleIndex in 0..<sms[0].count {
+////                    print("\nDone playing buffer of size:", numSamples, ", continuing scheduling ...")
 ////
-////                for channelIndex in 0..<Int(codecContext!.pointee.channels) {
-////                    fwrite(&sms[channelIndex][sampleIndex], MemoryLayout<Float>.size, 1, outfile)
-////                }
-////            }
+////                    if !self.stopped {
+////
+////                        let time = measureTime {
+////                            self.scheduleOneBuffer()
+////                        }
+////
+////                        print("Took \(time * 1000) msec to schedule buffer !")
+////                    }
+////                })
+//            }
 //        }
 //        
 //        fclose(outfile)
 //    }
-//    
+//
 //    func receiveAndHandle(ctx: UnsafeMutablePointer<AVCodecContext>, frame: UnsafeMutablePointer<AVFrame>?) -> Int32 {
 //        
 //        var err: Int32 = avcodec_receive_frame(ctx, frame)
@@ -156,7 +196,7 @@
 //    func handleFrame(ctx: AVCodecContext, frame: AVFrame) {
 //        
 //        let fr = frame
-//        print("\nHandling frame:", fr.channel_layout, fr.channels, fr.format, fr.linesize.0, fr.nb_samples, fr.pkt_duration, fr.pkt_size, fr.sample_rate, "\n")
+//        print("\nHandling frame:", fr.channel_layout, fr.channels, fr.format, fr.linesize.0, fr.nb_samples, fr.pkt_duration, fr.pkt_size, fr.sample_rate)
 //
 //        // Resulting 2-D array of samples will always be in planar format (one buffer per channel)
 //        var floats: [[Float]] = []
@@ -181,12 +221,12 @@
 //                
 //                floats[channelIndex].append(sample)
 //                
-//                fwrite(&sample, MemoryLayout<Float>.size, 1, outfile)
-//                ctr += 1
-//                
-//                if (ctr > 485100 && ctr < 485200) {
-//                    print("\(ctr): \(sample)")
-//                }
+////                fwrite(&sample, MemoryLayout<Float>.size, 1, outfile)
+////                ctr += 1
+////
+////                if (ctr > 485100 && ctr < 485200) {
+////                    print("\(ctr): \(sample)")
+////                }
 //            }
 //        }
 //        
@@ -252,61 +292,109 @@
 //        
 //        return floatSample
 //    }
-//}
+//    
+//    func createBuffer(channels numChannels: Int, audioFormat: AVAudioFormat, numSamples: Int) -> AVAudioPCMBuffer? {
+//        
+////        print("Scheduling buffer:", numSamples, "\n\n")
+//        
+//        if let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: AVAudioFrameCount(numSamples)) {
+//            
+//            buffer.frameLength = AVAudioFrameCount(numSamples)
 //
-//class AudioFloatData {
-//    
-//    var floats: [[Float]] = []
-//    var lineSize: Int = 0
-//    
-//    var channelCount: Int = 0
-//    var sampleRate: Int = 0
-//    
-//    var numFrames: Int = 0
-//    var numSamples: Int = 0
-//    var maxSamples: Int = 0
-//    
-//    // Hold up to 5 seconds of samples in one object
-//    //    var isFull: Bool {self.numFrames > 0 && self.numSamples >= 5 * sampleRate}
-//    var isFull: Bool {self.numFrames > 0 && self.numSamples > self.maxSamples}
-//    
-//    func reset(_ channelCount: Int, _ sampleRate: Int, _ maxSamples: Int) {
-//        
-//        self.channelCount = channelCount
-//        self.sampleRate = sampleRate
-//        
-//        self.maxSamples = maxSamples
-//        self.numSamples = 0
-//        self.numFrames = 0
-//        
-//        self.floats.removeAll()
-//        for _ in 1...channelCount {
-//            self.floats.append([])
+//            let channels = buffer.floatChannelData
+//            let floats = bufferedData.floats
+//            
+//            for i in 0..<numChannels {
+//                
+//                guard let channel = channels?[i] else {break}
+//                cblas_scopy(Int32(numSamples), floats[i], 1, channel, 1)
+//            }
+//            
+//            return buffer
 //        }
 //        
-//        self.lineSize = 0
+//        return nil
 //    }
 //    
-//    static var frames: Int = 0
-//    
-//    func appendFrame(_ frameFloats: [[Float]]) {
-//        
-//        let frameSampleCount = frameFloats[0].count
-//        self.numSamples += frameSampleCount
-//        
-//        for i in 0..<channelCount {
+//    func convertToFloatArray<T>(_ unsafeArr: UnsafePointer<T>, _ maxSignedValue: Int64, _ numSamples: Int, byteOffset: T = 0) -> [Float] where T: SignedInteger {
+//        return (0..<numSamples).map {
 //            
-//            for j in 0..<frameSampleCount {
-//                
-//                self.floats[i].append(frameFloats[i][j])
-//            }
+//            let sam = Float(Int64(unsafeArr[$0] + byteOffset)) / Float(maxSignedValue)
+//            
+////            if $0 < 44100 {
+////                print("Sample \($0):", sam)
+////            }
+//            
+//            return sam
 //        }
-//        
-//        numFrames += 1
-//        lineSize += floats[0].count * MemoryLayout<Float>.size
-//        
-//        print("NOW BUFFERED-AUDIO-DATA:", numFrames, numSamples, "/", maxSamples, lineSize, floats.count, floats[0].count, isFull)
-//        
-//        Self.frames += 1
+//    }
+//
+//    func playTrack(_ file: URL, _ startPosition: Double = 0) {
+//
+//        stopped = true
+//        if playerNode.isPlaying {playerNode.stop()}
+//        stopped = false
+//
+//        do {
+//            
+//            try setupForFile(file)
+//            
+//            player.prepare(format)
+//
+//            let time = measureTime {
+//                scheduleOneBuffer()
+//            }
+////            playerNode.play()
+////
+////            print("\n\nTook \(time * 1000) msec to schedule first buffer !")
+////            print("Scheduler is playing file:", file.path, "!!! :D")
+////
+////            let t2 = measureTime {
+////                scheduleOneBuffer() // "Look ahead" buffer to avoid gaps
+////            }
+////
+////            print("Took \(t2 * 1000) msec to schedule second buffer !")
+//            
+//        } catch {
+//            
+//            print("Scheduler ERROR !")
+//            return
+//        }
+//    }
+//
+//    func playLoop(_ file: URL, _ beginPlayback: Bool) {
+//
+//    }
+//
+//    func playLoop(_ file: URL, _ playbackStartTime: Double, _ beginPlayback: Bool) {
+//
+//    }
+//
+//    func endLoop(_ file: URL, _ loopEndTime: Double) {
+//
+//    }
+//
+//    func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool) {
+//
+//        stopped = true
+//        if playerNode.isPlaying {playerNode.stop()}
+//        stopped = false
+//
+//        av_seek_frame(formatContext, streamIndex, Int64(seconds * timeBase.reciprocal), AVSEEK_FLAG_FRAME)
+//
+//        scheduleOneBuffer()
+//        scheduleOneBuffer()
+//    }
+//
+//    func pause() {
+//
+//    }
+//
+//    func resume() {
+//
+//    }
+//
+//    func stop() {
+//
 //    }
 //}

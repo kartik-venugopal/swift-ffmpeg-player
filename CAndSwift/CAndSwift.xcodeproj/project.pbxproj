@@ -24,6 +24,7 @@
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
 		3E52519924C23FA40023F696 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E52519724C23FA40023F696 /* ffmpeg.c */; };
+		3E77153624C6F8CE00FD7AB2 /* SlowScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E77153524C6F8CE00FD7AB2 /* SlowScheduler.swift */; };
 		3E7A9DA324C58B2900FBCDF7 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9D24C58AFF00FBCDF7 /* libavcodec.a */; };
 		3E7A9DA424C58B2900FBCDF7 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9E24C58AFF00FBCDF7 /* libavdevice.a */; };
 		3E7A9DA524C58B2900FBCDF7 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9A24C58AFF00FBCDF7 /* libavfilter.a */; };
@@ -62,6 +63,7 @@
 		3E52519724C23FA40023F696 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E52519824C23FA40023F696 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
 		3E5251A424C240FD0023F696 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		3E77153524C6F8CE00FD7AB2 /* SlowScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowScheduler.swift; sourceTree = "<group>"; };
 		3E7A9D9A24C58AFF00FBCDF7 /* libavfilter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavfilter.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavfilter.a; sourceTree = "<group>"; };
 		3E7A9D9B24C58AFF00FBCDF7 /* libpostproc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpostproc.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libpostproc.a; sourceTree = "<group>"; };
 		3E7A9D9C24C58AFF00FBCDF7 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavformat.a; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */,
 				3E0BECCC24C386B700FF69D7 /* Player.swift */,
 				3EDE527E24C429CF00F1532E /* Scheduler.swift */,
+				3E77153524C6F8CE00FD7AB2 /* SlowScheduler.swift */,
 				3EC786A124C5EE0D0005F5C7 /* FFDecoder.swift */,
 				3E293BEE24C45885003749F2 /* Decoder.swift */,
 				3E0BECC424C3353000FF69D7 /* libavcodec */,
@@ -251,6 +254,7 @@
 				3E52519924C23FA40023F696 /* ffmpeg.c in Sources */,
 				3EDE527D24C4298200F1532E /* SchedulerProtocol.swift in Sources */,
 				3E0BECCD24C386B700FF69D7 /* Player.swift in Sources */,
+				3E77153624C6F8CE00FD7AB2 /* SlowScheduler.swift in Sources */,
 				3E293BEF24C45885003749F2 /* Decoder.swift in Sources */,
 				3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */,
 				3EC786A224C5EE0D0005F5C7 /* FFDecoder.swift in Sources */,

@@ -15,49 +15,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var artView: NSImageView!
     
-    private let player = Player()
-    private var scheduler: Scheduler!
+//    private let player = Player()
+//    private var scheduler: Scheduler!
+//    private var slowScheduler: SlowScheduler!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        scheduler = Scheduler(player)
+//        scheduler = Scheduler(player)
+//        slowScheduler = SlowScheduler(player)
         
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/CDImage.ape")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/test.mpc")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
         
-//        Decoder.decodeAndPlay(url)
-        
-        do {
-            
-            let dec = FFDecoder()
-            try dec.initForFile(url)
-            
-            dec.decodeNSeconds(60)
-            
-        } catch {
-            print("ERROR:")
-            return
-        }
-        
-        
-        let time = measureTime {
-            
-//            if let trackInfo = Reader.readTrack(url) {
-//
-//                print(JSONMapper.map(trackInfo))
-//                artView.image = trackInfo.art
-//            }
-            
-//            scheduler.playTrack(url)
-            
-        }
+        Decoder.decodeAndPlay(url)
+       
+//        scheduler.playTrack(url)
+//        slowScheduler.playTrack(url)
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
 //
 //            self.scheduler.seekToTime(url, 268, true)
 //        })
         
-        print("Took \(time * 1000) msec")
+//        print("Took \(time * 1000) msec")
+        
+//        var trackInfo: TrackInfo!
+//
+//        let time = measureTime {
+//            trackInfo = Reader.readTrack(url)
+//        }
+//
+//        print(JSONMapper.map(trackInfo))
+//        artView.image = trackInfo.art
     }
 }
 
