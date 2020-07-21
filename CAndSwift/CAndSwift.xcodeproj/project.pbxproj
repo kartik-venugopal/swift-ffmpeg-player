@@ -37,6 +37,7 @@
 		3EC786A224C5EE0D0005F5C7 /* FFDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC786A124C5EE0D0005F5C7 /* FFDecoder.swift */; };
 		3EDE527D24C4298200F1532E /* SchedulerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */; };
 		3EDE527F24C429CF00F1532E /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDE527E24C429CF00F1532E /* Scheduler.swift */; };
+		3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		3EC786A124C5EE0D0005F5C7 /* FFDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDecoder.swift; sourceTree = "<group>"; };
 		3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerProtocol.swift; sourceTree = "<group>"; };
 		3EDE527E24C429CF00F1532E /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
+		3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesBuffer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,9 +127,10 @@
 				3EDE527C24C4298200F1532E /* SchedulerProtocol.swift */,
 				3E0BECCC24C386B700FF69D7 /* Player.swift */,
 				3EDE527E24C429CF00F1532E /* Scheduler.swift */,
+				3E293BEE24C45885003749F2 /* Decoder.swift */,
 				3E77153524C6F8CE00FD7AB2 /* SlowScheduler.swift */,
 				3EC786A124C5EE0D0005F5C7 /* FFDecoder.swift */,
-				3E293BEE24C45885003749F2 /* Decoder.swift */,
+				3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */,
 				3E0BECC424C3353000FF69D7 /* libavcodec */,
 				3E0BECB524C3342B00FF69D7 /* libavdevice */,
 				3E0BECB424C3342B00FF69D7 /* libavfilter */,
@@ -256,6 +259,7 @@
 				3E0BECCD24C386B700FF69D7 /* Player.swift in Sources */,
 				3E77153624C6F8CE00FD7AB2 /* SlowScheduler.swift in Sources */,
 				3E293BEF24C45885003749F2 /* Decoder.swift in Sources */,
+				3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */,
 				3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */,
 				3EC786A224C5EE0D0005F5C7 /* FFDecoder.swift in Sources */,
 			);
