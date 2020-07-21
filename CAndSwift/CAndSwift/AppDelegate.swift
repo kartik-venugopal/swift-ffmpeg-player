@@ -33,8 +33,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
         
         Decoder.decodeAndPlay(url)
        
