@@ -24,7 +24,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        scheduler = Scheduler(player)
 //        slowScheduler = SlowScheduler(player)
         
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/CDImage.ape")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
         
         Decoder.decodeAndPlay(url)

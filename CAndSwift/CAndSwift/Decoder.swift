@@ -8,6 +8,8 @@ struct DAudio {
     var linesizes: [Int] = []
     let samples: Int
     
+    var dataPointers: [UnsafePointer<UInt8>] {datas.compactMap {$0.withUnsafeBytes{$0}}}
+    
     init?(frame: UnsafeMutablePointer<AVFrame>) {
         
         self.samples = Int(frame.pointee.nb_samples)
@@ -184,10 +186,7 @@ class Decoder {
     
     static func startAudioPlay(_ aframe: DAudio) {
         
-        let floatsLen = aframe.linesizes[0] / MemoryLayout<Float>.size
-        let datas: [UnsafePointer<UInt8>] = aframe.datas.flatMap(){$0.withUnsafeBytes(){$0}}
-
-        if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: datas, floatsLength: floatsLen, samples: aframe.samples) {
+        if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: aframe.dataPointers, samples: aframe.samples) {
 
             if bufferCount == 0 {
                 player.prepare(buffer.format)
@@ -203,10 +202,10 @@ class Decoder {
         }
     }
     
-    static var sampleFmt: AVSampleFormat = audioContext!.pointee.sample_fmt
-    static var sampleSize: Int = Int(av_get_bytes_per_sample(sampleFmt))
+    static var sampleFmt: AVSampleFormat!
+    static var sampleSize: Int!
     
-    static func createBuffer(channels numChannels: Int, format: AVAudioFormat, audioDatas datas: [UnsafePointer<UInt8>], floatsLength: Int, samples: Int) -> AVAudioPCMBuffer? {
+    static func createBuffer(channels numChannels: Int, format: AVAudioFormat, audioDatas dataPointers: [UnsafePointer<UInt8>], samples: Int) -> AVAudioPCMBuffer? {
         
         if let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(samples)) {
             
@@ -215,7 +214,7 @@ class Decoder {
             
             for i in 0..<numChannels {
 
-                let bytesForChannel = datas[i]
+                let bytesForChannel = dataPointers[i]
                 guard let channel = channels?[i] else {break}
 
                 switch sampleFmt {
@@ -278,17 +277,7 @@ class Decoder {
     }
     
     static func convertToFloatArray<T>(_ unsafeArr: UnsafePointer<T>, _ maxSignedValue: T, _ numSamples: Int, byteOffset: T = 0) -> [Float] where T: SignedInteger {
-        
-        return (0..<numSamples).map {
-            
-            let sam = Float(Int64(unsafeArr[$0] + byteOffset)) / Float(maxSignedValue)
-            
-            //            if $0 < 44100 {
-            //                print("Sample \($0):", sam)
-            //            }
-            
-            return sam
-        }
+        return (0..<numSamples).map {Float(Int64(unsafeArr[$0] + byteOffset)) / Float(maxSignedValue)}
     }
 }
 
