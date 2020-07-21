@@ -9,22 +9,27 @@ struct DAudio {
     
     var dataPointers: [UnsafePointer<UInt8>] {datas.compactMap {$0.withUnsafeBytes{$0}}}
     
-    init?(frame: UnsafeMutablePointer<AVFrame>) {
+    var counts: [Int: Int] = [:]
+    
+    static var fails: Int = 0
+    static var oks: Int = 0
+    
+    init(frame: UnsafeMutablePointer<AVFrame>) {
         
         self.samples = Int(frame.pointee.nb_samples)
         let buffers = frame.pointee.datas()
         let linesize = Int(frame.pointee.linesize.0)
         
-        for i in 0..<8 {
+        for channelIndex in (0..<8) {
             
-            guard let buffer = buffers[i] else {
-                break
-            }
+            guard let buffer = buffers[channelIndex] else {break}
             
-            datas.append(Data(bytes: buffer, count: linesize))
+            let data = Data(bytes: buffer, count: linesize)
+            datas.append(data)
+            counts[channelIndex] = data.count
         }
         
-        if datas.isEmpty {return nil}
+        print("\nFrame: \(counts)")
     }
 }
 
@@ -124,7 +129,7 @@ class Decoder {
         var frame = AVFrame()
         var eof: Bool = false
         
-        decode: while ctr < 500000 && !eof {
+        decode: while ctr < 5 && !eof {
             
             guard 0 <= av_read_frame(formatContext, &packet) else {
                 
@@ -173,23 +178,22 @@ class Decoder {
         }
         
         av_packet_unref(packet)
+        ret = avcodec_receive_frame(ctx, frame)
         
-        repeat {
+        while ret == 0, frame!.pointee.nb_samples > 0 {
             
-            ret = avcodec_receive_frame(ctx, frame)
+            let adata = DAudio(frame: frame!)
+            if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: adata.dataPointers, samples: adata.samples) {
             
-            if let adata = DAudio(frame: frame!),
-                let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: adata.dataPointers, samples: adata.samples) {
-                
                 player.scheduleBuffer(buffer)
                 
                 if !player.playerNode.isPlaying {
                     player.play()
                 }
-                
             }
             
-        } while ret == 0
+            ret = avcodec_receive_frame(ctx, frame)
+        }
     }
     
     static var sampleFmt: AVSampleFormat!
