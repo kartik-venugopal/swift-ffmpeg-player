@@ -44,7 +44,6 @@ class Decoder {
         print("\nAudioEngine setup success !!!")
 
         decodeFrames()
-        player.play()
     }
     
     static var formatContext: UnsafeMutablePointer<AVFormatContext>!
@@ -183,6 +182,11 @@ class Decoder {
                 let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: adata.dataPointers, samples: adata.samples) {
                 
                 player.scheduleBuffer(buffer)
+                
+                if !player.playerNode.isPlaying {
+                    player.play()
+                }
+                
             }
             
         } while ret == 0

@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
     
         super.init()
-//        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
+        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
     }
     
 //    private let player = Player()
@@ -30,8 +30,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        scheduler = Scheduler(player)
 //        slowScheduler = SlowScheduler(player)
         
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
         
         Decoder.decodeAndPlay(url)
