@@ -15,6 +15,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var artView: NSImageView!
     
+    override init() {
+    
+        super.init()
+//        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
+    }
+    
 //    private let player = Player()
 //    private var scheduler: Scheduler!
 //    private var slowScheduler: SlowScheduler!
@@ -24,9 +30,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        scheduler = Scheduler(player)
 //        slowScheduler = SlowScheduler(player)
         
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
         
         Decoder.decodeAndPlay(url)
        

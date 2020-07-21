@@ -5,7 +5,6 @@ import ffmpeg
 struct DAudio {
     
     var datas: [Data] = []
-    var linesizes: [Int] = []
     let samples: Int
     
     var dataPointers: [UnsafePointer<UInt8>] {datas.compactMap {$0.withUnsafeBytes{$0}}}
@@ -14,14 +13,15 @@ struct DAudio {
         
         self.samples = Int(frame.pointee.nb_samples)
         let buffers = frame.pointee.datas()
+        let linesize = Int(frame.pointee.linesize.0)
         
         for i in 0..<8 {
             
             guard let buffer = buffers[i] else {
                 break
             }
-            datas.append(Data(bytes: buffer, count: Int(frame.pointee.linesize.0)))
-            linesizes.append(Int(frame.pointee.linesize.0))
+            
+            datas.append(Data(bytes: buffer, count: linesize))
         }
         
         if datas.isEmpty {return nil}
@@ -44,6 +44,7 @@ class Decoder {
         print("\nAudioEngine setup success !!!")
 
         decodeFrames()
+        player.play()
     }
     
     static var formatContext: UnsafeMutablePointer<AVFormatContext>!
@@ -74,20 +75,13 @@ class Decoder {
         }
 
         av_dump_format(formatContext, 0, path, 0)
-        let duration = Double(formatContext!.pointee.duration + (formatContext!.pointee.duration <= Int64.max ? 5000 : 0)) / Double(AV_TIME_BASE)
+//        let duration = Double(formatContext!.pointee.duration + (formatContext!.pointee.duration <= Int64.max ? 5000 : 0)) / Double(AV_TIME_BASE)
 
         audio_index = av_find_best_stream(formatContext, AVMEDIA_TYPE_AUDIO, -1, -1, &audioCodec, 0)
         audioStream = formatContext?.pointee.streams.advanced(by: Int(audio_index)).pointee
         audioContext = avcodec_alloc_context3(audioCodec)
         avcodec_parameters_to_context(audioContext, audioStream?.pointee.codecpar)
-        audioContext?.pointee.properties = audioStream?.pointee.codec.pointee.properties ?? 0
-        audioContext?.pointee.qmin = audioStream?.pointee.codec.pointee.qmin ?? 0
-        audioContext?.pointee.qmax = audioStream?.pointee.codec.pointee.qmax ?? 0
-//        audioContext?.pointee.coded_width = audioStream?.pointee.codec.pointee.coded_width ?? 0
-//        audioContext?.pointee.coded_height = audioStream?.pointee.codec.pointee.coded_height ?? 0
         audioContext?.pointee.time_base = audioStream?.pointee.time_base ?? AVRational()
-        
-//        audioQueue = AVFrameQueue(type: AVMEDIA_TYPE_AUDIO, queueCount: 128, time_base: , duration: duration)
         
         timeBase = audioContext!.pointee.time_base
         
@@ -114,6 +108,8 @@ class Decoder {
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(audioStream!.pointee.codecpar.pointee.sample_rate), channels: AVAudioChannelCount(2), interleaved: false)
         
         player = Player()
+        player.prepare(audioFormat)
+        
         return true
     }
     
@@ -123,12 +119,17 @@ class Decoder {
     
     static func decodeFrames() {
         
+        NSLog("Began decoding ...")
+        
         var packet = AVPacket()
         var frame = AVFrame()
+        var eof: Bool = false
         
-        decode: while ctr < 5000 {
+        decode: while ctr < 500000 && !eof {
             
             guard 0 <= av_read_frame(formatContext, &packet) else {
+                
+                eof = true
                 break decode
             }
             defer {
@@ -142,18 +143,23 @@ class Decoder {
             }
         }
         
-        av_packet_unref(&packet)
-        av_frame_unref(&frame)
-        
-        if 0 < avcodec_is_open(self.audioContext) {
-            avcodec_close(self.audioContext)
+        if eof {
+            
+            NSLog("Reached EOF !!!")
+            
+            av_packet_unref(&packet)
+            av_frame_unref(&frame)
+            
+            if 0 < avcodec_is_open(self.audioContext) {
+                avcodec_close(self.audioContext)
+            }
+            avcodec_free_context(&self.audioContext)
+            
+            self.audioContext = nil
+            
+            avformat_close_input(&self.formatContext)
+            avformat_free_context(self.formatContext)
         }
-        avcodec_free_context(&self.audioContext)
-        
-        self.audioContext = nil
-        
-        avformat_close_input(&self.formatContext)
-        avformat_free_context(self.formatContext)
     }
     
     static func decode(ctx: UnsafeMutablePointer<AVCodecContext>, packet: UnsafeMutablePointer<AVPacket>, frame: UnsafeMutablePointer<AVFrame>?) {
@@ -173,33 +179,13 @@ class Decoder {
             
             ret = avcodec_receive_frame(ctx, frame)
             
-            if let adata = DAudio(frame: frame!) {
+            if let adata = DAudio(frame: frame!),
+                let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: adata.dataPointers, samples: adata.samples) {
                 
-                startAudioPlay(adata)
-                ctr += 1
+                player.scheduleBuffer(buffer)
             }
             
         } while ret == 0
-    }
-    
-    static var bufferCount: Int = 0
-    
-    static func startAudioPlay(_ aframe: DAudio) {
-        
-        if let buffer: AVAudioPCMBuffer = createBuffer(channels: 2, format: audioFormat, audioDatas: aframe.dataPointers, samples: aframe.samples) {
-
-            if bufferCount == 0 {
-                player.prepare(buffer.format)
-            }
-
-            player.scheduleBuffer(buffer)
-
-            if bufferCount == 0 {
-                player.play()
-            }
-
-            bufferCount += 1
-        }
     }
     
     static var sampleFmt: AVSampleFormat!
