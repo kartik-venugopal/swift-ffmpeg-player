@@ -22,7 +22,7 @@ to get started on their addictive journey!
 
 ## How ?
 
-Download it and get it running in XCode. Open different types of music files, and see if it works.
+Download it and get it running in XCode. Open different types of music files, and see if/how it works.
 
 Browse through the source code, which I have done my best to document. Tweak it to your heart's content, build it, run it, see (and hear) what happens!
 
