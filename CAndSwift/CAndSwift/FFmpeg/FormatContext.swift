@@ -22,6 +22,15 @@ class FormatContext {
             return nil
         }
     }
+    
+    func readPacket(_ stream: Stream) throws -> Packet? {
+        
+        var packet = AVPacket()
+
+        guard av_read_frame(pointer, &packet) > 0 else {throw EOFError()}
+        
+        return packet.stream_index == stream.index ? Packet(&packet) : nil
+    }
 }
 
 class Stream {
@@ -66,7 +75,7 @@ class Codec {
         contextPointer = avcodec_alloc_context3(pointer)
         avcodec_parameters_to_context(contextPointer, stream.avStream.codecpar)
 
-        guard avcodec_open2(contextPointer, pointer, nil) >= 0, let pointee = pointer?.pointee else {
+        guard avcodec_open2(contextPointer, pointer, nil) == 0, let pointee = pointer?.pointee else {
             return nil
         }
         
@@ -78,4 +87,88 @@ class Codec {
         self.sampleSize = Int(av_get_bytes_per_sample(sampleFormat))
         self.timeBase = context.time_base
     }
+    
+    func decode(_ packet: Packet) throws -> [Frame] {
+        
+        // Send the packet to the decoder
+        
+        var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
+        av_packet_unref(packet.pointer)
+
+        if resultCode < 0 {
+            throw DecoderError(resultCode)
+        }
+        
+        // Receive (potentially) multiple frames
+
+        var frames: [Frame] = []
+        var avFrame = AVFrame()
+        resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+
+        // Keep receiving frames while no errors are encountered
+        
+        while resultCode == 0, avFrame.nb_samples > 0 {
+            
+            frames.append(Frame(avFrame))
+            resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+        }
+        
+        av_frame_unref(&avFrame)
+        
+        return frames
+    }
 }
+
+class Packet {
+    
+    let pointer: UnsafeMutablePointer<AVPacket>
+    let avPacket: AVPacket
+    
+    init(_ pointer: UnsafeMutablePointer<AVPacket>) {
+        
+        self.pointer = pointer
+        self.avPacket = pointer.pointee
+    }
+}
+
+class Frame {
+    
+    private var _dataArray: [Data]
+    var dataArray: [Data] {_dataArray}
+
+    let channelCount: Int
+    let sampleCount: Int32
+    let lineSize: Int
+    
+    init(_ frame: AVFrame) {
+        
+        self.channelCount = Int(frame.channels)
+        self.sampleCount = frame.nb_samples
+        self.lineSize = Int(frame.linesize.0)
+        
+        self._dataArray = []
+        
+        let buffers = frame.dataPointers
+        
+        for channelIndex in (0..<8) {
+            
+            guard let buffer = buffers[channelIndex] else {break}
+            _dataArray.append(Data(bytes: buffer, count: lineSize))
+        }
+    }
+}
+
+class DecoderError: Error {
+    
+    let errorCode: Int32
+    
+    init(_ code: Int32) {
+        self.errorCode = code
+    }
+    
+    var description: String {
+        "Unable to decode packet. ErrorCode=\(errorCode)"
+    }
+}
+
+class EOFError: Error {}

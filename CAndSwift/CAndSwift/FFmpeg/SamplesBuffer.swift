@@ -161,4 +161,8 @@ extension AVFrame {
         let arr = Array(ptr)
         return arr
     }
+    
+    var dataPointers: [UnsafeMutablePointer<UInt8>?] {
+        Array(UnsafeBufferPointer(start: self.extended_data, count: 8))
+    }
 }
