@@ -47,8 +47,6 @@ Then, perhaps ... develop something much bigger and better yourself!
 
 ## Other helpful resources
 
-Hopefully, this project will get you started, and once you get your feet wet, you will find these resources valuable.
-
 * targodan's [ffmpeg decoding guide](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg). Related code sample [here](https://gist.github.com/targodan/8cef8f2b682a30055aa7937060cd94b7). This tutorial is, hands down, the best one out there!
 
 * [A detailed tutorial on the basics of ffmpeg](https://github.com/leandromoreira/ffmpeg-libav-tutorial) by leandromoreira.
