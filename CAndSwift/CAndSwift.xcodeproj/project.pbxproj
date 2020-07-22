@@ -24,6 +24,10 @@
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
 		3E52519924C23FA40023F696 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E52519724C23FA40023F696 /* ffmpeg.c */; };
+		3E67F36A24C823330023C2D3 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36924C823330023C2D3 /* Stream.swift */; };
+		3E67F36C24C823530023C2D3 /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36B24C823530023C2D3 /* Codec.swift */; };
+		3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36D24C8237A0023C2D3 /* Packet.swift */; };
+		3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36F24C823AA0023C2D3 /* Errors.swift */; };
 		3E77153624C6F8CE00FD7AB2 /* SlowScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E77153524C6F8CE00FD7AB2 /* SlowScheduler.swift */; };
 		3E7A9DA324C58B2900FBCDF7 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9D24C58AFF00FBCDF7 /* libavcodec.a */; };
 		3E7A9DA424C58B2900FBCDF7 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9E24C58AFF00FBCDF7 /* libavdevice.a */; };
@@ -64,6 +68,10 @@
 		3E52519724C23FA40023F696 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E52519824C23FA40023F696 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
 		3E5251A424C240FD0023F696 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		3E67F36924C823330023C2D3 /* Stream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
+		3E67F36B24C823530023C2D3 /* Codec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codec.swift; sourceTree = "<group>"; };
+		3E67F36D24C8237A0023C2D3 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
+		3E67F36F24C823AA0023C2D3 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		3E77153524C6F8CE00FD7AB2 /* SlowScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowScheduler.swift; sourceTree = "<group>"; };
 		3E7A9D9A24C58AFF00FBCDF7 /* libavfilter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavfilter.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavfilter.a; sourceTree = "<group>"; };
 		3E7A9D9B24C58AFF00FBCDF7 /* libpostproc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpostproc.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libpostproc.a; sourceTree = "<group>"; };
@@ -168,9 +176,13 @@
 			isa = PBXGroup;
 			children = (
 				3E293BEE24C45885003749F2 /* Decoder.swift */,
-				3E9CD3B024C7A8CB00499954 /* FormatContext.swift */,
 				3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */,
 				3E0BECC624C3507500FF69D7 /* Reader.swift */,
+				3E9CD3B024C7A8CB00499954 /* FormatContext.swift */,
+				3E67F36924C823330023C2D3 /* Stream.swift */,
+				3E67F36B24C823530023C2D3 /* Codec.swift */,
+				3E67F36D24C8237A0023C2D3 /* Packet.swift */,
+				3E67F36F24C823AA0023C2D3 /* Errors.swift */,
 			);
 			path = FFmpeg;
 			sourceTree = "<group>";
@@ -260,14 +272,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */,
+				3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */,
 				3EDE527F24C429CF00F1532E /* Scheduler.swift in Sources */,
 				3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */,
 				3E52519924C23FA40023F696 /* ffmpeg.c in Sources */,
 				3EDE527D24C4298200F1532E /* SchedulerProtocol.swift in Sources */,
 				3E0BECCD24C386B700FF69D7 /* Player.swift in Sources */,
 				3E77153624C6F8CE00FD7AB2 /* SlowScheduler.swift in Sources */,
+				3E67F36A24C823330023C2D3 /* Stream.swift in Sources */,
 				3E293BEF24C45885003749F2 /* Decoder.swift in Sources */,
+				3E67F36C24C823530023C2D3 /* Codec.swift in Sources */,
 				3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */,
+				3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */,
 				3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */,
 				3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */,
 			);

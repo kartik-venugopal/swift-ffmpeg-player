@@ -27,7 +27,6 @@ class FrameSamples {
 class SamplesBuffer {
     
     var frames: [FrameSamples] = []
-    var floats: [Float] = []
     
     var sampleCount: Int32 = 0
     let maxSampleCount: Int32
