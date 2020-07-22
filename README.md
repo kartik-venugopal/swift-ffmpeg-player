@@ -18,10 +18,19 @@ Are you totally new to AVAudioEngine and you want to see a basic usage of it ? G
 If there are others like me out there who are dying to harness the awesome power of ffmpeg and develop their own audio apps, I'd like to at least give them enough
 to get started on their addictive journey!
 
+## How ?
+
+Download it and get it running in XCode. Open different types of music files, and see if it works.
+
+Browse through the source code, which I have done my best to document. Tweak it to your heart's content, build it, run it, see (and hear) what happens!
+
+Then, perhaps ... build something much bigger and better yourself!
+
 ## Why ?
 
-It seems that there aren't too many similar beginner-level demo projects or tutorials out there. The few that I found there were much too overwhelming.
-I know that I myself searched and researched for almost 3 whole years to finally learn enough to write this basic player demo app.
+It seems that there aren't too many similar beginner-level demo projects or tutorials out there. The few that I found were much too overwhelming or contained a lot of concecpts without a concrete implementation to play with. I know that I myself searched and researched for almost 3 whole years to finally learn enough to write this basic player demo app.
+
+I learn the most when I'm able to actually open and run a project in XCode or Visual Studio or Eclipse, rather than just reading concepts.
 
 That said, I have shared links, below, to much bigger, more comprehensive, and more detailed demos/projects/tutorials out there, which I myself learned from.
 
