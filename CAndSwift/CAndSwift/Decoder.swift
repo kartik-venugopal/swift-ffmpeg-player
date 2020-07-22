@@ -8,6 +8,8 @@ class Decoder {
     static var eof: Bool = false
     static var stopped: Bool = false
     
+    static var scheduledBufferCount: Int = 0
+    
     static func decodeAndPlay(_ file: URL) {
         
         do {
@@ -33,9 +35,7 @@ class Decoder {
     
     static func setupForFile(_ file: URL) throws -> FileContext {
         
-        guard let fileCtx = FileContext(file) else {
-            throw DecoderInitializationError()
-        }
+        guard let fileCtx = FileContext(file) else {throw DecoderInitializationError()}
         
         eof = false
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(fileCtx.codec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
@@ -75,10 +75,20 @@ class Decoder {
             
             audioEngine.scheduleBuffer(audioBuffer, {
                 
+                scheduledBufferCount -= 1
+                
                 if !stopped {
-                    eof ? NSLog("Playback completed !!!\n") : decodeFrames(fileCtx)
+                    
+                    if !eof {
+                        decodeFrames(fileCtx)
+                        
+                    } else if scheduledBufferCount == 0 {
+                        NSLog("Playback completed !!!\n")
+                    }
                 }
             })
+            
+            scheduledBufferCount += 1
         }
         
         if eof {

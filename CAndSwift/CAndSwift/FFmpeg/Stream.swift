@@ -45,7 +45,7 @@ class Stream {
     
     func printInfo() {
         
-        print("\n---------- Stream Info ----------\n\n")
+        print("\n---------- Stream Info ----------\n")
         
         print(String(format: "Index:   %7d", index))
         print(String(format: "Duration: %7.2lf", duration))

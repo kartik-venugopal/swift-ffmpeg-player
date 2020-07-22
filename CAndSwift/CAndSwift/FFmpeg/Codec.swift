@@ -81,7 +81,7 @@ class Codec {
     
     func printInfo() {
         
-        print("\n---------- Codec Info ----------\n\n")
+        print("\n---------- Codec Info ----------\n")
         
         print(String(format: "Sample Rate:   %7d", sampleRate))
         print(String(format: "Sample Format: %7@", String(cString: av_get_sample_fmt_name(sampleFormat))))
