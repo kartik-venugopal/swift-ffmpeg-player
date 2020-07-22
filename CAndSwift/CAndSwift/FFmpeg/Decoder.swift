@@ -3,7 +3,7 @@ import ffmpeg
 
 class Decoder {
     
-    static let player: Player = Player()
+    static let audioEngine: AudioEngine = AudioEngine()
     static var audioFormat: AVAudioFormat!
     static var eof: Bool = false
     static var stopped: Bool = false
@@ -19,7 +19,7 @@ class Decoder {
             fileCtx.codec.printInfo()
             
             decodeFrames(fileCtx, 5)
-            player.play()
+            audioEngine.play()
 
             NSLog("Playback Started !\n")
             decodeFrames(fileCtx, 5)
@@ -39,7 +39,7 @@ class Decoder {
         
         eof = false
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(fileCtx.codec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
-        player.prepare(audioFormat)
+        audioEngine.prepare(audioFormat)
         
         return fileCtx
     }
@@ -73,7 +73,7 @@ class Decoder {
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
-            player.scheduleBuffer(audioBuffer, {
+            audioEngine.scheduleBuffer(audioBuffer, {
                 
                 if !stopped {
                     eof ? NSLog("Playback completed !!!\n") : decodeFrames(fileCtx)
@@ -87,26 +87,6 @@ class Decoder {
             fileCtx.destroy()
         }
     }
-    
-//    static func decode(ctx: UnsafeMutablePointer<AVCodecContext>, packet: UnsafeMutablePointer<AVPacket>, frame: UnsafeMutablePointer<AVFrame>?, buffer: SamplesBuffer) {
-//
-//        var resultCode: Int32 = avcodec_send_packet(ctx, packet)
-//        av_packet_unref(packet)
-//
-//        if resultCode < 0 {
-//
-//            print("err:", resultCode)
-//            return
-//        }
-//
-//        resultCode = avcodec_receive_frame(ctx, frame)
-//
-//        while resultCode == 0, frame!.pointee.nb_samples > 0 {
-//
-//            buffer.appendFrame(frame: frame!)
-//            resultCode = avcodec_receive_frame(ctx, frame)
-//        }
-//    }
     
 //    static func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool) {
 //

@@ -1,7 +1,7 @@
 import AVFoundation
 import ffmpeg
 
-class Player {
+class AudioEngine {
 
     private let audioEngine: AVAudioEngine
     internal let playerNode: AVAudioPlayerNode
