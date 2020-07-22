@@ -21,6 +21,10 @@ Are you totally new to AVAudioEngine and you want to see a basic usage of it ? G
 
 Are you totally new to audio programming in general ? Or want to develop your own player someday ? Welcome.
 
+Are you trying to get a quick prototype or proof of concept ffmpeg player developed in a few hours / days ? You can start here.
+
+Are you a seasoned programmer who doesn't have the time or patience to figure it out on your own ? Good ... you don't have to.
+
 I am *not* trying to educate those of you who have been taming ffmpeg for years :)
 
 ## Why ?
@@ -38,6 +42,8 @@ Download the source and get it running in XCode. Open different types of music f
 Browse through the source code, which I have done my best to document. Tweak it to your heart's content, build it, run it, see (and hear) what happens!
 
 Then, perhaps ... develop something much bigger and better yourself!
+
+💡 **Tip** - To get the most out of this project I recommend that you follow [targodan's tutorial](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg) as you build and run my demo app.
 
 ## Other helpful resources
 
