@@ -1,0 +1,9 @@
+
+- Refactor Decoder -> Player with static -> instance members
+
+- Simplify Reader
+
+- Refactor Packet.init() (Test 10.opus !!!)
+
+- move eof flag to FileContext/FormatContext
+

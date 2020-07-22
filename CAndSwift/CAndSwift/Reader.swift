@@ -174,6 +174,26 @@ struct TrackInfo {
     var metadata: [String: String]
     var art: NSImage?
     var chapters: [Chapter]
+    
+    var title: String? {
+        metadata.filter {$0.key.lowercased() == "title"}.first?.value
+    }
+    
+    var artist: String? {
+        metadata.filter {$0.key.lowercased() == "artist"}.first?.value
+    }
+    
+    var album: String? {
+        metadata.filter {$0.key.lowercased() == "album"}.first?.value
+    }
+    
+    var genre: String? {
+        metadata.filter {$0.key.lowercased() == "artist"}.first?.value
+    }
+    
+    var year: String? {
+        metadata.filter {$0.key.lowercased() == "artist"}.first?.value
+    }
 }
 
 struct Chapter {

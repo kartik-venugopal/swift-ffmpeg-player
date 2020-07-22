@@ -53,6 +53,8 @@ class Frame {
     
     var dataAsFloatPlanar: [UnsafePointer<Float>] {
         
+        // TODO: Handle non-planar (packed/interleaved) samples too !
+        
         var floatPointers: [UnsafePointer<Float>] = []
         let intSampleCount: Int = Int(sampleCount)
         

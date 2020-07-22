@@ -51,4 +51,18 @@ class AudioEngine {
     func play() {
         playerNode.play()
     }
+    
+    func pause() {
+        playerNode.pause()
+    }
+    
+    func stop() {
+        playerNode.stop()
+    }
+    
+    var volume: Float {
+        
+        get {playerNode.volume}
+        set {playerNode.volume = min(1, max(0, newValue))}
+    }
 }

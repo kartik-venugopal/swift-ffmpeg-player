@@ -10,11 +10,16 @@ class Decoder {
     
     static var scheduledBufferCount: Int = 0
     
+    static var playingFile: FileContext?
+    
     static func decodeAndPlay(_ file: URL) {
+        
+        stop()
         
         do {
             
             let fileCtx = try setupForFile(file)
+            playingFile = fileCtx
             
             print("\nSuccessfully opened file: \(file.path). File is ready for decoding.")
             fileCtx.stream.printInfo()
@@ -30,6 +35,19 @@ class Decoder {
 
             print("\nFFmpeg / audio engine setup failure !")
             return
+        }
+    }
+    
+    static func stop() {
+        
+        if let previousFile = playingFile {
+            
+            stopped = true
+            audioEngine.stop()
+            stopped = false
+            
+//            previousFile.destroy()
+            playingFile = nil
         }
     }
     

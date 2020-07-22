@@ -33,15 +33,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/05 - Sendepause.mpc")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/05 - Sendepause.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/wma/CD2/09 Track 9.wma")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Way.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Reiki2.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Morning.ogg")
         
-        Decoder.decodeAndPlay(url)
+//        Decoder.decodeAndPlay(url)
         
 //        DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + 3, execute: {
 //            Decoder.seekToTime(url, 52, true)
@@ -57,12 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
 //        print("Took \(time * 1000) msec")
         
-//        var trackInfo: TrackInfo!
-//
-//        let time = measureTime {
-//            trackInfo = Reader.readTrack(url)
-//        }
-//
+//        guard let trackInfo: TrackInfo = Reader.readTrack(url) else {return}
 //        print(JSONMapper.map(trackInfo))
 //        artView.image = trackInfo.art
     }
