@@ -19,6 +19,7 @@ class Decoder {
     static let player: Player = Player()
     static var audioFormat: AVAudioFormat!
     static var eof: Bool = false
+    static var stopped: Bool = false
     
     static func decodeAndPlay(_ file: URL) {
         
@@ -79,6 +80,7 @@ class Decoder {
             sampleRate = codecCtx.pointee.sample_rate
             sampleFmt = codecCtx.pointee.sample_fmt
             sampleSize = Int(av_get_bytes_per_sample(sampleFmt))
+            timeBase = codecCtx.pointee.time_base
             
             // Print stream info
             
@@ -125,7 +127,10 @@ class Decoder {
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
             player.scheduleBuffer(audioBuffer, {
-                eof ? NSLog("Playback completed !!!\n") : decodeFrames()
+                
+                if !stopped {
+                    eof ? NSLog("Playback completed !!!\n") : decodeFrames()
+                }
             })
         }
         
@@ -167,5 +172,23 @@ class Decoder {
             resultCode = avcodec_receive_frame(ctx, frame)
         }
     }
+    
+    static func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool) {
+    
+        stopped = true
+        if player.playerNode.isPlaying {player.playerNode.stop()}
+        stopped = false
+
+        av_seek_frame(formatCtx, streamIndex, Int64(seconds * timeBase.reciprocal), AVSEEK_FLAG_FRAME)
+
+        decodeFrames(5)
+        player.play()
+        decodeFrames(5)
+    }
 }
 
+extension AVRational {
+
+    var ratio: Double {Double(num) / Double(den)}
+    var reciprocal: Double {Double(den) / Double(num)}
+}
