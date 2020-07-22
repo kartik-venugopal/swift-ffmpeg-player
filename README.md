@@ -29,7 +29,7 @@ I am *not* trying to educate those of you who have been taming ffmpeg for years 
 
 ## Why ?
 
-It seems that there aren't too many similar **beginner-level** demo projects or tutorials related to ffmpeg out there. I myself searched for almost 3 whole years to finally learn enough to write this basic app. The few resources I found were too advanced or overwhelming or didn't provide a concrete implementation to play with and learn from.
+There simply aren't enough **beginner-level** demo projects or tutorials related to ffmpeg out there. It took me almost 2 whole years to finally learn enough to write this basic app.
 
 It should not have to take so much effort for someone to be able to get a quick n dirty ffmpeg-based player up and running in a couple of hours. So, here goes my attempt to make it easier!
 
@@ -43,7 +43,7 @@ Browse through the source code, which I have done my best to document. Tweak it 
 
 Then, perhaps ... develop something much bigger and better yourself!
 
-💡 **Tip** - To get the most out of this project I recommend that you follow [targodan's tutorial](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg) as you build and run my demo app.
+💡 **Tip** - To get the most out of this project, I recommend that you follow [targodan's tutorial](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg) as you play with my demo app.
 
 ## Other helpful resources
 
