@@ -31,7 +31,7 @@ I am *not* trying to educate those of you who have been taming ffmpeg for years 
 
 It seems that there aren't too many similar **beginner-level** demo projects or tutorials related to ffmpeg out there. I myself searched for almost 3 whole years to finally learn enough to write this basic app. The few resources I found were too advanced or overwhelming or didn't provide a concrete implementation to play with and learn from.
 
-It should not have to take so much effort for someone to be able to get a quick n dirty ffmpeg-based player up and running in minutes. So, here goes my attempt to make it easier!
+It should not have to take so much effort for someone to be able to get a quick n dirty ffmpeg-based player up and running in a couple of hours. So, here goes my attempt to make it easier!
 
 That said, I have shared links, below, to much bigger and more comprehensive resources which I myself learned from.
 
