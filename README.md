@@ -13,7 +13,7 @@ You will find a bare bones AVAudioEngine setup here. < 100 lines of code with ju
 
 Are you totally new to ffmpeg ? You just read/heard that there is this awesome library that plays everything and now you want to get started programming with it ? Great, you will like this.
 
-Are you totally new to AVAudioEngine and you want to see a basic usage of it ? Great, you will find it here. For a more full-fledged AVAudioEngine setup, I point you to my other (far bigger) project: [Aural Player](https://github.com/maculateConception/aural-player)
+Are you totally new to AVAudioEngine and you want to see a basic usage of it ? Great, you will find it here.
 
 If there are others like me out there who are dying to harness the awesome power of ffmpeg and develop their own audio apps, I'd like to at least give them enough
 to get started on their addictive journey!
@@ -38,9 +38,14 @@ This is NOT a full-fledged audio player application.
 
 * [A detailed tutorial on the basics of ffmpeg](https://github.com/leandromoreira/ffmpeg-libav-tutorial) by leandromoreira.
 
+* An [outdated but pretty detailed ffmpeg tutorial](https://dranger.com/ffmpeg/tutorial01.html) that others have recommended.
+
 * rollmind's Swift/ffmpeg [demo app](https://github.com/rollmind/ffmpeg-swift-tutorial/tree/master/tutorial/tutorialhttps://github.com/rollmind/ffmpeg-swift-tutorial/tree/master/tutorial/tutorial) (somewhat outdated, but still helpful)
 
 * Another [Swift player implementation](https://github.com/rollmind/SweetPlayer) by rollmind
 
 * Sunlubo's [Swift wrapper for ffmpeg](https://github.com/sunlubo/SwiftFFmpeg)
 
+* For a more full-fledged AVAudioEngine setup, I point you to my other (far bigger) project: [Aural Player](https://github.com/maculateConception/aural-player)
+
+* A Swift ffmpeg [wrapper library](https://github.com/FFMS/ffms2) (that I'm not sure I understand but it should be mentioned).
