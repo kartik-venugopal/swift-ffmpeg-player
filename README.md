@@ -37,6 +37,8 @@ That said, I have shared links, below, to much bigger and more comprehensive res
 
 ## How ?
 
+You will need XCode 11 to run this project.
+
 Download the source and get it running in XCode. Open different types of music files, and see if/how it works.
 
 Browse through the source code, which I have done my best to document. Tweak it to your heart's content, build it, run it, see (and hear) what happens!
