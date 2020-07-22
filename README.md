@@ -7,7 +7,8 @@ and the demo project will run on macOS, but could prove educational even to prog
 
 ### What else ?
 
-You will find a bare bones AVAudioEngine setup here. < 100 lines of code with just a player that schedules buffers.
+* You will find a bare bones AVAudioEngine setup here. < 100 lines of code with just a player that schedules buffers.
+* In addition to real-time audio playback, you will see how to extract metadata (artist/album, cover art, etc) with ffmpeg.
 
 ### In a nutshell, ... this
 ![High level component diagram](/basicFFmpegPlayer.png?raw=true)
