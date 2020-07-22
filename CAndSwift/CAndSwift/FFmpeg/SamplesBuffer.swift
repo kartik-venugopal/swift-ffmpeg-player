@@ -26,27 +26,20 @@ class FrameSamples {
 
 class SamplesBuffer {
     
-    var frames: [FrameSamples] = []
-    
+    var frames: [Frame] = []
     var sampleCount: Int32 = 0
     let maxSampleCount: Int32
     
-    let sampleSize: Int
-    let sampleFmt: AVSampleFormat
-    
     var isFull: Bool {sampleCount >= maxSampleCount}
     
-    init(maxSampleCount: Int32, sampleFmt: AVSampleFormat, sampleSize: Int) {
-        
+    init(maxSampleCount: Int32) {
         self.maxSampleCount = maxSampleCount
-        self.sampleFmt = sampleFmt
-        self.sampleSize = sampleSize
     }
     
-    func appendFrame(frame: UnsafeMutablePointer<AVFrame>) {
+    func appendFrame(frame: Frame) {
         
-        self.sampleCount += frame.pointee.nb_samples
-        frames.append(FrameSamples(frame: frame))
+        self.sampleCount += frame.sampleCount
+        frames.append(frame)
     }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
@@ -60,86 +53,31 @@ class SamplesBuffer {
             buffer.frameLength = buffer.frameCapacity
             let channels = buffer.floatChannelData
             
-            var sampleCountSoFar: Int32 = 0
+            var sampleCountSoFar: Int = 0
             
             for frame in frames {
                 
+                let frameFloatData: [UnsafePointer<Float>] = frame.dataAsFloatPlanar
                 let frameSampleCount = Int(frame.sampleCount)
-                let dataPointers = frame.byteArrayPointers
             
                 for channelIndex in 0..<numChannels {
-
-                    let bytesForChannel = dataPointers[channelIndex]
+                    
                     guard let channel = channels?[channelIndex] else {break}
-
-                    switch sampleFmt {
+                    let frameFloatsForChannel: UnsafePointer<Float> = frameFloatData[channelIndex]
+                    
+                    if channelIndex < numChannels {
                         
-                    // Integer => scale to [-1, 1] and convert to Float.
-                    case AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S32P:
-
-                        var frameFloatsForChannel: [Float] = []
+                        // Mono/Stereo audio (up to 2 channels)
+                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: sampleCountSoFar), 1)
                         
-                        switch sampleSize {
-
-                        case 1:
-
-                            // Subtract 127 to make the unsigned byte signed (8-bit samples are always unsigned)
-                            let reboundData: UnsafePointer<Int8> = bytesForChannel.withMemoryRebound(to: Int8.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int8.max, frameSampleCount, byteOffset: -127)
-
-                        case 2:
-
-                            let reboundData: UnsafePointer<Int16> = bytesForChannel.withMemoryRebound(to: Int16.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int16.max, frameSampleCount)
-
-                        case 4:
-
-                            let reboundData: UnsafePointer<Int32> = bytesForChannel.withMemoryRebound(to: Int32.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int32.max, frameSampleCount)
-
-                        case 8:
-
-                            let reboundData: UnsafePointer<Int64> = bytesForChannel.withMemoryRebound(to: Int64.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int64.max, frameSampleCount)
-
-                        default: continue
-
-                        }
-
-                        if channelIndex < numChannels {
-                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
-                        } else {
-                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
-                        }
-
-                    case AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP:
-
-                        let frameFloatsForChannel: UnsafePointer<Float> = bytesForChannel.withMemoryRebound(to: Float.self, capacity: frameSampleCount){$0}
+                    } else {
                         
-                        if channelIndex < numChannels {
-                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
-                        } else {
-                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
-                        }
-
-                    case AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP:
-
-                        let doublesForChannel: UnsafePointer<Double> = bytesForChannel.withMemoryRebound(to: Double.self, capacity: frameSampleCount){$0}
-                        let frameFloatsForChannel: [Float] = (0..<frameSampleCount).map {Float(doublesForChannel[$0])}
-                        
-                        if channelIndex < numChannels {
-                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
-                        } else {
-                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
-                        }
-
-                    default:
-
-                        print("Invalid sample format", sampleFmt)
+                        // Downmixing from surround sound (eg. 5.1 to stereo)
+                        vDSP_vadd(channel.advanced(by: sampleCountSoFar), 1, frameFloatsForChannel, 1, channel.advanced(by: sampleCountSoFar), 1, vDSP_Length(frameSampleCount))
                     }
                 }
                 
-                sampleCountSoFar += frame.sampleCount
+                sampleCountSoFar += Int(frame.sampleCount)
             }
             
             return buffer

@@ -3,10 +3,12 @@ import ffmpeg
 
 class Codec {
     
+    let filePath: String
+    
     var pointer: UnsafeMutablePointer<AVCodec>?
     let avCodec: AVCodec
     
-    let contextPointer: UnsafeMutablePointer<AVCodecContext>
+    var contextPointer: UnsafeMutablePointer<AVCodecContext>?
     let context: AVCodecContext
     
     let sampleRate: Int32
@@ -15,16 +17,22 @@ class Codec {
     let timeBase: AVRational
     
     init?(_ stream: Stream) {
+        
+        self.filePath = stream.filePath
     
+        pointer = stream.codecPointer
         contextPointer = avcodec_alloc_context3(pointer)
         avcodec_parameters_to_context(contextPointer, stream.avStream.codecpar)
 
-        guard avcodec_open2(contextPointer, pointer, nil) == 0, let pointee = pointer?.pointee else {
+        let codecOpenResult = avcodec_open2(contextPointer, pointer, nil)
+        guard codecOpenResult == 0, let pointee = pointer?.pointee, let contextPointee = contextPointer?.pointee else {
+            
+            print("\nCodec.init(): Failed to open codec for file '\(filePath)'. Error: \(errorString(errorCode: codecOpenResult))")
             return nil
         }
         
         self.avCodec = pointee
-        self.context = contextPointer.pointee
+        self.context = contextPointee
         
         self.sampleRate = context.sample_rate
         self.sampleFormat = context.sample_fmt
@@ -35,11 +43,12 @@ class Codec {
     func decode(_ packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder
-        
         var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
-        av_packet_unref(packet.pointer)
+        packet.destroy()
 
         if resultCode < 0 {
+            
+            print("\nCodec.decode(): Failed to decode packet. Error: \(errorString(errorCode: resultCode))")
             throw DecoderError(resultCode)
         }
         
@@ -50,7 +59,6 @@ class Codec {
         resultCode = avcodec_receive_frame(contextPointer, &avFrame)
 
         // Keep receiving frames while no errors are encountered
-        
         while resultCode == 0, avFrame.nb_samples > 0 {
             
             frames.append(Frame(avFrame, sampleFormat: self.sampleFormat, sampleSize: self.sampleSize))
@@ -60,5 +68,27 @@ class Codec {
         av_frame_unref(&avFrame)
         
         return frames
+    }
+    
+    func destroy() {
+        
+        if 0 < avcodec_is_open(self.contextPointer) {
+            avcodec_close(self.contextPointer)
+        }
+        
+        avcodec_free_context(&self.contextPointer)
+    }
+    
+    func printInfo() {
+        
+        print("\n---------- Codec Info ----------\n\n")
+        
+        print(String(format: "Sample Rate:   %7d", sampleRate))
+        print(String(format: "Sample Format: %7@", String(cString: av_get_sample_fmt_name(sampleFormat))))
+        print(String(format: "Sample Size:   %7d", sampleSize))
+        print(String(format: "Channels:      %7d", context.channels))
+        print(String(format: "Planar ?:      %7@", String(av_sample_fmt_is_planar(sampleFormat) == 1)))
+        
+        print("---------------------------------\n")
     }
 }

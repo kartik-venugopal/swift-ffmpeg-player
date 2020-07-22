@@ -11,6 +11,10 @@ class Packet {
         self.pointer = pointer
         self.avPacket = pointer.pointee
     }
+    
+    func destroy() {
+        av_packet_unref(pointer)
+    }
 }
 
 class Frame {

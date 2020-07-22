@@ -30,8 +30,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        scheduler = Scheduler(player)
 //        slowScheduler = SlowScheduler(player)
         
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/05 - Sendepause.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
@@ -57,14 +57,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
 //        print("Took \(time * 1000) msec")
         
-        var trackInfo: TrackInfo!
-
-        let time = measureTime {
-            trackInfo = Reader.readTrack(url)
-        }
-
-        print(JSONMapper.map(trackInfo))
-        artView.image = trackInfo.art
+//        var trackInfo: TrackInfo!
+//
+//        let time = measureTime {
+//            trackInfo = Reader.readTrack(url)
+//        }
+//
+//        print(JSONMapper.map(trackInfo))
+//        artView.image = trackInfo.art
     }
 }
 
