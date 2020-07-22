@@ -28,9 +28,9 @@ Then, perhaps ... build something much bigger and better yourself!
 
 ## Why ?
 
-It seems that there aren't too many similar beginner-level demo projects or tutorials out there. The few that I found were much too overwhelming or contained a lot of concecpts without a concrete implementation to play with. I know that I myself searched and researched for almost 3 whole years to finally learn enough to write this basic player demo app.
+It seems that there aren't too many similar beginner-level demo projects or tutorials out there. I know that I myself searched and researched for almost 3 whole years to finally learn enough to write this basic player demo app. The few that I found were much too overwhelming or contained a lot of concepts without a concrete implementation to play with.
 
-I learn the most when I'm able to actually open and run a project in XCode or Visual Studio or Eclipse, rather than just reading concepts.
+I learn the most when I'm able to actually open and run a project in XCode or Visual Studio or Eclipse, rather than just reading concepts. I would have killed to have access to such a demo project 3 years ago when my audio programming journey began.
 
 That said, I have shared links, below, to much bigger, more comprehensive, and more detailed demos/projects/tutorials out there, which I myself learned from.
 
@@ -42,6 +42,8 @@ This is NOT a comprehensive ffmpeg reference.
 This is NOT a full-fledged audio player application.
 
 ## Other helpful resources
+
+Hopefully, this project will get you started, and once you get your feet wet, you will find these resources valuable.
 
 * targodan's [ffmpeg decoding guide](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg). Related code sample [here](https://gist.github.com/targodan/8cef8f2b682a30055aa7937060cd94b7).
 
