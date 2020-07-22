@@ -5,11 +5,12 @@
 A basic audio player project that demonstrates the fundamentals of decoding audio with ffmpeg for the purpose of real-time playback. The code is in Swift 
 and the demo project will run on macOS, but could prove educational even to programmers of different languages/platforms.
 
-![High level component diagram](/basicFFmpegPlayer.png?raw=true)
-
 ### What else ?
 
 You will find a bare bones AVAudioEngine setup here. < 100 lines of code with just a player that schedules buffers.
+
+### In a nutshell, ... this
+![High level component diagram](/basicFFmpegPlayer.png?raw=true)
 
 ## Who ?
 
@@ -22,7 +23,7 @@ to get started on their addictive journey!
 
 ## How ?
 
-Download it and get it running in XCode. Open different types of music files, and see if it works.
+Download it and get it running in XCode. Open different types of music files, and see if/how it works.
 
 Browse through the source code, which I have done my best to document. Tweak it to your heart's content, build it, run it, see (and hear) what happens!
 
