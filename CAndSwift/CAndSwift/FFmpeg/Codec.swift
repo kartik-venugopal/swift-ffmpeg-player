@@ -53,7 +53,7 @@ class Codec {
         
         while resultCode == 0, avFrame.nb_samples > 0 {
             
-            frames.append(Frame(avFrame))
+            frames.append(Frame(avFrame, sampleFormat: self.sampleFormat, sampleSize: self.sampleSize))
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
         }
         
