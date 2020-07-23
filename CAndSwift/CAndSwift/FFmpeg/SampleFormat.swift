@@ -6,7 +6,9 @@ struct SampleFormat {
     
     let name: String
     let size: Int
+    
     let isPlanar: Bool
+    var isInterleaved: Bool {!isPlanar}
     
     init(avFormat: AVSampleFormat) {
         

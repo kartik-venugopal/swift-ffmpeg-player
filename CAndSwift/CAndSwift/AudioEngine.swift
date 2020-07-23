@@ -52,6 +52,10 @@ class AudioEngine {
         playerNode.play()
     }
     
+    func pauseOrResume() {
+        playerNode.isPlaying ? pause() : play()
+    }
+    
     func pause() {
         playerNode.pause()
     }
@@ -67,5 +71,20 @@ class AudioEngine {
         
         get {playerNode.volume}
         set {playerNode.volume = min(1, max(0, newValue))}
+    }
+    
+    var isPlaying: Bool {playerNode.isPlaying}
+
+    var startFrame: AVAudioFramePosition = 0
+    var cachedSeekPosn: Double = 0
+    
+    var seekPosition: Double {
+        
+        if let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) {
+            cachedSeekPosn = Double(startFrame + playerTime.sampleTime) / playerTime.sampleRate
+        }
+
+        // Default to last remembered position when nodeTime is nil
+        return cachedSeekPosn
     }
 }

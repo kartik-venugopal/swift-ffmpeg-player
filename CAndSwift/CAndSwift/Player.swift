@@ -6,11 +6,26 @@ class Player {
     let audioEngine: AudioEngine = AudioEngine()
     var audioFormat: AVAudioFormat!
     var eof: Bool = false
-    var stopped: Bool = false
     
     var scheduledBufferCount: Int = 0
     
     var playingFile: FileContext?
+    
+    var state: PlayerState = .stopped
+    
+    var volume: Float {
+        
+        get {audioEngine.volume}
+        set {audioEngine.volume = min(1, max(0, newValue))}
+    }
+    
+    var seekPosition: Double {audioEngine.seekPosition}
+    
+    func togglePlayPause() {
+        
+        audioEngine.pauseOrResume()
+        state = audioEngine.isPlaying ? .playing : .paused
+    }
     
     func decodeAndPlay(_ file: URL) {
         
@@ -30,11 +45,12 @@ class Player {
             }
             
             print("\nTook \(time * 1000) msec to decode 5 seconds")
-            
+
             audioEngine.play()
+            state = .playing
 
             NSLog("Playback Started !\n")
-            
+
             time = measureTime {
                 decodeFrames(fileCtx, 5)
             }
@@ -50,13 +66,10 @@ class Player {
     
     func stop() {
         
-        stopped = true
+        state = .stopped
         audioEngine.stop()
-        stopped = false
         
-        if playingFile != nil {
-            playingFile = nil
-        }
+        playingFile = nil
     }
     
     func setupForFile(_ file: URL) throws -> FileContext {
@@ -64,7 +77,9 @@ class Player {
         guard let fileCtx = FileContext(file) else {throw DecoderInitializationError()}
         
         eof = false
+        
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(fileCtx.codec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
+        
         audioEngine.prepare(audioFormat)
         
         return fileCtx
@@ -79,7 +94,7 @@ class Player {
         let stream = fileCtx.stream
         let codec: Codec = fileCtx.codec
         
-        let buffer: SamplesBuffer = SamplesBuffer(maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
+        let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
         
         while !(buffer.isFull || eof) {
             
@@ -93,6 +108,8 @@ class Player {
                 
             } catch {
                 
+                // TODO: Possibility of infinite loop with continuous errors suppressed here.
+                // Maybe set a maximum consecutive error limit ??? eg. If 3 consecutive errors are encountered, then break from the loop.
                 if (error as? PacketReadError)?.isEOF ?? false {
                     self.eof = true
                 }
@@ -105,14 +122,14 @@ class Player {
 
                 self.scheduledBufferCount -= 1
 
-                if !self.stopped {
+                if self.state != .stopped {
 
                     if !self.eof {
-                        
+
                         let time = measureTime {
                             self.decodeFrames(fileCtx)
                         }
-                        
+
                         NSLog("Decoded 10 seconds of audio in \(time * 1000) msec\n")
 
                     } else if self.scheduledBufferCount == 0 {
@@ -121,13 +138,9 @@ class Player {
                 }
             })
             
-            // Write out the first 35 seconds of audio to .raw file for testing in Audacity
-//            if BufferFileWriter.ctr < (35 * codec.sampleRate) {
-//                BufferFileWriter.writeBuffer(audioBuffer)
-//                BufferFileWriter.closeFile()
-//            } else {
-//BufferFileWriter.closeFile()
-//            }
+            // Write out the raw samples to a .raw file for testing in Audacity
+//            BufferFileWriter.writeBuffer(audioBuffer)
+//            BufferFileWriter.closeFile()
             
             scheduledBufferCount += 1
         }
@@ -151,6 +164,18 @@ class Player {
 //        player.play()
 //        decodeFrames(5)
 //    }
+}
+
+enum PlayerState {
+    
+    // Not playing any track
+    case stopped
+    
+    // Playing a track
+    case playing
+    
+    // Paued while playing a track
+    case paused
 }
 
 extension AVRational {
