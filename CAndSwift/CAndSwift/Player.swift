@@ -79,7 +79,7 @@ class Player {
         let stream = fileCtx.stream
         let codec: Codec = fileCtx.codec
         
-        let buffer: SamplesBuffer = SamplesBuffer(maxSampleCount: Int32(seconds * Double(codec.sampleRate)), sampleFmt: codec.sampleFormat, sampleSize: codec.sampleSize)
+        let buffer: SamplesBuffer = SamplesBuffer(maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
         
         while !(buffer.isFull || eof) {
             

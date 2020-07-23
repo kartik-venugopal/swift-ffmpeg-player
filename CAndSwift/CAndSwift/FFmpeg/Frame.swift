@@ -16,17 +16,15 @@ class Frame {
     let sampleCount: Int32
     let lineSize: Int
     
-    let sampleFormat: AVSampleFormat
-    let sampleSize: Int
+    let sampleFormat: SampleFormat
     
-    init(_ frame: UnsafeMutablePointer<AVFrame>, sampleFormat: AVSampleFormat, sampleSize: Int) {
+    init(_ frame: UnsafeMutablePointer<AVFrame>, sampleFormat: SampleFormat) {
         
         self.channelCount = Int(frame.pointee.channels)
         self.sampleCount = frame.pointee.nb_samples
         self.lineSize = Int(frame.pointee.linesize.0)
         
         self.sampleFormat = sampleFormat
-        self.sampleSize = sampleSize
         
         self._dataArray = []
         
@@ -48,14 +46,14 @@ class Frame {
         
         for bytesForChannel in dataPointers {
             
-            switch sampleFormat {
+            switch sampleFormat.avFormat {
                 
             // Integer => scale to [-1, 1] and convert to Float.
             case AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S32P:
                 
                 var floatsForChannel: [Float]
                 
-                switch sampleSize {
+                switch sampleFormat.size {
                     
                 case 1:
                     
@@ -108,10 +106,17 @@ class Frame {
                 
             default:
                 
-                print("Invalid sample format", sampleFormat)
+                print("Invalid sample format", sampleFormat.name)
             }
         }
         
         return allFloatData
+    }
+}
+
+extension AVFrame {
+
+    var dataPointers: [UnsafeMutablePointer<UInt8>?] {
+        Array(UnsafeBufferPointer(start: self.extended_data, count: 8))
     }
 }

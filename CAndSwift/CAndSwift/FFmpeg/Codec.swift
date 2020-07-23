@@ -12,11 +12,9 @@ class Codec {
     let context: AVCodecContext
     
     let sampleRate: Int32
-    let sampleFormat: AVSampleFormat
-    let sampleSize: Int
-    let timeBase: AVRational
+    let sampleFormat: SampleFormat
     
-    var avFrame = AVFrame()
+    let timeBase: AVRational
     
     init?(_ stream: Stream) {
         
@@ -37,8 +35,8 @@ class Codec {
         self.context = contextPointee
         
         self.sampleRate = context.sample_rate
-        self.sampleFormat = context.sample_fmt
-        self.sampleSize = Int(av_get_bytes_per_sample(sampleFormat))
+        self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
+        
         self.timeBase = context.time_base
     }
     
@@ -57,12 +55,14 @@ class Codec {
         // Receive (potentially) multiple frames
 
         var frames: [Frame] = []
+        var avFrame = AVFrame()
+        
         resultCode = avcodec_receive_frame(contextPointer, &avFrame)
 
         // Keep receiving frames while no errors are encountered
         while resultCode == 0, avFrame.nb_samples > 0 {
             
-            frames.append(Frame(&avFrame, sampleFormat: sampleFormat, sampleSize: sampleSize))
+            frames.append(Frame(&avFrame, sampleFormat: sampleFormat))
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
         }
         
@@ -71,7 +71,24 @@ class Codec {
         return frames
     }
     
+    func printInfo() {
+        
+        print("\n---------- Codec Info ----------\n")
+        
+        print(String(format: "Sample Rate:   %7d", sampleRate))
+        print(String(format: "Sample Format: %7@", sampleFormat.name))
+        print(String(format: "Sample Size:   %7d", sampleFormat.size))
+        print(String(format: "Channels:      %7d", context.channels))
+        print(String(format: "Planar ?:      %7@", String(sampleFormat.isPlanar)))
+        
+        print("---------------------------------\n")
+    }
+    
+    private var destroyed: Bool = false
+    
     func destroy() {
+        
+        if destroyed {return}
         
         // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
         // Can we check something before proceeding ???
@@ -81,18 +98,11 @@ class Codec {
         }
         
         avcodec_free_context(&self.contextPointer)
+        
+        destroyed = true
     }
     
-    func printInfo() {
-        
-        print("\n---------- Codec Info ----------\n")
-        
-        print(String(format: "Sample Rate:   %7d", sampleRate))
-        print(String(format: "Sample Format: %7@", String(cString: av_get_sample_fmt_name(sampleFormat))))
-        print(String(format: "Sample Size:   %7d", sampleSize))
-        print(String(format: "Channels:      %7d", context.channels))
-        print(String(format: "Planar ?:      %7@", String(av_sample_fmt_is_planar(sampleFormat) == 1)))
-        
-        print("---------------------------------\n")
+    deinit {
+        destroy()
     }
 }

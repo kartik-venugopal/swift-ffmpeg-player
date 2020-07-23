@@ -23,14 +23,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/02.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Way.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/01 Past tense.wma")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/01 Past tense.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Morning.ogg")
 
          let player = Player()
