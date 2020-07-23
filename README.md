@@ -21,17 +21,23 @@ Are you totally new to AVAudioEngine and you want to see a basic usage of it ? G
 
 Are you totally new to audio programming in general ? Or want to develop your own player someday ? Welcome.
 
+Are you trying to get a quick prototype or proof of concept ffmpeg player developed in a few hours / days ? You can start here.
+
+Are you a seasoned programmer who doesn't have the time or patience to figure it out on your own ? Good ... you don't have to.
+
 I am *not* trying to educate those of you who have been taming ffmpeg for years :)
 
 ## Why ?
 
-It seems that there aren't too many similar **beginner-level** demo projects or tutorials related to ffmpeg out there. I myself searched for almost 3 whole years to finally learn enough to write this basic app. The few resources I found were overwhelming or contained a lot of concepts without a concrete implementation to play with.
+There simply aren't enough **beginner-level** demo projects or tutorials related to ffmpeg out there. It took me almost 2 whole years to finally learn enough to write this basic app.
 
-I learn the most when I'm able to actually open, tweak, and run demo code in an IDE. I would have killed to have access to such a demo project 3 years ago when my audio programming journey began.
+It should not have to take so much effort for someone to be able to get a quick n dirty ffmpeg-based player up and running in a couple of hours. So, here goes my attempt to make it easier!
 
 That said, I have shared links, below, to much bigger and more comprehensive resources which I myself learned from.
 
 ## How ?
+
+You will need XCode 11 to run this project.
 
 Download the source and get it running in XCode. Open different types of music files, and see if/how it works.
 
@@ -39,9 +45,9 @@ Browse through the source code, which I have done my best to document. Tweak it 
 
 Then, perhaps ... develop something much bigger and better yourself!
 
-## Other helpful resources
+💡 **Tip** - To get the most out of this project, I recommend that you follow [targodan's tutorial](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg) as you play with my demo app.
 
-Hopefully, this project will get you started, and once you get your feet wet, you will find these resources valuable.
+## Other helpful resources
 
 * targodan's [ffmpeg decoding guide](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg). Related code sample [here](https://gist.github.com/targodan/8cef8f2b682a30055aa7937060cd94b7). This tutorial is, hands down, the best one out there!
 
