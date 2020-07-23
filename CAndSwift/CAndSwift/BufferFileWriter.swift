@@ -10,12 +10,14 @@ class BufferFileWriter {
         let numSamples = Int(buffer.frameLength)
         ctr += numSamples
         
-        let data = buffer.floatChannelData
+//        let data = buffer.floatChannelData
+        let data = buffer.int16ChannelData
 
         for s in 0..<numSamples {
 
             for i in 0..<2 {
-                fwrite(&data![i][s], MemoryLayout<Float>.size, 1, outfile)
+//                fwrite(&data![i][s], MemoryLayout<Float>.size, 1, outfile)
+                fwrite(&data![i][s], MemoryLayout<Int16>.size, 1, outfile)
             }
         }
         

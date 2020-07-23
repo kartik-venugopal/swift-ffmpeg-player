@@ -2,6 +2,12 @@ import AVFoundation
 import Accelerate
 import ffmpeg
 
+let max8BitFloatVal: Float = Float(Int8.max)
+let max16BitFloatVal: Float = Float(Int16.max)
+let max32BitFloatVal: Float = Float(Int32.max)
+
+let max64BitDoubleVal: Double = Double(Int64.max)
+
 // Samples for a single frame
 class FrameSamples {
     
@@ -37,18 +43,14 @@ class SamplesBuffer {
     
     var isFull: Bool {sampleCount >= maxSampleCount}
     
+    var convertTime: Double = 0
+    
     init(maxSampleCount: Int32, sampleFmt: AVSampleFormat, sampleSize: Int) {
         
         self.maxSampleCount = maxSampleCount
         self.sampleFmt = sampleFmt
         self.sampleSize = sampleSize
     }
-    
-//    func appendFrame(frame: UnsafeMutablePointer<AVFrame>) {
-//
-//        self.sampleCount += frame.pointee.nb_samples
-//        frames.append(FrameSamples(frame: frame))
-//    }
     
     func appendFrame(frame: FrameSamples) {
         
@@ -71,6 +73,8 @@ class SamplesBuffer {
             
             for frame in frames {
                 
+                let time = measureTime {
+                
                 let frameSampleCount = Int(frame.sampleCount)
                 let dataPointers = frame.byteArrayPointers
             
@@ -84,7 +88,7 @@ class SamplesBuffer {
                     // Integer => scale to [-1, 1] and convert to Float.
                     case AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S32P:
 
-                        var frameFloatsForChannel: [Float] = []
+                        var frameFloatsForChannel: [Float]
                         
                         switch sampleSize {
 
@@ -92,53 +96,43 @@ class SamplesBuffer {
 
                             // Subtract 127 to make the unsigned byte signed (8-bit samples are always unsigned)
                             let reboundData: UnsafePointer<Int8> = bytesForChannel.withMemoryRebound(to: Int8.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int8.max, frameSampleCount, byteOffset: -127)
+                            frameFloatsForChannel = (0..<frameSampleCount).map {Float(reboundData[$0] - 127) / max8BitFloatVal}
 
                         case 2:
 
                             let reboundData: UnsafePointer<Int16> = bytesForChannel.withMemoryRebound(to: Int16.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int16.max, frameSampleCount)
-
+                            frameFloatsForChannel = (0..<frameSampleCount).map {Float(reboundData[$0]) / max16BitFloatVal}
+                            
                         case 4:
 
                             let reboundData: UnsafePointer<Int32> = bytesForChannel.withMemoryRebound(to: Int32.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int32.max, frameSampleCount)
+                            frameFloatsForChannel = (0..<frameSampleCount).map {Float(reboundData[$0]) / max32BitFloatVal}
 
                         case 8:
+                            
+                            // TODO: Is this valid ? Or should 64 bit samples be converted to Double instead ?
 
                             let reboundData: UnsafePointer<Int64> = bytesForChannel.withMemoryRebound(to: Int64.self, capacity: frameSampleCount){$0}
-                            frameFloatsForChannel = convertToFloatArray(reboundData, Int64.max, frameSampleCount)
+                            frameFloatsForChannel = (0..<frameSampleCount).map {Float(Double(reboundData[$0]) / max64BitDoubleVal)}
 
                         default: continue
 
                         }
 
-                        if channelIndex < numChannels {
-                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
-                        } else {
-                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
-                        }
+                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
 
                     case AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP:
 
                         let frameFloatsForChannel: UnsafePointer<Float> = bytesForChannel.withMemoryRebound(to: Float.self, capacity: frameSampleCount){$0}
-                        
-                        if channelIndex < numChannels {
-                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
-                        } else {
-                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
-                        }
+
+                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
 
                     case AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP:
 
                         let doublesForChannel: UnsafePointer<Double> = bytesForChannel.withMemoryRebound(to: Double.self, capacity: frameSampleCount){$0}
                         let frameFloatsForChannel: [Float] = (0..<frameSampleCount).map {Float(doublesForChannel[$0])}
-                        
-                        if channelIndex < numChannels {
-                            cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
-                        } else {
-                            vDSP_vadd(channel.advanced(by: Int(sampleCountSoFar)), 1, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1, vDSP_Length(frameSampleCount))
-                        }
+
+                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
 
                     default:
 
@@ -147,16 +141,16 @@ class SamplesBuffer {
                 }
                 
                 sampleCountSoFar += frame.sampleCount
+                }
+                
+                convertTime += time
+//                print("\nTook \(time * 1000) msec to convert 1 frame to Float data")
             }
             
             return buffer
         }
         
         return nil
-    }
-    
-    func convertToFloatArray<T>(_ unsafeArr: UnsafePointer<T>, _ maxSignedValue: T, _ numSamples: Int, byteOffset: T = 0) -> [Float] where T: SignedInteger {
-        return (0..<numSamples).map {Float(Int64(unsafeArr[$0] + byteOffset)) / Float(maxSignedValue)}
     }
 }
 

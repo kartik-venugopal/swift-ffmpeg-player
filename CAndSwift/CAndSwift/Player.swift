@@ -25,11 +25,21 @@ class Player {
             fileCtx.stream.printInfo()
             fileCtx.codec.printInfo()
             
-            decodeFrames(fileCtx, 5)
+            var time = measureTime {
+                decodeFrames(fileCtx, 1)
+            }
+            
+            print("\nTook \(time * 1000) msec to decode 5 seconds")
+            
             audioEngine.play()
 
             NSLog("Playback Started !\n")
-            decodeFrames(fileCtx, 5)
+            
+            time = measureTime {
+                decodeFrames(fileCtx, 5)
+            }
+
+            print("\nTook \(time * 1000) msec to decode another 5 seconds")
 
         } catch {
 
@@ -75,7 +85,9 @@ class Player {
             do {
                 
                 if let packet = try formatCtx.readPacket(stream) {
-                    for frame in try codec.decode(packet) {buffer.appendFrame(frame: frame)}
+                    for frame in try codec.decode(packet) {
+                        buffer.appendFrame(frame: frame)
+                    }
                 }
                 
             } catch {
@@ -87,15 +99,17 @@ class Player {
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
+            print("\nTotal time to convert \(buffer.frames.count) frames to Float ... \(buffer.convertTime * 1000) msec")
+            
             audioEngine.scheduleBuffer(audioBuffer, {
-                
+
                 self.scheduledBufferCount -= 1
-                
+
                 if !self.stopped {
-                    
+
                     if !self.eof {
                         self.decodeFrames(fileCtx)
-                        
+
                     } else if self.scheduledBufferCount == 0 {
                         NSLog("Playback completed !!!\n")
                     }
@@ -107,7 +121,7 @@ class Player {
 //                BufferFileWriter.writeBuffer(audioBuffer)
 //                BufferFileWriter.closeFile()
 //            } else {
-//
+//BufferFileWriter.closeFile()
 //            }
             
             scheduledBufferCount += 1

@@ -5,23 +5,23 @@ class AudioEngine {
 
     private let audioEngine: AVAudioEngine
     internal let playerNode: AVAudioPlayerNode
-    internal let timeNode: AVAudioUnitVarispeed
+//    internal let timeNode: AVAudioUnitVarispeed
 
     init() {
 
         audioEngine = AVAudioEngine()
         playerNode = AVAudioPlayerNode()
         
-        timeNode = AVAudioUnitVarispeed()
-        timeNode.rate = 1
+//        timeNode = AVAudioUnitVarispeed()
+//        timeNode.rate = 1
         
         playerNode.volume = 1
 
         audioEngine.attach(playerNode)
-        audioEngine.attach(timeNode)
+//        audioEngine.attach(timeNode)
         
-        audioEngine.connect(playerNode, to: timeNode, format: nil)
-        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: nil)
+        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: nil)
+//        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: nil)
 
         audioEngine.prepare()
 
@@ -35,10 +35,10 @@ class AudioEngine {
     func prepare(_ format: AVAudioFormat) {
 
         audioEngine.disconnectNodeOutput(playerNode)
-        audioEngine.disconnectNodeOutput(timeNode)
+//        audioEngine.disconnectNodeOutput(timeNode)
 
-        audioEngine.connect(playerNode, to: timeNode, format: format)
-        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: format)
+        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: format)
+//        audioEngine.connect(timeNode, to: audioEngine.mainMixerNode, format: format)
     }
 
     func scheduleBuffer(_ buffer: AVAudioPCMBuffer, _ completionHandler: AVAudioNodeCompletionHandler? = nil) {
