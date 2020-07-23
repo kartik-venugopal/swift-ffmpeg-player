@@ -16,6 +16,8 @@ class PlayerViewController: NSViewController {
     
     let avFileTypes: [String] = [AVFileType.mp3.rawValue, AVFileType.m4a.rawValue, AVFileType.aiff.rawValue, AVFileType.aifc.rawValue, AVFileType.caf.rawValue, AVFileType.wav.rawValue, AVFileType.ac3.rawValue]
     
+    private let player = Player()
+    
     override func viewDidLoad() {
         
         dialog = NSOpenPanel()
@@ -33,7 +35,7 @@ class PlayerViewController: NSViewController {
         
         dialog.resolvesAliases = true;
         
-        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music")
+        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
     }
     
     @IBAction func openFileAction(_ sender: AnyObject) {
@@ -51,11 +53,11 @@ class PlayerViewController: NSViewController {
     
     @IBAction func playOrPauseAction(_ sender: AnyObject) {
         
-        Decoder.decodeAndPlay(file)
+        player.decodeAndPlay(file)
     }
     
     @IBAction func stopAction(_ sender: AnyObject) {
         
-        Decoder.stop()
+        player.stop()
     }
 }

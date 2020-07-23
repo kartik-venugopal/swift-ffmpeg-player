@@ -21,16 +21,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
     }
     
-//    private let player = Player()
-//    private var scheduler: Scheduler!
-//    private var slowScheduler: SlowScheduler!
-
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-//        scheduler = Scheduler(player)
-//        slowScheduler = SlowScheduler(player)
-        
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/05 - Sendepause.mpc")
@@ -40,22 +33,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Reiki2.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Morning.ogg")
-        
-        Decoder.decodeAndPlay(url)
-        
-//        DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + 3, execute: {
-//            Decoder.seekToTime(url, 52, true)
-//        })
-       
-//        scheduler.playTrack(url)
-//        slowScheduler.playTrack(url)
+
+        // let player = Player()
+//        player.decodeAndPlay(url)
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
-//
-//            self.scheduler.seekToTime(url, 268, true)
+//            player.seekToTime(url, 268, true)
 //        })
-        
-//        print("Took \(time * 1000) msec")
         
 //        guard let trackInfo: TrackInfo = Reader.readTrack(url) else {return}
 //        print(JSONMapper.map(trackInfo))

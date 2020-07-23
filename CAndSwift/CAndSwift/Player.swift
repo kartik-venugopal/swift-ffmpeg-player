@@ -1,18 +1,18 @@
 import AVFoundation
 import ffmpeg
 
-class Decoder {
+class Player {
     
-    static let audioEngine: AudioEngine = AudioEngine()
-    static var audioFormat: AVAudioFormat!
-    static var eof: Bool = false
-    static var stopped: Bool = false
+    let audioEngine: AudioEngine = AudioEngine()
+    var audioFormat: AVAudioFormat!
+    var eof: Bool = false
+    var stopped: Bool = false
     
-    static var scheduledBufferCount: Int = 0
+    var scheduledBufferCount: Int = 0
     
-    static var playingFile: FileContext?
+    var playingFile: FileContext?
     
-    static func decodeAndPlay(_ file: URL) {
+    func decodeAndPlay(_ file: URL) {
         
         stop()
         
@@ -38,7 +38,7 @@ class Decoder {
         }
     }
     
-    static func stop() {
+    func stop() {
         
         stopped = true
         audioEngine.stop()
@@ -49,7 +49,7 @@ class Decoder {
         }
     }
     
-    static func setupForFile(_ file: URL) throws -> FileContext {
+    func setupForFile(_ file: URL) throws -> FileContext {
         
         guard let fileCtx = FileContext(file) else {throw DecoderInitializationError()}
         
@@ -60,7 +60,7 @@ class Decoder {
         return fileCtx
     }
     
-    private static func decodeFrames(_ fileCtx: FileContext, _ seconds: Double = 10) {
+    private func decodeFrames(_ fileCtx: FileContext, _ seconds: Double = 10) {
         
         NSLog("Began decoding ... \(seconds) seconds of audio")
         
@@ -91,14 +91,14 @@ class Decoder {
             
             audioEngine.scheduleBuffer(audioBuffer, {
                 
-                scheduledBufferCount -= 1
+                self.scheduledBufferCount -= 1
                 
-                if !stopped {
+                if !self.stopped {
                     
-                    if !eof {
-                        decodeFrames(fileCtx)
+                    if !self.eof {
+                        self.decodeFrames(fileCtx)
                         
-                    } else if scheduledBufferCount == 0 {
+                    } else if self.scheduledBufferCount == 0 {
                         NSLog("Playback completed !!!\n")
                     }
                 }
@@ -114,7 +114,7 @@ class Decoder {
         }
     }
     
-//    static func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool) {
+//    func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool) {
 //
 //        stopped = true
 //        if player.playerNode.isPlaying {player.playerNode.stop()}
