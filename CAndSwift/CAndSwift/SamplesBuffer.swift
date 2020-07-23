@@ -43,8 +43,6 @@ class SamplesBuffer {
     
     var isFull: Bool {sampleCount >= maxSampleCount}
     
-    var convertTime: Double = 0
-    
     init(maxSampleCount: Int32, sampleFmt: AVSampleFormat, sampleSize: Int) {
         
         self.maxSampleCount = maxSampleCount
@@ -73,8 +71,6 @@ class SamplesBuffer {
             
             for frame in frames {
                 
-                let time = measureTime {
-                
                 let frameSampleCount = Int(frame.sampleCount)
                 let dataPointers = frame.byteArrayPointers
             
@@ -82,14 +78,14 @@ class SamplesBuffer {
 
                     let bytesForChannel = dataPointers[channelIndex]
                     guard let channel = channels?[channelIndex] else {break}
-
+                    
                     switch sampleFmt {
                         
                     // Integer => scale to [-1, 1] and convert to Float.
                     case AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S32P:
-
-                        var frameFloatsForChannel: [Float]
                         
+                        let frameFloatsForChannel: [Float]
+
                         switch sampleSize {
 
                         case 1:
@@ -110,8 +106,6 @@ class SamplesBuffer {
 
                         case 8:
                             
-                            // TODO: Is this valid ? Or should 64 bit samples be converted to Double instead ?
-
                             let reboundData: UnsafePointer<Int64> = bytesForChannel.withMemoryRebound(to: Int64.self, capacity: frameSampleCount){$0}
                             frameFloatsForChannel = (0..<frameSampleCount).map {Float(Double(reboundData[$0]) / max64BitDoubleVal)}
 
@@ -124,7 +118,6 @@ class SamplesBuffer {
                     case AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP:
 
                         let frameFloatsForChannel: UnsafePointer<Float> = bytesForChannel.withMemoryRebound(to: Float.self, capacity: frameSampleCount){$0}
-
                         cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: Int(sampleCountSoFar)), 1)
 
                     case AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP:
@@ -141,10 +134,6 @@ class SamplesBuffer {
                 }
                 
                 sampleCountSoFar += frame.sampleCount
-                }
-                
-                convertTime += time
-//                print("\nTook \(time * 1000) msec to convert 1 frame to Float data")
             }
             
             return buffer

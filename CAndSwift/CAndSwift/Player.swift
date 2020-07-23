@@ -26,7 +26,7 @@ class Player {
             fileCtx.codec.printInfo()
             
             var time = measureTime {
-                decodeFrames(fileCtx, 1)
+                decodeFrames(fileCtx, 5)
             }
             
             print("\nTook \(time * 1000) msec to decode 5 seconds")
@@ -98,8 +98,6 @@ class Player {
         }
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
-            
-            print("\nTotal time to convert \(buffer.frames.count) frames to Float ... \(buffer.convertTime * 1000) msec")
             
             audioEngine.scheduleBuffer(audioBuffer, {
 
