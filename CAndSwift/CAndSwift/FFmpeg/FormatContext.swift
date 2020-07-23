@@ -30,16 +30,16 @@ class FormatContext {
     
     func readPacket(_ stream: Stream) throws -> Packet? {
         
-        var packet = AVPacket()
+        let packet = Packet()
 
-        let readResult: Int32 = av_read_frame(pointer, &packet)
+        let readResult: Int32 = av_read_frame(pointer, packet.pointer)
         guard readResult >= 0 else {
             
             print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(errorString(errorCode: readResult)))")
             throw PacketReadError(readResult)
         }
         
-        return packet.stream_index == stream.index ? Packet(&packet) : nil
+        return packet.streamIndex == stream.index ? packet : nil
     }
     
     func destroy() {

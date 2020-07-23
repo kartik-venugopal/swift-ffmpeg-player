@@ -42,7 +42,7 @@ class Codec {
         self.timeBase = context.time_base
     }
     
-    func decode(_ packet: Packet) throws -> [FrameSamples] {
+    func decode(_ packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder
         var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
@@ -56,13 +56,13 @@ class Codec {
         
         // Receive (potentially) multiple frames
 
-        var frames: [FrameSamples] = []
+        var frames: [Frame] = []
         resultCode = avcodec_receive_frame(contextPointer, &avFrame)
 
         // Keep receiving frames while no errors are encountered
         while resultCode == 0, avFrame.nb_samples > 0 {
             
-            frames.append(FrameSamples(frame: &avFrame))
+            frames.append(Frame(&avFrame, sampleFormat: sampleFormat, sampleSize: sampleSize))
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
         }
         

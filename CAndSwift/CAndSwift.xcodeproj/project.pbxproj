@@ -40,6 +40,7 @@
 		3E7A9DAA24C58B2900FBCDF7 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9F24C58AFF00FBCDF7 /* libswresample.a */; };
 		3E7A9DAB24C58B2900FBCDF7 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9DA024C58B0000FBCDF7 /* libswscale.a */; };
 		3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C6D24C983D2000379BF /* BufferFileWriter.swift */; };
+		3E857C7024C9D8C0000379BF /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C6F24C9D8C0000379BF /* Frame.swift */; };
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
 		3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */; };
 /* End PBXBuildFile section */
@@ -84,6 +85,7 @@
 		3E7A9DA124C58B0000FBCDF7 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavutil.a; sourceTree = "<group>"; };
 		3E7A9DA224C58B0000FBCDF7 /* libavresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavresample.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavresample.a; sourceTree = "<group>"; };
 		3E857C6D24C983D2000379BF /* BufferFileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferFileWriter.swift; sourceTree = "<group>"; };
+		3E857C6F24C9D8C0000379BF /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
 		3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesBuffer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -182,6 +184,7 @@
 				3E67F36924C823330023C2D3 /* Stream.swift */,
 				3E67F36B24C823530023C2D3 /* Codec.swift */,
 				3E67F36D24C8237A0023C2D3 /* Packet.swift */,
+				3E857C6F24C9D8C0000379BF /* Frame.swift */,
 				3E67F36F24C823AA0023C2D3 /* Errors.swift */,
 			);
 			path = FFmpeg;
@@ -272,6 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */,
+				3E857C7024C9D8C0000379BF /* Frame.swift in Sources */,
 				3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */,
 				3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */,
 				3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */,

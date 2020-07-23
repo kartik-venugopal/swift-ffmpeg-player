@@ -72,6 +72,7 @@ class Player {
     
     private func decodeFrames(_ fileCtx: FileContext, _ seconds: Double = 10) {
         
+        print()
         NSLog("Began decoding ... \(seconds) seconds of audio")
         
         let formatCtx: FormatContext = fileCtx.format
@@ -106,7 +107,12 @@ class Player {
                 if !self.stopped {
 
                     if !self.eof {
-                        self.decodeFrames(fileCtx)
+                        
+                        let time = measureTime {
+                            self.decodeFrames(fileCtx)
+                        }
+                        
+                        NSLog("Decoded 10 seconds of audio in \(time * 1000) msec\n")
 
                     } else if self.scheduledBufferCount == 0 {
                         NSLog("Playback completed !!!\n")
