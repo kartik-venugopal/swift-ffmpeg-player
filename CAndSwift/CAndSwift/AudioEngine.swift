@@ -57,7 +57,10 @@ class AudioEngine {
     }
     
     func stop() {
-        playerNode.stop()
+        
+        if playerNode.isPlaying {
+            playerNode.stop()
+        }
     }
     
     var volume: Float {

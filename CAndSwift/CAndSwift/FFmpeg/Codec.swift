@@ -72,6 +72,9 @@ class Codec {
     
     func destroy() {
         
+        // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
+        // Can we check something before proceeding ???
+        
         if 0 < avcodec_is_open(self.contextPointer) {
             avcodec_close(self.contextPointer)
         }

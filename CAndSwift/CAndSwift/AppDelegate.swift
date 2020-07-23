@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        scheduler = Scheduler(player)
 //        slowScheduler = SlowScheduler(player)
         
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/05 - Sendepause.mpc")
@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Reiki2.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Morning.ogg")
         
-//        Decoder.decodeAndPlay(url)
+        Decoder.decodeAndPlay(url)
         
 //        DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + 3, execute: {
 //            Decoder.seekToTime(url, 52, true)

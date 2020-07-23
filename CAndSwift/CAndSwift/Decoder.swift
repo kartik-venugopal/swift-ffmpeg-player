@@ -40,13 +40,11 @@ class Decoder {
     
     static func stop() {
         
-        if let previousFile = playingFile {
-            
-            stopped = true
-            audioEngine.stop()
-            stopped = false
-            
-//            previousFile.destroy()
+        stopped = true
+        audioEngine.stop()
+        stopped = false
+        
+        if playingFile != nil {
             playingFile = nil
         }
     }
