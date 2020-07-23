@@ -16,6 +16,8 @@ class Codec {
     let sampleSize: Int
     let timeBase: AVRational
     
+    var avFrame = AVFrame()
+    
     init?(_ stream: Stream) {
         
         self.filePath = stream.filePath
@@ -40,6 +42,32 @@ class Codec {
         self.timeBase = context.time_base
     }
     
+    func decode(_ packet: Packet, _ buffer: SamplesBuffer) throws {
+        
+        // Send the packet to the decoder
+        var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
+        packet.destroy()
+
+        if resultCode < 0 {
+            
+            print("\nCodec.decode(): Failed to decode packet. Error: \(errorString(errorCode: resultCode))")
+            throw DecoderError(resultCode)
+        }
+        
+        // Receive (potentially) multiple frames
+
+        resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+
+        // Keep receiving frames while no errors are encountered
+        while resultCode == 0, avFrame.nb_samples > 0 {
+
+            buffer.appendFrame(frame: &avFrame)
+            resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+        }
+        
+        av_frame_unref(&avFrame)
+    }
+    
     func decode(_ packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder
@@ -55,7 +83,6 @@ class Codec {
         // Receive (potentially) multiple frames
 
         var frames: [Frame] = []
-        var avFrame = AVFrame()
         resultCode = avcodec_receive_frame(contextPointer, &avFrame)
 
         // Keep receiving frames while no errors are encountered

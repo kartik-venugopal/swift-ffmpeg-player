@@ -25,8 +25,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/03.mpc")
-//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/05 - Sendepause.mpc")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/14.opus")
+        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/02.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Way.ogg")
@@ -34,8 +34,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Reiki2.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Morning.ogg")
 
-        // let player = Player()
-//        player.decodeAndPlay(url)
+         let player = Player()
+        player.decodeAndPlay(url)
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
 //            player.seekToTime(url, 268, true)

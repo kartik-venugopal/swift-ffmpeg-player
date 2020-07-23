@@ -68,7 +68,7 @@ class Player {
         let stream = fileCtx.stream
         let codec: Codec = fileCtx.codec
         
-        let buffer: SamplesBuffer = SamplesBuffer(maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
+        let buffer: SamplesBuffer = SamplesBuffer(maxSampleCount: Int32(seconds * Double(codec.sampleRate)), sampleFmt: codec.sampleFormat, sampleSize: codec.sampleSize)
         
         while !(buffer.isFull || eof) {
             
@@ -76,8 +76,10 @@ class Player {
                 
                 if let packet = try formatCtx.readPacket(stream) {
                     
-                    let frames: [Frame] = try codec.decode(packet)
-                    frames.forEach {buffer.appendFrame(frame: $0)}
+//                    let frames: [Frame] = try codec.decode(packet)
+//                    frames.forEach {buffer.appendFrame(frame: $0)}
+                    
+                    try codec.decode(packet, buffer)
                 }
                 
             } catch {
@@ -103,6 +105,14 @@ class Player {
                     }
                 }
             })
+            
+            // Write out the first 35 seconds of audio to .raw file for testing in Audacity
+//            if BufferFileWriter.ctr < (35 * codec.sampleRate) {
+//                BufferFileWriter.writeBuffer(audioBuffer)
+//                BufferFileWriter.closeFile()
+//            } else {
+//
+//            }
             
             scheduledBufferCount += 1
         }

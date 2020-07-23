@@ -15,13 +15,7 @@ class BufferFileWriter {
         for s in 0..<numSamples {
 
             for i in 0..<2 {
-
-//                let sample = data![i][s]
                 fwrite(&data![i][s], MemoryLayout<Float>.size, 1, outfile)
-
-//                if (ctr > 44100 && ctr < 44200) {
-//                    print("\(ctr): \(sample)")
-//                }
             }
         }
         
