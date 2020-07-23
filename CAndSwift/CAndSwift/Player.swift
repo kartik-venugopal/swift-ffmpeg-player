@@ -75,11 +75,7 @@ class Player {
             do {
                 
                 if let packet = try formatCtx.readPacket(stream) {
-                    
-//                    let frames: [Frame] = try codec.decode(packet)
-//                    frames.forEach {buffer.appendFrame(frame: $0)}
-                    
-                    try codec.decode(packet, buffer)
+                    for frame in try codec.decode(packet) {buffer.appendFrame(frame: frame)}
                 }
                 
             } catch {

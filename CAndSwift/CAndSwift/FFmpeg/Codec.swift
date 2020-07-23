@@ -42,7 +42,7 @@ class Codec {
         self.timeBase = context.time_base
     }
     
-    func decode(_ packet: Packet, _ buffer: SamplesBuffer) throws {
+    func decode(_ packet: Packet) throws -> [FrameSamples] {
         
         // Send the packet to the decoder
         var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
@@ -56,39 +56,13 @@ class Codec {
         
         // Receive (potentially) multiple frames
 
-        resultCode = avcodec_receive_frame(contextPointer, &avFrame)
-
-        // Keep receiving frames while no errors are encountered
-        while resultCode == 0, avFrame.nb_samples > 0 {
-
-            buffer.appendFrame(frame: &avFrame)
-            resultCode = avcodec_receive_frame(contextPointer, &avFrame)
-        }
-        
-        av_frame_unref(&avFrame)
-    }
-    
-    func decode(_ packet: Packet) throws -> [Frame] {
-        
-        // Send the packet to the decoder
-        var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
-        packet.destroy()
-
-        if resultCode < 0 {
-            
-            print("\nCodec.decode(): Failed to decode packet. Error: \(errorString(errorCode: resultCode))")
-            throw DecoderError(resultCode)
-        }
-        
-        // Receive (potentially) multiple frames
-
-        var frames: [Frame] = []
+        var frames: [FrameSamples] = []
         resultCode = avcodec_receive_frame(contextPointer, &avFrame)
 
         // Keep receiving frames while no errors are encountered
         while resultCode == 0, avFrame.nb_samples > 0 {
             
-            frames.append(Frame(avFrame, sampleFormat: self.sampleFormat, sampleSize: self.sampleSize))
+            frames.append(FrameSamples(frame: &avFrame))
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
         }
         

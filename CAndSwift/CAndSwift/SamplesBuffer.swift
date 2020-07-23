@@ -11,7 +11,7 @@ class FrameSamples {
     
     init(frame: UnsafeMutablePointer<AVFrame>) {
         
-        let buffers = frame.pointee.datas()
+        let buffers = frame.pointee.dataPointers
         let linesize = Int(frame.pointee.linesize.0)
         
         for channelIndex in (0..<8) {
@@ -44,10 +44,16 @@ class SamplesBuffer {
         self.sampleSize = sampleSize
     }
     
-    func appendFrame(frame: UnsafeMutablePointer<AVFrame>) {
+//    func appendFrame(frame: UnsafeMutablePointer<AVFrame>) {
+//
+//        self.sampleCount += frame.pointee.nb_samples
+//        frames.append(FrameSamples(frame: frame))
+//    }
+    
+    func appendFrame(frame: FrameSamples) {
         
-        self.sampleCount += frame.pointee.nb_samples
-        frames.append(FrameSamples(frame: frame))
+        self.sampleCount += frame.sampleCount
+        frames.append(frame)
     }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
@@ -156,12 +162,6 @@ class SamplesBuffer {
 
 extension AVFrame {
 
-    mutating func datas() -> [UnsafeMutablePointer<UInt8>?] {
-        let ptr = UnsafeBufferPointer(start: self.extended_data, count: 8)
-        let arr = Array(ptr)
-        return arr
-    }
-    
     var dataPointers: [UnsafeMutablePointer<UInt8>?] {
         Array(UnsafeBufferPointer(start: self.extended_data, count: 8))
     }
