@@ -9,7 +9,7 @@ class Player {
     
     var scheduledBufferCount: Int = 0
     
-    var playingFile: FileContext?
+    var playingFile: AudioFileContext?
     
     var state: PlayerState = .stopped
     
@@ -37,8 +37,10 @@ class Player {
             playingFile = fileCtx
             
             print("\nSuccessfully opened file: \(file.path). File is ready for decoding.")
-            fileCtx.stream.printInfo()
-            fileCtx.codec.printInfo()
+            fileCtx.audioStream.printInfo()
+            fileCtx.audioCodec.printInfo()
+            
+            if !fileCtx.audioCodec.open() {return}
             
             var time = measureTime {
                 decodeFrames(fileCtx, 5)
@@ -72,27 +74,26 @@ class Player {
         playingFile = nil
     }
     
-    func setupForFile(_ file: URL) throws -> FileContext {
+    func setupForFile(_ file: URL) throws -> AudioFileContext {
         
-        guard let fileCtx = FileContext(file) else {throw DecoderInitializationError()}
+        guard let fileCtx = AudioFileContext(file) else {throw DecoderInitializationError()}
         
         eof = false
         
-        audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(fileCtx.codec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
-        
+        audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(fileCtx.audioCodec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
         audioEngine.prepare(audioFormat)
         
         return fileCtx
     }
     
-    private func decodeFrames(_ fileCtx: FileContext, _ seconds: Double = 10) {
+    private func decodeFrames(_ fileCtx: AudioFileContext, _ seconds: Double = 10) {
         
         print()
         NSLog("Began decoding ... \(seconds) seconds of audio")
         
         let formatCtx: FormatContext = fileCtx.format
-        let stream = fileCtx.stream
-        let codec: Codec = fileCtx.codec
+        let stream = fileCtx.audioStream
+        let codec: Codec = fileCtx.audioCodec
         
         let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
         

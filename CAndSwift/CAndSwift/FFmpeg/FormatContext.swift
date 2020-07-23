@@ -26,6 +26,13 @@ class FormatContext {
             print("\nFormatContext.init(): Unable to open file '\(filePath)'. Error: \(errorString(errorCode: fileOpenResult))")
             return nil
         }
+        
+        let resultCode: Int32 = avformat_find_stream_info(pointer, nil)
+        if resultCode < 0 {
+            
+            print("\nFormatContext.init(): Unable to find stream info for file '\(filePath)'. Error: \(errorString(errorCode: resultCode))")
+            return nil
+        }
     }
     
     func readPacket(_ stream: Stream) throws -> Packet? {
@@ -41,7 +48,7 @@ class FormatContext {
         
         return packet.streamIndex == stream.index ? packet : nil
     }
-    
+
     func destroy() {
         
         avformat_close_input(&pointer)

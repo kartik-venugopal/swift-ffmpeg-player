@@ -23,14 +23,13 @@ class Codec {
         pointer = stream.codecPointer
         contextPointer = avcodec_alloc_context3(pointer)
         avcodec_parameters_to_context(contextPointer, stream.avStream.codecpar)
-
-        let codecOpenResult = avcodec_open2(contextPointer, pointer, nil)
-        guard codecOpenResult == 0, let pointee = pointer?.pointee, let contextPointee = contextPointer?.pointee else {
+        
+        guard let pointee = pointer?.pointee, let contextPointee = contextPointer?.pointee else {
             
-            print("\nCodec.init(): Failed to open codec for file '\(filePath)'. Error: \(errorString(errorCode: codecOpenResult))")
+            print("\nCodec.init(): Failed to instantiate codec for file '\(filePath)'.")
             return nil
         }
-        
+
         self.avCodec = pointee
         self.context = contextPointee
         
@@ -38,6 +37,17 @@ class Codec {
         self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
         
         self.timeBase = context.time_base
+    }
+    
+    func open() -> Bool {
+        
+        let codecOpenResult = avcodec_open2(contextPointer, pointer, nil)
+
+        if codecOpenResult != 0 {
+            print("\nCodec.init(): Failed to open codec for file '\(filePath)'. Error: \(errorString(errorCode: codecOpenResult))")
+        }
+        
+        return codecOpenResult == 0
     }
     
     func decode(_ packet: Packet) throws -> [Frame] {
@@ -105,4 +115,8 @@ class Codec {
     deinit {
         destroy()
     }
+}
+
+class AudioCodec: Codec {
+    
 }

@@ -46,8 +46,10 @@ class PlayerViewController: NSViewController {
         
         dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
         
-        player.volume = 0.5
+        player.volume = 0
         volumeSlider.floatValue = player.volume
+        
+        txtMetadata.font = NSFont.systemFont(ofSize: 16)
     }
     
     @IBAction func openFileAction(_ sender: AnyObject) {
@@ -59,6 +61,41 @@ class PlayerViewController: NSViewController {
 
                 print(JSONMapper.map(trackInfo))
                 artView.image = trackInfo.art
+                
+                txtMetadata.string = ""
+                lblTitle.stringValue = trackInfo.displayedTitle ?? url.deletingPathExtension().lastPathComponent
+                
+                if let title = trackInfo.title {
+                    txtMetadata.string += "Title:  \(title)\n\n"
+                }
+                
+                if let artist = trackInfo.artist {
+                    txtMetadata.string += "Artist:  \(artist)\n\n"
+                }
+                
+                if let album = trackInfo.album {
+                    txtMetadata.string += "Album:  \(album)\n\n"
+                }
+                
+                if let trackNum = trackInfo.displayedTrackNum {
+                    txtMetadata.string += "Track:  \(trackNum)\n\n"
+                }
+                
+                if let discNum = trackInfo.displayedDiscNum {
+                    txtMetadata.string += "Disc:  \(discNum)\n\n"
+                }
+                
+                if let genre = trackInfo.genre {
+                    txtMetadata.string += "Genre:  \(genre)\n\n"
+                }
+                
+                if let year = trackInfo.year {
+                    txtMetadata.string += "Year:  \(year)\n\n"
+                }
+                
+                for (key, value) in trackInfo.otherMetadata {
+                    txtMetadata.string += "\(key.capitalized):  \(value)\n\n"
+                }
                 
                 player.decodeAndPlay(url)
                 btnPlayPause.image = imgPause
@@ -80,6 +117,7 @@ class PlayerViewController: NSViewController {
     }
     
     @IBAction func stopAction(_ sender: AnyObject) {
+        
         player.stop()
         btnPlayPause.image = imgPlay
     }

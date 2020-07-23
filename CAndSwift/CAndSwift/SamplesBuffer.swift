@@ -43,7 +43,7 @@ class SamplesBuffer {
                     
                     let frameFloats: [[Float]] = frame.planarFloatData
                     
-                    for channelIndex in 0..<frameFloats.count {
+                    for channelIndex in 0..<min(2, frameFloats.count) {
                         
                         guard let channel = channels?[channelIndex] else {break}
                         let frameFloatsForChannel: [Float] = frameFloats[channelIndex]

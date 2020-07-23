@@ -24,6 +24,8 @@ class AudioFileContext {
         self.audioStream = audioStream
         self.audioCodec = theCodec
         
+        // Image stream, if present, will contain cover art.
+        
         self.imageStream = ImageStream(format)
         
         if let theImageStream = self.imageStream {
