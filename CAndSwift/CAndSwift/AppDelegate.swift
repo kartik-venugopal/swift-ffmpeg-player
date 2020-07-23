@@ -25,16 +25,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/0Rednex.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/D1.dsf")
-        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/10.opus")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/02.mpc")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/PerfectWorld.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Way.ogg")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Infected Mushrooms - LSD.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/WalkingSun.wma")
 //        let url = URL(fileURLWithPath: "/Users/kven/Music/Aural-Test/Morning.ogg")
-
-         let player = Player()
-        player.decodeAndPlay(url)
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Clips/Angel.wav")
+//        let url = URL(fileURLWithPath: "/Users/kven/Music/Clips/Fab farm ringtone.mp3")
+        
+//        let player = Player()
+//        player.decodeAndPlay(url)
         
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
 //            player.seekToTime(url, 268, true)

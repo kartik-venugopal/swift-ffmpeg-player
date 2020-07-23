@@ -22,10 +22,13 @@
         <customObject id="1E5-MG-zPn" customClass="PlayerViewController" customModule="CAndSwift" customModuleProvider="target">
             <connections>
                 <outlet property="artView" destination="ZdL-20-KPM" id="pMz-My-Buc"/>
+                <outlet property="btnPlayPause" destination="jVi-xo-s02" id="7LO-gd-ZKF"/>
+                <outlet property="lblSeekPos" destination="b3S-rf-aDc" id="MB7-5X-0bk"/>
                 <outlet property="lblTitle" destination="FD4-Zc-1u9" id="glf-qF-xTL"/>
                 <outlet property="txtAudioInfo" destination="SXF-ed-2hn" id="Cka-TJ-GsM"/>
                 <outlet property="txtMetadata" destination="wCZ-7Y-tR8" id="q9c-Z9-ulD"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="TXP-gI-CaM"/>
+                <outlet property="volumeSlider" destination="sec-NR-oOC" id="Vm8-F9-49P"/>
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -754,7 +757,7 @@
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="306" height="235"/>
-                                    <size key="maxSize" width="320" height="10000000"/>
+                                    <size key="maxSize" width="321" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
@@ -786,7 +789,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jVi-xo-s02">
-                        <rect key="frame" x="20" y="51" width="80" height="78"/>
+                        <rect key="frame" x="20" y="78" width="48" height="48"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Play" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="qSs-pd-wRp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -796,8 +799,34 @@
                             <action selector="playOrPauseAction:" target="1E5-MG-zPn" id="Qxq-Mn-9gS"/>
                         </connections>
                     </button>
+                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sec-NR-oOC">
+                        <rect key="frame" x="722" y="73" width="175" height="19"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="ZsP-K1-2ZC"/>
+                        <connections>
+                            <action selector="volumeAction:" target="1E5-MG-zPn" id="awF-3f-04W"/>
+                        </connections>
+                    </slider>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QKw-tZ-gII">
+                        <rect key="frame" x="660" y="76" width="49" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Volume" id="zw8-pr-Gov">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b3S-rf-aDc">
+                        <rect key="frame" x="387" y="63" width="149" height="39"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="0 : 00" id="Yvc-b2-eQj">
+                            <font key="font" metaFont="system" size="25"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="md6-j7-Nq4">
-                        <rect key="frame" x="110" y="51" width="80" height="78"/>
+                        <rect key="frame" x="80" y="82" width="40" height="40"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Stop" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="zEb-jo-frl">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -813,7 +842,7 @@
         </window>
     </objects>
     <resources>
-        <image name="Play" width="64" height="64"/>
-        <image name="Stop" width="64" height="64"/>
+        <image name="Play" width="36" height="36"/>
+        <image name="Stop" width="34" height="34"/>
     </resources>
 </document>
