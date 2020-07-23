@@ -4,7 +4,7 @@ import ffmpeg
 class Packet {
     
     let pointer: UnsafeMutablePointer<AVPacket>
-    let avPacket: AVPacket
+    var avPacket: AVPacket
     
     var streamIndex: Int32 {avPacket.stream_index}
     var size: Int32 {avPacket.size}
@@ -12,8 +12,8 @@ class Packet {
     
     init() {
         
-        self.pointer = av_packet_alloc()
-        self.avPacket = pointer.pointee
+        self.avPacket = AVPacket()
+        self.pointer = withUnsafeMutablePointer(to: &avPacket, {$0})
     }
     
     func destroy() {

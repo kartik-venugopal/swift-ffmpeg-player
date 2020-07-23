@@ -25,7 +25,6 @@ class Frame {
         self.lineSize = Int(frame.pointee.linesize.0)
         
         self.sampleFormat = sampleFormat
-        
         self._dataArray = []
         
         let bufferPointers = frame.pointee.dataPointers
