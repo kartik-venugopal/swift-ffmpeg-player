@@ -93,8 +93,9 @@ class Player {
                 
             } catch {
                 
-                self.eof = (error as? PacketReadError)?.isEOF ?? self.eof
-                break
+                if (error as? PacketReadError)?.isEOF ?? false {
+                    self.eof = true
+                }
             }
         }
         
