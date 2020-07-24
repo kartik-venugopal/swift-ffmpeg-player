@@ -9,6 +9,8 @@ class FormatContext {
     var pointer: UnsafeMutablePointer<AVFormatContext>?
     let avContext: AVFormatContext
     
+    var streams: [Stream]
+    
     init?(_ file: URL) {
         
         self.file = file
@@ -33,6 +35,34 @@ class FormatContext {
             print("\nFormatContext.init(): Unable to find stream info for file '\(filePath)'. Error: \(errorString(errorCode: resultCode))")
             return nil
         }
+        
+        self.streams = []
+        
+        if let streams = avContext.streams {
+        
+            let avStreamPointers: [UnsafeMutablePointer<AVStream>] = (0..<avContext.nb_streams).compactMap {streams.advanced(by: Int($0)).pointee}
+            
+            self.streams = avStreamPointers.compactMap {pointer in
+                
+                switch pointer.pointee.codecpar.pointee.codec_type {
+                    
+                case AVMEDIA_TYPE_AUDIO:    return AudioStream(pointer)
+                    
+                case AVMEDIA_TYPE_VIDEO:    return ImageStream(pointer)
+                    
+                default:                    return nil
+                    
+                }
+            }
+        }
+    }
+    
+    var audioStream: AudioStream? {
+        streams.compactMap {$0 as? AudioStream}.first
+    }
+    
+    var imageStream: ImageStream? {
+        streams.compactMap {$0 as? ImageStream}.first
     }
     
     func readPacket(_ stream: Stream) throws -> Packet? {

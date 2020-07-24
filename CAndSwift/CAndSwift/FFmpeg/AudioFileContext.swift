@@ -7,32 +7,26 @@ class AudioFileContext {
     let format: FormatContext
 
     let audioStream: AudioStream
-    let audioCodec: Codec
+    let audioCodec: AudioCodec
     
     var imageStream: ImageStream?
-    let imageCodec: Codec?
+    let imageCodec: ImageCodec?
     
     init?(_ file: URL) {
         
         self.file = file
         
-        guard let theFormatContext = FormatContext(file), let audioStream = AudioStream(theFormatContext), let theCodec = Codec(audioStream) else {
+        guard let theFormatContext = FormatContext(file), let audioStream = theFormatContext.audioStream, let theCodec = audioStream.codec as? AudioCodec else {
             return nil
         }
-        
+
         self.format = theFormatContext
         self.audioStream = audioStream
         self.audioCodec = theCodec
         
         // Image stream, if present, will contain cover art.
-        
-        self.imageStream = ImageStream(format)
-        
-        if let theImageStream = self.imageStream {
-            self.imageCodec = Codec(theImageStream)
-        } else {
-            self.imageCodec = nil
-        }
+        self.imageStream = theFormatContext.imageStream
+        self.imageCodec = imageStream?.codec as? ImageCodec
     }
     
     func destroy() {
