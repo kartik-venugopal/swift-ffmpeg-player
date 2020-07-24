@@ -453,6 +453,7 @@
 					"${SOURCE_ROOT}/CAndSwift/libavutil",
 					"${SOURCE_ROOT}/CAndSwift/libavformat",
 					"${SOURCE_ROOT}/CAndSwift/libavcodec",
+					"${SOURCE_ROOT}/**",
 				);
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -496,6 +497,7 @@
 					"${SOURCE_ROOT}/CAndSwift/libavutil",
 					"${SOURCE_ROOT}/CAndSwift/libavformat",
 					"${SOURCE_ROOT}/CAndSwift/libavcodec",
+					"${SOURCE_ROOT}/**",
 				);
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
