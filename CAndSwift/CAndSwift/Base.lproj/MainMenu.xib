@@ -798,8 +798,8 @@
                             <action selector="openFileAction:" target="1E5-MG-zPn" id="tzG-hE-YBl"/>
                         </connections>
                     </button>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jVi-xo-s02">
-                        <rect key="frame" x="424" y="53" width="36" height="36"/>
+                    <button toolTip="Play / Pause" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jVi-xo-s02">
+                        <rect key="frame" x="424" y="54" width="36" height="36"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Play" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="qSs-pd-wRp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -820,14 +820,14 @@
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b3S-rf-aDc">
                         <rect key="frame" x="23" y="51" width="246" height="30"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="0 : 00" id="Yvc-b2-eQj">
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="0:00" id="Yvc-b2-eQj">
                             <font key="font" metaFont="system" size="17"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="md6-j7-Nq4">
-                        <rect key="frame" x="469" y="58" width="26" height="26"/>
+                    <button toolTip="Stop" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="md6-j7-Nq4">
+                        <rect key="frame" x="470" y="58" width="28" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Stop" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="zEb-jo-frl">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -835,6 +835,17 @@
                         </buttonCell>
                         <connections>
                             <action selector="stopAction:" target="1E5-MG-zPn" id="DZC-RC-u4J"/>
+                        </connections>
+                    </button>
+                    <button toolTip="Seek Forward" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kjC-Bp-aBx">
+                        <rect key="frame" x="519" y="49" width="44" height="44"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekForward" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="BpJ-1u-bRW">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="seekForwardAction:" target="1E5-MG-zPn" id="ljM-9T-KhV"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jq1-2S-lUr">
@@ -869,6 +880,17 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="88I-PL-ev9">
+                        <rect key="frame" x="359" y="49" width="44" height="44"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekBackward" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="tvX-Be-Pfr">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="seekBackwardAction:" target="1E5-MG-zPn" id="eGl-pt-TXh"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
             <point key="canvasLocation" x="364" y="-54.5"/>
@@ -878,6 +900,8 @@
         <image name="DefaultArt" width="276" height="280"/>
         <image name="OpenFile" width="41" height="41"/>
         <image name="Play" width="36" height="36"/>
+        <image name="SeekBackward" width="225" height="225"/>
+        <image name="SeekForward" width="225" height="225"/>
         <image name="Stop" width="34" height="34"/>
         <image name="Volume" width="50" height="40"/>
     </resources>

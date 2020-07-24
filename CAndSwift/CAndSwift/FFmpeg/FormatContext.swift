@@ -7,7 +7,7 @@ class FormatContext {
     let filePath: String
     
     var pointer: UnsafeMutablePointer<AVFormatContext>?
-    let avContext: AVFormatContext
+    var avContext: AVFormatContext {pointer!.pointee}
     
     var streams: [Stream]
     var streamCount: Int {streams.count}
@@ -58,10 +58,7 @@ class FormatContext {
         
         let fileOpenResult: Int32 = avformat_open_input(&pointer, file.path, nil, nil)
         
-        if fileOpenResult >= 0, let pointee = pointer?.pointee {
-            self.avContext = pointee
-            
-        } else {
+        guard fileOpenResult >= 0, pointer?.pointee != nil else {
             
             print("\nFormatContext.init(): Unable to open file '\(filePath)'. Error: \(errorString(errorCode: fileOpenResult))")
             return nil
@@ -109,6 +106,27 @@ class FormatContext {
         return packet.streamIndex == stream.index ? packet : nil
     }
     
+    func seekWithinStream(_ stream: AudioStream, _ time: Double) throws {
+        
+        let seekPosRatio = time / stream.duration
+        let targetFrame = Int64(seekPosRatio * Double(stream.avStream.duration))
+        
+        print("\nTgtFrame: \(targetFrame), FrameCount: \(stream.frameCount)", avContext.duration, pointer?.pointee.duration, stream.avStream.duration)
+        
+        if targetFrame >= stream.frameCount {
+            
+            // Track playback completed. Send EOF code.
+            throw SeekError(-541478725)
+        }
+
+        let seekResult: Int32 = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_ANY)
+        guard seekResult >= 0 else {
+
+            print("\nFormatContext.seekWithinStream(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(errorString(errorCode: seekResult)))")
+            throw SeekError(seekResult)
+        }
+    }
+    
     private func readMetadata(ptr: OpaquePointer!) -> [String: String] {
         
         var metadata: [String: String] = [:]
@@ -122,10 +140,20 @@ class FormatContext {
         
         return metadata
     }
-
+    
+    private var destroyed: Bool = false
+    
     func destroy() {
+        
+        if destroyed {return}
         
         avformat_close_input(&pointer)
         avformat_free_context(pointer)
+        
+        destroyed = true
+    }
+    
+    deinit {
+        destroy()
     }
 }

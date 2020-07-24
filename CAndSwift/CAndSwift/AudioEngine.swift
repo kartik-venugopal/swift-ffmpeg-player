@@ -84,8 +84,6 @@ class AudioEngine {
         let sampleRate = format.sampleRate
         
         startFrame = Int64(sampleRate * seconds)
-        
-        print("\nEngine seek to: \(seconds), startFrame is now \(startFrame)")
     }
     
     var seekPosition: Double {

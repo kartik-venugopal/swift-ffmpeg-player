@@ -27,7 +27,7 @@ class Player {
         state = audioEngine.isPlaying ? .playing : .paused
     }
     
-    func decodeAndPlay(_ file: URL) {
+    func play(_ file: URL) {
         
         stop()
         
@@ -43,7 +43,7 @@ class Player {
             if !fileCtx.audioCodec.open() {return}
             
             var time = measureTime {
-                decodeFrames(fileCtx, 5)
+                scheduleOneBuffer(fileCtx, 5)
             }
             
             print("\nTook \(Int(round(time * 1000))) msec to decode 5 seconds")
@@ -55,7 +55,7 @@ class Player {
             NSLog("Playback Started !\n")
 
             time = measureTime {
-                decodeFrames(fileCtx, 5)
+                scheduleOneBuffer(fileCtx, 5)
             }
 
             print("\nTook \(Int(round(time * 1000))) msec to decode another 5 seconds")
@@ -89,7 +89,7 @@ class Player {
         return fileCtx
     }
     
-    private func decodeFrames(_ fileCtx: AudioFileContext, _ seconds: Double = 10) {
+    private func scheduleOneBuffer(_ fileCtx: AudioFileContext, _ seconds: Double = 10) {
         
         print()
         NSLog("Began decoding ... \(seconds) seconds of audio")
@@ -131,7 +131,7 @@ class Player {
                     if !self.eof {
 
                         let time = measureTime {
-                            self.decodeFrames(fileCtx)
+                            self.scheduleOneBuffer(fileCtx)
                         }
 
                         NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
@@ -160,7 +160,7 @@ class Player {
         }
     }
     
-    func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool = true) {
+    func seekToTime(_ seconds: Double, _ beginPlayback: Bool = true) {
         
         if let thePlayingFile = playingFile {
 
@@ -168,20 +168,27 @@ class Player {
             
             print("\nTimeBase: \(thePlayingFile.audioStream.timeBase.num) / \(thePlayingFile.audioStream.timeBase.den)")
             
-            av_seek_frame(thePlayingFile.format.pointer, thePlayingFile.audioStream.index, Int64(seconds * thePlayingFile.audioStream.timeBase.reciprocal), AVSEEK_FLAG_FRAME)
-            
-            decodeFrames(thePlayingFile, 5)
-
-            audioEngine.seekTo(seconds)
-            audioEngine.play()
-            state = .playing
-            
-            decodeFrames(thePlayingFile, 5)
+            do {
+                
+                try thePlayingFile.format.seekWithinStream(thePlayingFile.audioStream, seconds)
+                
+                scheduleOneBuffer(thePlayingFile, 5)
+                
+                audioEngine.seekTo(seconds)
+                audioEngine.play()
+                state = .playing
+                
+                scheduleOneBuffer(thePlayingFile, 5)
+                
+            } catch {
+                
+                if let seekError = error as? SeekError, seekError.isEOF {
+                    
+                    NSLog("Playback completed !!!\n")
+                    stop()
+                }
+            }
         }
-
-//        decodeFrames(5)
-//        player.play()
-//        decodeFrames(5)
     }
 }
 

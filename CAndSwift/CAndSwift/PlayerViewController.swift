@@ -1,7 +1,7 @@
 import Cocoa
 import AVFoundation
 
-class PlayerViewController: NSViewController {
+class PlayerViewController: NSViewController, NSWindowDelegate {
     
     @IBOutlet weak var btnPlayPause: NSButton!
     
@@ -34,6 +34,8 @@ class PlayerViewController: NSViewController {
     private let player = Player()
     private let reader = Reader()
     
+    private var seekInterval: Double = 5
+    
     override func viewDidLoad() {
         
         dialog = NSOpenPanel()
@@ -62,6 +64,12 @@ class PlayerViewController: NSViewController {
         txtAudioInfo.font = NSFont.systemFont(ofSize: 14)
         
         artView.cornerRadius = 5
+        
+        self.view.window?.delegate = self
+    }
+    
+    func windowWillClose(_ notification: Notification) {
+        NSApp.terminate(self)
     }
     
     @IBAction func openFileAction(_ sender: AnyObject) {
@@ -74,12 +82,9 @@ class PlayerViewController: NSViewController {
                 self.trackInfo = trackInfo
 
                 showMetadata(url, trackInfo)
+                showAudioInfo(trackInfo.audioInfo)
                 
-                if let audioInfo = trackInfo.audioInfo {
-                    showAudioInfo(audioInfo)
-                }
-                
-                player.decodeAndPlay(url)
+                player.play(url)
                 btnPlayPause.image = imgPause
                 
                 if seekPosTimer == nil {
@@ -188,13 +193,28 @@ class PlayerViewController: NSViewController {
         if let trackInfo = self.trackInfo {
             
             let seekPercentage = seekSlider.doubleValue
-            let duration = trackInfo.audioInfo!.duration
-            
+            let duration = trackInfo.audioInfo.duration
             let newPosition = seekPercentage * duration / 100.0
             
-            print("\nTrying to seek to time: \(newPosition)")
+            doSeekToTime(newPosition)
+        }
+    }
+    
+    @IBAction func seekForwardAction(_ sender: AnyObject) {
+        doSeekToTime(player.seekPosition + seekInterval)
+    }
+    
+    @IBAction func seekBackwardAction(_ sender: AnyObject) {
+        doSeekToTime(player.seekPosition - seekInterval)
+    }
+    
+    private func doSeekToTime(_ time: Double) {
+        
+        if let trackInfo = self.trackInfo {
             
-            player.seekToTime(self.file, newPosition)
+            let duration = trackInfo.audioInfo.duration
+        
+            player.seekToTime(min(max(0, time), duration))
             updateSeekPosition(self)
         }
     }
@@ -210,7 +230,7 @@ class PlayerViewController: NSViewController {
     @IBAction func updateSeekPosition(_ sender: AnyObject) {
         
         let seekPos = player.seekPosition
-        let duration = trackInfo.audioInfo?.duration ?? 0
+        let duration = trackInfo.audioInfo.duration
         
         if self.file != nil {
             lblSeekPos.stringValue = "\(formatSecondsToHMS(seekPos))  /  \(formatSecondsToHMS(duration))"

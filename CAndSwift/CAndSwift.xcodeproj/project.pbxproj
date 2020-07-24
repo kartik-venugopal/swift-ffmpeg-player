@@ -137,11 +137,11 @@
 				3E52510724C23CC30023F696 /* MainMenu.xib */,
 				3E4DF96124C895D4008988FF /* PlayerViewController.swift */,
 				3E293BEE24C45885003749F2 /* Player.swift */,
-				3E857C6D24C983D2000379BF /* BufferFileWriter.swift */,
 				3E0BECC624C3507500FF69D7 /* Reader.swift */,
 				3E64411524C79FEB0089859E /* FFmpeg */,
 				3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */,
 				3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */,
+				3E857C6D24C983D2000379BF /* BufferFileWriter.swift */,
 				3E0BECC824C3533800FF69D7 /* Mapper.swift */,
 				3E0BECC424C3353000FF69D7 /* libavcodec */,
 				3E0BECB524C3342B00FF69D7 /* libavdevice */,
@@ -447,8 +447,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/Cellar/ffmpeg/4.2.2_3/include/**",
-					"${SOURCE_ROOT}/**",
+					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavutil,
+					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavformat,
+					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavcodec,
+					"${SOURCE_ROOT}/CAndSwift/libavutil",
+					"${SOURCE_ROOT}/CAndSwift/libavformat",
+					"${SOURCE_ROOT}/CAndSwift/libavcodec",
 				);
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -486,8 +490,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/Cellar/ffmpeg/4.2.2_3/include/**",
-					"${SOURCE_ROOT}/**",
+					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavutil,
+					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavformat,
+					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavcodec,
+					"${SOURCE_ROOT}/CAndSwift/libavutil",
+					"${SOURCE_ROOT}/CAndSwift/libavformat",
+					"${SOURCE_ROOT}/CAndSwift/libavcodec",
 				);
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

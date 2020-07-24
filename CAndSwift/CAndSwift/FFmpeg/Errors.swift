@@ -25,6 +25,18 @@ class PacketReadError: Error {
     }
 }
 
+class SeekError: Error {
+    
+    let errorCode: Int32
+    
+    // TODO: Use constant AVERROR_EOF instead
+    var isEOF: Bool {errorCode == -541478725}
+    
+    init(_ code: Int32) {
+        self.errorCode = code
+    }
+}
+
 class DecoderInitializationError: Error {}
 
 func errorString(errorCode: Int32) -> String {
