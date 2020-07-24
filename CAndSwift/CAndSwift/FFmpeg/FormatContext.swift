@@ -111,8 +111,6 @@ class FormatContext {
         let seekPosRatio = time / stream.duration
         let targetFrame = Int64(seekPosRatio * Double(stream.avStream.duration))
         
-        print("\nTgtFrame: \(targetFrame), FrameCount: \(stream.frameCount)", avContext.duration, pointer?.pointee.duration, stream.avStream.duration)
-        
         if targetFrame >= stream.frameCount {
             
             // Track playback completed. Send EOF code.

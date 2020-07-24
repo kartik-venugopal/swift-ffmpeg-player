@@ -138,9 +138,8 @@ class Player {
 
                     } else if self.scheduledBufferCount == 0 {
                         
-                        NSLog("Playback completed !!!\n")
                         DispatchQueue.main.async {
-                            self.stop()
+                            self.playbackCompleted()
                         }
                     }
                 }
@@ -154,10 +153,19 @@ class Player {
         }
         
         if eof {
-            
             NSLog("Reached EOF !!!")
-            fileCtx.destroy()
         }
+    }
+    
+    private func playbackCompleted() {
+        
+        NSLog("Playback completed !!!\n")
+        
+        stop()
+        audioEngine.playbackCompleted()
+        playingFile?.destroy()
+        
+        NotificationCenter.default.post(name: .playbackCompleted, object: self)
     }
     
     func seekToTime(_ seconds: Double, _ beginPlayback: Bool = true) {
@@ -165,8 +173,6 @@ class Player {
         if let thePlayingFile = playingFile {
 
             stop(false)
-            
-            print("\nTimeBase: \(thePlayingFile.audioStream.timeBase.num) / \(thePlayingFile.audioStream.timeBase.den)")
             
             do {
                 
@@ -183,9 +189,7 @@ class Player {
             } catch {
                 
                 if let seekError = error as? SeekError, seekError.isEOF {
-                    
-                    NSLog("Playback completed !!!\n")
-                    stop()
+                    playbackCompleted()
                 }
             }
         }

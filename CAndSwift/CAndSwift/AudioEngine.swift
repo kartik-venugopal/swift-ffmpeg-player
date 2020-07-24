@@ -86,6 +86,12 @@ class AudioEngine {
         startFrame = Int64(sampleRate * seconds)
     }
     
+    func playbackCompleted() {
+        
+        startFrame = 0
+        cachedSeekPosn = 0
+    }
+    
     var seekPosition: Double {
         
         if let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) {

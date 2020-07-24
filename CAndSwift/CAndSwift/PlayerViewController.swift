@@ -66,6 +66,8 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         artView.cornerRadius = 5
         
         self.view.window?.delegate = self
+        
+        NotificationCenter.default.addObserver(forName: .playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
     }
     
     func windowWillClose(_ notification: Notification) {
@@ -230,7 +232,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
     @IBAction func updateSeekPosition(_ sender: AnyObject) {
         
         let seekPos = player.seekPosition
-        let duration = trackInfo.audioInfo.duration
+        let duration = trackInfo?.audioInfo.duration ?? 0
         
         if self.file != nil {
             lblSeekPos.stringValue = "\(formatSecondsToHMS(seekPos))  /  \(formatSecondsToHMS(duration))"
@@ -240,6 +242,19 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         
         let percentage = duration == 0 ? 0 : seekPos * 100 / duration
         seekSlider.doubleValue = percentage
+    }
+    
+    private func playbackCompleted() {
+        
+        self.file = nil
+        self.trackInfo = nil
+        
+        updateSeekPosition(self)
+        artView.image = imgDefaultArt
+        txtMetadata.string = ""
+        txtAudioInfo.string = ""
+        lblTitle.stringValue = ""
+        seekSlider.doubleValue = 0
     }
     
     private func formatSecondsToHMS(_ timeSecondsDouble: Double, _ includeMinusPrefix: Bool = false) -> String {
@@ -294,4 +309,9 @@ extension NSImageView {
             self.layer?.cornerRadius = newValue;
         }
     }
+}
+
+extension Notification.Name {
+    
+    static let playbackCompleted = NSNotification.Name("playbackCompleted")
 }

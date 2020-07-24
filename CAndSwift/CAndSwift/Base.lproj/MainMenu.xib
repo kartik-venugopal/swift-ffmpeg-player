@@ -706,7 +706,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZdL-20-KPM">
-                        <rect key="frame" x="17" y="140" width="250" height="250"/>
+                        <rect key="frame" x="25" y="140" width="250" height="250"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="DefaultArt" id="U9e-2k-AbF"/>
                         <color key="contentTintColor" white="0.084066901410000006" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -780,7 +780,7 @@
                         </scroller>
                     </scrollView>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l09-cp-oOX">
-                        <rect key="frame" x="18" y="100" width="886" height="19"/>
+                        <rect key="frame" x="23" y="100" width="881" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="I1F-ob-Nfn"/>
                         <connections>
