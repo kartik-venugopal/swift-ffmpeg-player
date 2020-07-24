@@ -25,6 +25,7 @@
                 <outlet property="btnPlayPause" destination="jVi-xo-s02" id="7LO-gd-ZKF"/>
                 <outlet property="lblSeekPos" destination="b3S-rf-aDc" id="MB7-5X-0bk"/>
                 <outlet property="lblTitle" destination="FD4-Zc-1u9" id="glf-qF-xTL"/>
+                <outlet property="seekSlider" destination="l09-cp-oOX" id="kFQ-KG-qfI"/>
                 <outlet property="txtAudioInfo" destination="SXF-ed-2hn" id="Cka-TJ-GsM"/>
                 <outlet property="txtMetadata" destination="wCZ-7Y-tR8" id="q9c-Z9-ulD"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="TXP-gI-CaM"/>
@@ -704,9 +705,9 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZdL-20-KPM">
-                        <rect key="frame" x="20" y="166" width="300" height="300"/>
+                        <rect key="frame" x="17" y="163" width="306" height="306"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="DefaultArt" id="U9e-2k-AbF"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="photo" image="DefaultArt" id="U9e-2k-AbF"/>
                     </imageView>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FD4-Zc-1u9">
                         <rect key="frame" x="343" y="437" width="561" height="26"/>
@@ -775,7 +776,7 @@
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l09-cp-oOX">
                         <rect key="frame" x="18" y="135" width="886" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="I1F-ob-Nfn"/>
+                        <sliderCell key="cell" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="I1F-ob-Nfn"/>
                     </slider>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ctt-9T-xLd">
                         <rect key="frame" x="14" y="13" width="894" height="32"/>
@@ -807,15 +808,6 @@
                             <action selector="volumeAction:" target="1E5-MG-zPn" id="awF-3f-04W"/>
                         </connections>
                     </slider>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QKw-tZ-gII">
-                        <rect key="frame" x="637" y="70" width="72" height="31"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" lineBreakMode="clipping" title="Volume" id="zw8-pr-Gov">
-                            <font key="font" metaFont="system" size="15"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b3S-rf-aDc">
                         <rect key="frame" x="348" y="67" width="225" height="40"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -854,6 +846,11 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="46i-Yw-pcp">
+                        <rect key="frame" x="689" y="74" width="28" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Volume" id="sMt-nO-wkb"/>
+                    </imageView>
                 </subviews>
             </view>
             <point key="canvasLocation" x="364" y="-54.5"/>
@@ -863,5 +860,6 @@
         <image name="DefaultArt" width="300" height="300"/>
         <image name="Play" width="36" height="36"/>
         <image name="Stop" width="34" height="34"/>
+        <image name="Volume" width="50" height="40"/>
     </resources>
 </document>

@@ -3,39 +3,16 @@ import ffmpeg
 
 class Reader {
     
-    static func readTrack(_ file: URL) -> TrackInfo? {
+    func readTrack(_ file: URL) -> TrackInfo? {
         
         if let fileCtx = AudioFileContext(file) {
             
-            let chapters: [Chapter]
-            var metadata: [String: String] = [:]
-            var coverArt: NSImage? = nil
-            
             let audioInfo: AudioInfo? = readAudioInfo(fileCtx.audioStream)
-
-            for (key, value) in fileCtx.format.metadata {
-                metadata[key] = value
-            }
             
-            for (key, value) in fileCtx.audioStream.metadata {
-                metadata[key] = value
-            }
+            let metadata: [String: String] = readMetadata(fileCtx)
+            let chapters: [Chapter] = fileCtx.format.chapters
+            let coverArt: NSImage? = readCoverArt(fileCtx)
             
-            chapters = fileCtx.format.chapters
-            
-            if let imageStream = fileCtx.imageStream, let imageCodec = fileCtx.imageCodec {
-                
-                do {
-                
-                    if imageCodec.open(), let imageDataPacket = try fileCtx.format.readPacket(imageStream),
-                        let imageData = imageCodec.decode(imageDataPacket) {
-                        
-                        coverArt = NSImage(data: imageData)
-                    }
-                    
-                } catch {}
-            }
-
             return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, chapters: chapters)
             
         } else {
@@ -45,7 +22,22 @@ class Reader {
         }
     }
     
-    private static func readAudioInfo(_ stream: AudioStream) -> AudioInfo? {
+    private func readMetadata(_ fileCtx: AudioFileContext) -> [String: String] {
+        
+        var metadata: [String: String] = [:]
+        
+        for (key, value) in fileCtx.format.metadata {
+            metadata[key] = value
+        }
+        
+        for (key, value) in fileCtx.audioStream.metadata {
+            metadata[key] = value
+        }
+        
+        return metadata
+    }
+    
+    private func readAudioInfo(_ stream: AudioStream) -> AudioInfo? {
         
         guard let codec = stream.codec as? AudioCodec else {return nil}
 
@@ -59,6 +51,24 @@ class Reader {
 
         return AudioInfo(codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
                           channelCount: channelCount, frameCount: frames)
+    }
+    
+    private func readCoverArt(_ fileCtx: AudioFileContext) -> NSImage? {
+        
+        if let imageStream = fileCtx.imageStream, let imageCodec = fileCtx.imageCodec {
+            
+            do {
+            
+                if imageCodec.open(), let imageDataPacket = try fileCtx.format.readPacket(imageStream),
+                    let imageData = imageCodec.decode(imageDataPacket) {
+                    
+                    return NSImage(data: imageData)
+                }
+                
+            } catch {}
+        }
+        
+        return nil
     }
 }
 

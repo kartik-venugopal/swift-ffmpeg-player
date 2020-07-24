@@ -11,9 +11,11 @@ class PlayerViewController: NSViewController {
     @IBOutlet weak var txtMetadata: NSTextView!
     @IBOutlet weak var txtAudioInfo: NSTextView!
     
-    @IBOutlet weak var volumeSlider: NSSlider!
+    @IBOutlet weak var seekSlider: NSSlider!
     @IBOutlet weak var lblSeekPos: NSTextField!
     private var seekPosTimer: Timer!
+    
+    @IBOutlet weak var volumeSlider: NSSlider!
     
     private var dialog: NSOpenPanel!
     private var file: URL!
@@ -29,6 +31,7 @@ class PlayerViewController: NSViewController {
     let avFileTypes: [String] = [AVFileType.mp3.rawValue, AVFileType.m4a.rawValue, AVFileType.aiff.rawValue, AVFileType.aifc.rawValue, AVFileType.caf.rawValue, AVFileType.wav.rawValue, AVFileType.ac3.rawValue]
     
     private let player = Player()
+    private let reader = Reader()
     
     override func viewDidLoad() {
         
@@ -61,7 +64,7 @@ class PlayerViewController: NSViewController {
         if dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url {
             
             self.file = url
-            if let trackInfo: TrackInfo = Reader.readTrack(url) {
+            if let trackInfo: TrackInfo = reader.readTrack(url) {
                 
                 self.trackInfo = trackInfo
 
@@ -179,11 +182,17 @@ class PlayerViewController: NSViewController {
     
     @IBAction func updateSeekPosition(_ sender: AnyObject) {
         
-        if let trackInfo = self.trackInfo {
-            lblSeekPos.stringValue = "\(formatSecondsToHMS(player.seekPosition))  /  \(formatSecondsToHMS(trackInfo.audioInfo?.duration ?? 0))"
+        let seekPos = player.seekPosition
+        let duration = trackInfo.audioInfo?.duration ?? 0
+        
+        if self.file != nil {
+            lblSeekPos.stringValue = "\(formatSecondsToHMS(seekPos))  /  \(formatSecondsToHMS(duration))"
         } else {
-            lblSeekPos.stringValue = formatSecondsToHMS(player.seekPosition)
+            lblSeekPos.stringValue = formatSecondsToHMS(seekPos)
         }
+        
+        let percentage = duration == 0 ? 0 : seekPos * 100 / duration
+        seekSlider.doubleValue = percentage
     }
     
     private func formatSecondsToHMS(_ timeSecondsDouble: Double, _ includeMinusPrefix: Bool = false) -> String {
