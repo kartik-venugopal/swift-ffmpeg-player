@@ -15,8 +15,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="CAndSwift" customModuleProvider="target">
             <connections>
-                <outlet property="artView" destination="ZdL-20-KPM" id="auq-hn-Aki"/>
-                <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="zhM-H7-xTF"/>
             </connections>
         </customObject>
         <customObject id="1E5-MG-zPn" customClass="PlayerViewController" customModule="CAndSwift" customModuleProvider="target">

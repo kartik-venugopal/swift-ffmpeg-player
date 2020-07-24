@@ -23,10 +23,9 @@ class Codec {
     
     func open() -> Bool {
         
-        let codecOpenResult = avcodec_open2(contextPointer, pointer, nil)
-
+        let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
         if codecOpenResult != 0 {
-            print("\nCodec.open(): Failed to open codec '\(name)'. Error: \(errorString(errorCode: codecOpenResult))")
+            print("\nCodec.open(): Failed to open codec '\(name)'. Error: \(codecOpenResult.errorDescription))")
         }
         
         return codecOpenResult == 0
@@ -88,12 +87,12 @@ class AudioCodec: Codec {
     func decode(_ packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder
-        var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
+        var resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
         packet.destroy()
 
         if resultCode < 0 {
             
-            print("\nCodec.decode(): Failed to decode packet. Error: \(errorString(errorCode: resultCode))")
+            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode.description))")
             throw DecoderError(resultCode)
         }
         
@@ -119,32 +118,6 @@ class AudioCodec: Codec {
 
 class ImageCodec: Codec {
 
-//    var image: NSImage? {
-//
-//        var ctx: AVFormatContext = formatCtx
-//        var codecParams: AVCodecParameters = stream.codecpar.pointee
-//
-//        if var codec: AVCodec = avcodec_find_decoder(codecParams.codec_id)?.pointee {
-//
-//            let codecCtx: UnsafeMutablePointer<AVCodecContext>? = avcodec_alloc_context3(&codec)
-//            avcodec_parameters_to_context(codecCtx, &codecParams)
-//            avcodec_open2(codecCtx, &codec, nil)
-//
-//            let packetPtr: UnsafeMutablePointer<AVPacket> = av_packet_alloc()
-//            av_read_frame(&ctx, packetPtr)
-//
-//            if packetPtr.pointee.data != nil, packetPtr.pointee.size > 0 {
-//
-//                let data: Data = Data(bytes: packetPtr.pointee.data, count: Int(packetPtr.pointee.size))
-//                return NSImage(data: data)
-//            }
-//
-//            av_packet_unref(packetPtr)
-//        }
-//
-//        return nil
-//    }
-    
     func decode(_ packet: Packet) -> Data? {
         
         let avPacket = packet.avPacket

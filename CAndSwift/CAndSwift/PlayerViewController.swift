@@ -98,7 +98,6 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
     
     private func showMetadata(_ file: URL, _ trackInfo: TrackInfo) {
         
-        print(JSONMapper.map(trackInfo))
         artView.image = trackInfo.art ?? imgDefaultArt
         
         txtMetadata.string = ""

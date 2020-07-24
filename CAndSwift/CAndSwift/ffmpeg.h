@@ -12,5 +12,8 @@
 #import <libswresample/swresample.h>
 #import <libswscale/swscale.h>
 
+int EOF_CODE;
+
+int is_eof(int code);
 
 #endif /* ffmpeg_h */

@@ -55,18 +55,17 @@ class FormatContext {
         
         self.pointer = avformat_alloc_context()
         
-        let fileOpenResult: Int32 = avformat_open_input(&pointer, file.path, nil, nil)
-        
-        guard fileOpenResult >= 0, pointer?.pointee != nil else {
+        var resultCode: ResultCode = avformat_open_input(&pointer, file.path, nil, nil)
+        guard resultCode >= 0, pointer?.pointee != nil else {
             
-            print("\nFormatContext.init(): Unable to open file '\(filePath)'. Error: \(errorString(errorCode: fileOpenResult))")
+            print("\nFormatContext.init(): Unable to open file '\(filePath)'. Error: \(resultCode.errorDescription)")
             return nil
         }
         
-        let resultCode: Int32 = avformat_find_stream_info(pointer, nil)
+        resultCode = avformat_find_stream_info(pointer, nil)
         if resultCode < 0 {
             
-            print("\nFormatContext.init(): Unable to find stream info for file '\(filePath)'. Error: \(errorString(errorCode: resultCode))")
+            print("\nFormatContext.init(): Unable to find stream info for file '\(filePath)'. Error: \(resultCode.errorDescription)")
             return nil
         }
         
@@ -95,10 +94,10 @@ class FormatContext {
         
         let packet = Packet()
 
-        let readResult: Int32 = av_read_frame(pointer, packet.pointer)
+        let readResult: ResultCode = av_read_frame(pointer, packet.pointer)
         guard readResult >= 0 else {
             
-            print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(errorString(errorCode: readResult)))")
+            print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
             throw PacketReadError(readResult)
         }
         
@@ -113,13 +112,13 @@ class FormatContext {
         if targetFrame >= stream.frameCount {
             
             // Track playback completed. Send EOF code.
-            throw SeekError(-541478725)
+            throw SeekError(EOF_CODE)
         }
 
-        let seekResult: Int32 = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_ANY)
+        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_ANY)
         guard seekResult >= 0 else {
 
-            print("\nFormatContext.seekWithinStream(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(errorString(errorCode: seekResult)))")
+            print("\nFormatContext.seekWithinStream(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
             throw SeekError(seekResult)
         }
     }

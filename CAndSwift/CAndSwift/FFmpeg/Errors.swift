@@ -1,52 +1,38 @@
 import Foundation
 
-class DecoderError: Error {
-    
-    let errorCode: Int32
-    
-    init(_ code: Int32) {
-        self.errorCode = code
-    }
-    
-    var description: String {
-        "Unable to decode packet. Error: \(errorCode) (\(errorString(errorCode: errorCode)))"
+typealias ResultCode = Int32
+
+extension ResultCode {
+
+    var errorDescription: String {
+        
+        if self == 0 {
+            return "No error"
+            
+        } else {
+            
+            let errString = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
+            return av_strerror(self, errString, 100) == 0 ? String(cString: errString) : "Unknown error"
+        }
     }
 }
 
-class PacketReadError: Error {
+class CodedError: Error {
     
-    let errorCode: Int32
+    let code: ResultCode
     
-    // TODO: Use constant AVERROR_EOF instead
-    var isEOF: Bool {errorCode == -541478725}
+    var isEOF: Bool {code == EOF_CODE}
+    var description: String {code.errorDescription}
     
-    init(_ code: Int32) {
-        self.errorCode = code
+    init(_ code: ResultCode) {
+        self.code = code
     }
 }
 
-class SeekError: Error {
-    
-    let errorCode: Int32
-    
-    // TODO: Use constant AVERROR_EOF instead
-    var isEOF: Bool {errorCode == -541478725}
-    
-    init(_ code: Int32) {
-        self.errorCode = code
-    }
-}
+class DecoderError: CodedError {}
+
+class PacketReadError: CodedError {}
+
+class SeekError: CodedError {}
 
 class DecoderInitializationError: Error {}
-
-func errorString(errorCode: Int32) -> String {
-    
-    if errorCode == 0 {
-        return "No error"
-        
-    } else {
-        
-        let errString = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
-        return av_strerror(errorCode, errString, 100) == 0 ? String(cString: errString) : "UNKNOWN_ERROR"
-    }
-}
