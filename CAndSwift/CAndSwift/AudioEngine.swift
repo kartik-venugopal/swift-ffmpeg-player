@@ -78,6 +78,16 @@ class AudioEngine {
     var startFrame: AVAudioFramePosition = 0
     var cachedSeekPosn: Double = 0
     
+    func seekTo(_ seconds: Double) {
+        
+        let format = playerNode.outputFormat(forBus: 0)
+        let sampleRate = format.sampleRate
+        
+        startFrame = Int64(sampleRate * seconds)
+        
+        print("\nEngine seek to: \(seconds), startFrame is now \(startFrame)")
+    }
+    
     var seekPosition: Double {
         
         if let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) {

@@ -72,6 +72,7 @@ class Stream {
 class AudioStream: Stream {
     
     var duration: Double {Double(avStream.duration) * avStream.time_base.ratio}
+    var timeBase: AVRational {avStream.time_base}
     
     var frameCount: Int64 {
         avStream.nb_frames == 0 ? Int64(Double(codecContextPointer.pointee.sample_rate) * duration) : avStream.nb_frames

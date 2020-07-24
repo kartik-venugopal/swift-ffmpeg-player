@@ -16,6 +16,7 @@ class PlayerViewController: NSViewController {
     private var seekPosTimer: Timer!
     
     @IBOutlet weak var volumeSlider: NSSlider!
+    @IBOutlet weak var lblVolume: NSTextField!
     
     private var dialog: NSOpenPanel!
     private var file: URL!
@@ -54,9 +55,13 @@ class PlayerViewController: NSViewController {
         
         player.volume = 0.5
         volumeSlider.floatValue = player.volume
+        let intVolume = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(intVolume) %"
         
         txtMetadata.font = NSFont.systemFont(ofSize: 14)
         txtAudioInfo.font = NSFont.systemFont(ofSize: 14)
+        
+        artView.cornerRadius = 5
     }
     
     @IBAction func openFileAction(_ sender: AnyObject) {
@@ -133,6 +138,8 @@ class PlayerViewController: NSViewController {
         
         txtAudioInfo.string = ""
         
+        txtAudioInfo.string += "File Type:\n\(audioInfo.fileType)\n\n"
+        
         txtAudioInfo.string += "Codec:\n\(audioInfo.codec)\n\n"
         
         txtAudioInfo.string += "Duration:\n\(formatSecondsToHMS(audioInfo.duration))\n\n"
@@ -176,8 +183,28 @@ class PlayerViewController: NSViewController {
         btnPlayPause.image = imgPlay
     }
     
+    @IBAction func seekAction(_ sender: AnyObject) {
+        
+        if let trackInfo = self.trackInfo {
+            
+            let seekPercentage = seekSlider.doubleValue
+            let duration = trackInfo.audioInfo!.duration
+            
+            let newPosition = seekPercentage * duration / 100.0
+            
+            print("\nTrying to seek to time: \(newPosition)")
+            
+            player.seekToTime(self.file, newPosition)
+            updateSeekPosition(self)
+        }
+    }
+    
     @IBAction func volumeAction(_ sender: AnyObject) {
+        
         player.volume = volumeSlider.floatValue
+        
+        let intVolume = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(intVolume) %"
     }
     
     @IBAction func updateSeekPosition(_ sender: AnyObject) {
@@ -224,5 +251,27 @@ class PlayerViewController: NSViewController {
         }
         
         return readableNumString
+    }
+}
+
+extension NSImageView {
+
+    // Experimental code. Not currently in use.
+    var cornerRadius: CGFloat {
+
+        get {
+            return self.layer?.cornerRadius ?? 0
+        }
+
+        set(newValue) {
+
+            if !self.wantsLayer {
+
+                self.wantsLayer = true
+                self.layer?.masksToBounds = true;
+            }
+
+            self.layer?.cornerRadius = newValue;
+        }
     }
 }

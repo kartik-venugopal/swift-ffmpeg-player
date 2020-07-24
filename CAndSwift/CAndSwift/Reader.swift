@@ -7,7 +7,7 @@ class Reader {
         
         if let fileCtx = AudioFileContext(file) {
             
-            let audioInfo: AudioInfo? = readAudioInfo(fileCtx.audioStream)
+            let audioInfo: AudioInfo? = readAudioInfo(file, fileCtx.audioStream)
             
             let metadata: [String: String] = readMetadata(fileCtx)
             let chapters: [Chapter] = fileCtx.format.chapters
@@ -37,10 +37,11 @@ class Reader {
         return metadata
     }
     
-    private func readAudioInfo(_ stream: AudioStream) -> AudioInfo? {
+    private func readAudioInfo(_ file: URL, _ stream: AudioStream) -> AudioInfo? {
         
         guard let codec = stream.codec as? AudioCodec else {return nil}
 
+        let fileType: String = file.pathExtension.uppercased()
         let codecName: String = codec.longName
         let duration: Double = stream.duration
         let sampleRate: Int = Int(codec.sampleRate)
@@ -49,7 +50,7 @@ class Reader {
         let channelCount: Int = codec.channelCount
         let frames: Int64 = stream.frameCount
 
-        return AudioInfo(codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
+        return AudioInfo(fileType: fileType, codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
                           channelCount: channelCount, frameCount: frames)
     }
     
@@ -177,6 +178,7 @@ struct Chapter {
 
 struct AudioInfo {
     
+    var fileType: String
     var codec: String
     var duration: Double
     var sampleRate: Int

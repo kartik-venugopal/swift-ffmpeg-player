@@ -58,21 +58,19 @@ class Codec {
 
 class AudioCodec: Codec {
     
-    let bitRate: Int64
-    let sampleRate: Int32
-    let sampleFormat: SampleFormat
-    let timeBase: AVRational
-    let channelCount: Int
+    var bitRate: Int64 = 0
+    var sampleRate: Int32 = 0
+    var sampleFormat: SampleFormat = SampleFormat(avFormat: AVSampleFormat(0))
+    var channelCount: Int = 0
     
     override init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
         
-        self.bitRate = contextPointer.pointee.bit_rate
-        self.sampleRate = contextPointer.pointee.sample_rate
-        self.sampleFormat = SampleFormat(avFormat: contextPointer.pointee.sample_fmt)
-        self.timeBase = contextPointer.pointee.time_base
-        self.channelCount = Int(contextPointer.pointee.channels)
-        
         super.init(pointer: pointer, contextPointer: contextPointer)
+        
+        self.bitRate = context.bit_rate
+        self.sampleRate = context.sample_rate
+        self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
+        self.channelCount = Int(context.channels)
     }
     
     func printInfo() {

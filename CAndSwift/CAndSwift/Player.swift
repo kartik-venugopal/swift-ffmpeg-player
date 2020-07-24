@@ -48,6 +48,7 @@ class Player {
             
             print("\nTook \(Int(round(time * 1000))) msec to decode 5 seconds")
 
+            audioEngine.seekTo(0)
             audioEngine.play()
             state = .playing
 
@@ -66,12 +67,14 @@ class Player {
         }
     }
     
-    func stop() {
+    func stop(_ playbackFinished: Bool = true) {
         
         state = .stopped
         audioEngine.stop()
         
-        playingFile = nil
+        if playbackFinished {
+            playingFile = nil
+        }
     }
     
     func setupForFile(_ file: URL) throws -> AudioFileContext {
@@ -134,7 +137,11 @@ class Player {
                         NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
 
                     } else if self.scheduledBufferCount == 0 {
+                        
                         NSLog("Playback completed !!!\n")
+                        DispatchQueue.main.async {
+                            self.stop()
+                        }
                     }
                 }
             })
@@ -153,18 +160,29 @@ class Player {
         }
     }
     
-//    func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool) {
-//
-//        stopped = true
-//        if player.playerNode.isPlaying {player.playerNode.stop()}
-//        stopped = false
-//
-//        av_seek_frame(formatCtx, streamIndex, Int64(seconds * timeBase.reciprocal), AVSEEK_FLAG_FRAME)
-//
+    func seekToTime(_ file: URL, _ seconds: Double, _ beginPlayback: Bool = true) {
+        
+        if let thePlayingFile = playingFile {
+
+            stop(false)
+            
+            print("\nTimeBase: \(thePlayingFile.audioStream.timeBase.num) / \(thePlayingFile.audioStream.timeBase.den)")
+            
+            av_seek_frame(thePlayingFile.format.pointer, thePlayingFile.audioStream.index, Int64(seconds * thePlayingFile.audioStream.timeBase.reciprocal), AVSEEK_FLAG_FRAME)
+            
+            decodeFrames(thePlayingFile, 5)
+
+            audioEngine.seekTo(seconds)
+            audioEngine.play()
+            state = .playing
+            
+            decodeFrames(thePlayingFile, 5)
+        }
+
 //        decodeFrames(5)
 //        player.play()
 //        decodeFrames(5)
-//    }
+    }
 }
 
 enum PlayerState {
