@@ -9,7 +9,9 @@ class Codec {
     var contextPointer: UnsafeMutablePointer<AVCodecContext>?
     let context: AVCodecContext
     
+    var id: UInt32 {avCodec.id.rawValue}
     var name: String {String(cString: avCodec.name)}
+    var longName: String {String(cString: avCodec.long_name)}
     
     init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
         
@@ -56,15 +58,19 @@ class Codec {
 
 class AudioCodec: Codec {
     
+    let bitRate: Int64
     let sampleRate: Int32
     let sampleFormat: SampleFormat
     let timeBase: AVRational
+    let channelCount: Int
     
     override init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
         
+        self.bitRate = contextPointer.pointee.bit_rate
         self.sampleRate = contextPointer.pointee.sample_rate
         self.sampleFormat = SampleFormat(avFormat: contextPointer.pointee.sample_fmt)
         self.timeBase = contextPointer.pointee.time_base
+        self.channelCount = Int(contextPointer.pointee.channels)
         
         super.init(pointer: pointer, contextPointer: contextPointer)
     }
@@ -76,7 +82,7 @@ class AudioCodec: Codec {
         print(String(format: "Sample Rate:   %7d", sampleRate))
         print(String(format: "Sample Format: %7@", sampleFormat.name))
         print(String(format: "Sample Size:   %7d", sampleFormat.size))
-        print(String(format: "Channels:      %7d", context.channels))
+        print(String(format: "Channels:      %7d", channelCount))
         print(String(format: "Planar ?:      %7@", String(sampleFormat.isPlanar)))
         
         print("---------------------------------\n")
@@ -115,5 +121,41 @@ class AudioCodec: Codec {
 }
 
 class ImageCodec: Codec {
+
+//    var image: NSImage? {
+//
+//        var ctx: AVFormatContext = formatCtx
+//        var codecParams: AVCodecParameters = stream.codecpar.pointee
+//
+//        if var codec: AVCodec = avcodec_find_decoder(codecParams.codec_id)?.pointee {
+//
+//            let codecCtx: UnsafeMutablePointer<AVCodecContext>? = avcodec_alloc_context3(&codec)
+//            avcodec_parameters_to_context(codecCtx, &codecParams)
+//            avcodec_open2(codecCtx, &codec, nil)
+//
+//            let packetPtr: UnsafeMutablePointer<AVPacket> = av_packet_alloc()
+//            av_read_frame(&ctx, packetPtr)
+//
+//            if packetPtr.pointee.data != nil, packetPtr.pointee.size > 0 {
+//
+//                let data: Data = Data(bytes: packetPtr.pointee.data, count: Int(packetPtr.pointee.size))
+//                return NSImage(data: data)
+//            }
+//
+//            av_packet_unref(packetPtr)
+//        }
+//
+//        return nil
+//    }
     
+    func decode(_ packet: Packet) -> Data? {
+        
+        let avPacket = packet.avPacket
+        
+        if let theData = avPacket.data, avPacket.size > 0 {
+            return Data(bytes: theData, count: Int(avPacket.size))
+        }
+        
+        return nil
+    }
 }

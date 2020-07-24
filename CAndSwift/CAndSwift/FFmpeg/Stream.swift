@@ -15,6 +15,20 @@ class Stream {
     var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
     var codec: Codec
     
+    var metadata: [String: String] {
+        
+        var metadata: [String: String] = [:]
+        var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
+        
+        while let tag = av_dict_get(avStream.metadata, "", tagPtr, AV_DICT_IGNORE_SUFFIX) {
+            
+            metadata[String(cString: tag.pointee.key)] = String(cString: tag.pointee.value)
+            tagPtr = tag
+        }
+        
+        return metadata
+    }
+    
     init(_ pointer: UnsafeMutablePointer<AVStream>, _ mediaType: AVMediaType) {
         
         self.pointer = pointer
@@ -59,6 +73,10 @@ class AudioStream: Stream {
     
     var duration: Double {Double(avStream.duration) * avStream.time_base.ratio}
     
+    var frameCount: Int64 {
+        avStream.nb_frames == 0 ? Int64(Double(codecContextPointer.pointee.sample_rate) * duration) : avStream.nb_frames
+    }
+    
     init(_ pointer: UnsafeMutablePointer<AVStream>) {
         super.init(pointer, AVMEDIA_TYPE_AUDIO)
     }
@@ -67,8 +85,9 @@ class AudioStream: Stream {
         
         print("\n---------- Stream Info ----------\n")
         
-        print(String(format: "Index:   %7d", index))
-        print(String(format: "Duration: %7.2lf", duration))
+        print(String(format: "Index:        %7d", index))
+        print(String(format: "Duration:     %7.2lf", duration))
+        print(String(format: "Total Frames: %7ld", frameCount))
         
         print("---------------------------------\n")
     }

@@ -46,7 +46,7 @@ class Player {
                 decodeFrames(fileCtx, 5)
             }
             
-            print("\nTook \(time * 1000) msec to decode 5 seconds")
+            print("\nTook \(Int(round(time * 1000))) msec to decode 5 seconds")
 
             audioEngine.play()
             state = .playing
@@ -57,7 +57,7 @@ class Player {
                 decodeFrames(fileCtx, 5)
             }
 
-            print("\nTook \(time * 1000) msec to decode another 5 seconds")
+            print("\nTook \(Int(round(time * 1000))) msec to decode another 5 seconds")
 
         } catch {
 
@@ -93,7 +93,7 @@ class Player {
         
         let formatCtx: FormatContext = fileCtx.format
         let stream = fileCtx.audioStream
-        let codec: Codec = fileCtx.audioCodec
+        let codec: AudioCodec = fileCtx.audioCodec
         
         let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
         
@@ -131,7 +131,7 @@ class Player {
                             self.decodeFrames(fileCtx)
                         }
 
-                        NSLog("Decoded 10 seconds of audio in \(time * 1000) msec\n")
+                        NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
 
                     } else if self.scheduledBufferCount == 0 {
                         NSLog("Playback completed !!!\n")

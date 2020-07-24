@@ -10,6 +10,44 @@ class FormatContext {
     let avContext: AVFormatContext
     
     var streams: [Stream]
+    var streamCount: Int {streams.count}
+    
+    var audioStream: AudioStream? {
+        streams.compactMap {$0 as? AudioStream}.first
+    }
+    
+    var imageStream: ImageStream? {
+        streams.compactMap {$0 as? ImageStream}.first
+    }
+    
+    var metadata: [String: String] {
+        readMetadata(ptr: avContext.metadata)
+    }
+    
+    var chapters: [Chapter] {
+        
+        var chapters: [Chapter] = []
+        let numChapters = Int(avContext.nb_chapters)
+        
+        if let avChapters = avContext.chapters {
+            
+            // Sort by start time in ascending order
+            let theChapters: [AVChapter] = (0..<numChapters).compactMap {avChapters.advanced(by: $0).pointee?.pointee}
+                .sorted(by: {c1, c2 in c1.start < c2.start})
+            
+            for (index, chapter) in theChapters.enumerated() {
+                
+                let conversionFactor: Double = Double(chapter.time_base.num) / Double(chapter.time_base.den)
+                let startTime = Double(chapter.start) * conversionFactor
+                let endTime = Double(chapter.end) * conversionFactor
+                let title = readMetadata(ptr: chapter.metadata)["title"] ?? "Chapter \(index + 1)"
+                
+                chapters.append(Chapter(startTime: startTime, endTime: endTime, title: title))
+            }
+        }
+        
+        return chapters
+    }
     
     init?(_ file: URL) {
         
@@ -57,14 +95,6 @@ class FormatContext {
         }
     }
     
-    var audioStream: AudioStream? {
-        streams.compactMap {$0 as? AudioStream}.first
-    }
-    
-    var imageStream: ImageStream? {
-        streams.compactMap {$0 as? ImageStream}.first
-    }
-    
     func readPacket(_ stream: Stream) throws -> Packet? {
         
         let packet = Packet()
@@ -77,6 +107,20 @@ class FormatContext {
         }
         
         return packet.streamIndex == stream.index ? packet : nil
+    }
+    
+    private func readMetadata(ptr: OpaquePointer!) -> [String: String] {
+        
+        var metadata: [String: String] = [:]
+        var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
+        
+        while let tag = av_dict_get(ptr, "", tagPtr, AV_DICT_IGNORE_SUFFIX) {
+            
+            metadata[String(cString: tag.pointee.key)] = String(cString: tag.pointee.value)
+            tagPtr = tag
+        }
+        
+        return metadata
     }
 
     func destroy() {
