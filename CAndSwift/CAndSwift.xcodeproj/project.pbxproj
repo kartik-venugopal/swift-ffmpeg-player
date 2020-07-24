@@ -16,7 +16,7 @@
 		3E0BECC224C3342B00FF69D7 /* libswresample in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECBA24C3342B00FF69D7 /* libswresample */; };
 		3E0BECC324C3342B00FF69D7 /* libswscale in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECBB24C3342B00FF69D7 /* libswscale */; };
 		3E0BECC524C3353000FF69D7 /* libavcodec in Resources */ = {isa = PBXBuildFile; fileRef = 3E0BECC424C3353000FF69D7 /* libavcodec */; };
-		3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC624C3507500FF69D7 /* Reader.swift */; };
+		3E0BECC724C3507500FF69D7 /* MetadataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC624C3507500FF69D7 /* MetadataReader.swift */; };
 		3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC824C3533800FF69D7 /* Mapper.swift */; };
 		3E0BECCD24C386B700FF69D7 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */; };
 		3E293BEF24C45885003749F2 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E293BEE24C45885003749F2 /* Player.swift */; };
@@ -56,7 +56,7 @@
 		3E0BECBA24C3342B00FF69D7 /* libswresample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswresample; sourceTree = "<group>"; };
 		3E0BECBB24C3342B00FF69D7 /* libswscale */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswscale; sourceTree = "<group>"; };
 		3E0BECC424C3353000FF69D7 /* libavcodec */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavcodec; sourceTree = "<group>"; };
-		3E0BECC624C3507500FF69D7 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
+		3E0BECC624C3507500FF69D7 /* MetadataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataReader.swift; sourceTree = "<group>"; };
 		3E0BECC824C3533800FF69D7 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
 		3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		3E293BEE24C45885003749F2 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 				3E52510724C23CC30023F696 /* MainMenu.xib */,
 				3E4DF96124C895D4008988FF /* PlayerViewController.swift */,
 				3E293BEE24C45885003749F2 /* Player.swift */,
-				3E0BECC624C3507500FF69D7 /* Reader.swift */,
+				3E0BECC624C3507500FF69D7 /* MetadataReader.swift */,
 				3E64411524C79FEB0089859E /* FFmpeg */,
 				3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */,
 				3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */,
@@ -278,7 +278,7 @@
 				3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */,
 				3E857C7024C9D8C0000379BF /* Frame.swift in Sources */,
 				3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */,
-				3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */,
+				3E0BECC724C3507500FF69D7 /* MetadataReader.swift in Sources */,
 				3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */,
 				3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */,
 				3E0BECCD24C386B700FF69D7 /* AudioEngine.swift in Sources */,

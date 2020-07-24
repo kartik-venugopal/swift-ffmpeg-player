@@ -3,10 +3,10 @@ import Foundation
 class Codec {
     
     var pointer: UnsafeMutablePointer<AVCodec>
-    let avCodec: AVCodec
+    var avCodec: AVCodec {pointer.pointee}
     
     var contextPointer: UnsafeMutablePointer<AVCodecContext>?
-    let context: AVCodecContext
+    var context: AVCodecContext {contextPointer!.pointee}
     
     var id: UInt32 {avCodec.id.rawValue}
     var name: String {String(cString: avCodec.name)}
@@ -15,20 +15,18 @@ class Codec {
     init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
         
         self.pointer = pointer
-        self.avCodec = pointer.pointee
-        
         self.contextPointer = contextPointer
-        self.context = contextPointer.pointee
     }
     
+    // Returns true if open was successful.
     func open() -> Bool {
         
         let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
-        if codecOpenResult != 0 {
+        if codecOpenResult.isNonZero {
             print("\nCodec.open(): Failed to open codec '\(name)'. Error: \(codecOpenResult.errorDescription))")
         }
         
-        return codecOpenResult == 0
+        return codecOpenResult.isZero
     }
     
     private var destroyed: Bool = false
@@ -40,11 +38,11 @@ class Codec {
         // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
         // Can we check something before proceeding ???
         
-        if 0 < avcodec_is_open(self.contextPointer) {
-            avcodec_close(self.contextPointer)
+        if avcodec_is_open(contextPointer).isPositive {
+            avcodec_close(contextPointer)
         }
         
-        avcodec_free_context(&self.contextPointer)
+        avcodec_free_context(&contextPointer)
         
         destroyed = true
     }
@@ -90,7 +88,7 @@ class AudioCodec: Codec {
         var resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
         packet.destroy()
 
-        if resultCode < 0 {
+        if resultCode.isNegative {
             
             print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode.description))")
             throw DecoderError(resultCode)
@@ -104,7 +102,7 @@ class AudioCodec: Codec {
         resultCode = avcodec_receive_frame(contextPointer, &avFrame)
 
         // Keep receiving frames while no errors are encountered
-        while resultCode == 0, avFrame.nb_samples > 0 {
+        while resultCode.isZero, avFrame.nb_samples.isPositive {
             
             frames.append(Frame(&avFrame, sampleFormat: sampleFormat))
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)

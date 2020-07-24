@@ -15,6 +15,15 @@ extension ResultCode {
             return av_strerror(self, errString, 100) == 0 ? String(cString: errString) : "Unknown error"
         }
     }
+    
+    var isNonNegative: Bool {self >= 0}
+    var isNonPositive: Bool {self <= 0}
+    
+    var isPositive: Bool {self > 0}
+    var isNegative: Bool {self < 0}
+    
+    var isZero: Bool {self == 0}
+    var isNonZero: Bool {self != 0}
 }
 
 class CodedError: Error {

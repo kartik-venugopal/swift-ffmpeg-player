@@ -56,14 +56,14 @@ class FormatContext {
         self.pointer = avformat_alloc_context()
         
         var resultCode: ResultCode = avformat_open_input(&pointer, file.path, nil, nil)
-        guard resultCode >= 0, pointer?.pointee != nil else {
+        guard resultCode.isNonNegative, pointer?.pointee != nil else {
             
             print("\nFormatContext.init(): Unable to open file '\(filePath)'. Error: \(resultCode.errorDescription)")
             return nil
         }
         
         resultCode = avformat_find_stream_info(pointer, nil)
-        if resultCode < 0 {
+        guard resultCode.isNonNegative else {
             
             print("\nFormatContext.init(): Unable to find stream info for file '\(filePath)'. Error: \(resultCode.errorDescription)")
             return nil
@@ -95,7 +95,7 @@ class FormatContext {
         let packet = Packet()
 
         let readResult: ResultCode = av_read_frame(pointer, packet.pointer)
-        guard readResult >= 0 else {
+        guard readResult.isNonNegative else {
             
             print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
             throw PacketReadError(readResult)
@@ -108,15 +108,14 @@ class FormatContext {
         
         let seekPosRatio = time / stream.duration
         let targetFrame = Int64(seekPosRatio * Double(stream.avStream.duration))
-        
+
+        // Track playback completed. Send EOF code.
         if targetFrame >= stream.frameCount {
-            
-            // Track playback completed. Send EOF code.
             throw SeekError(EOF_CODE)
         }
 
         let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_ANY)
-        guard seekResult >= 0 else {
+        guard seekResult.isNonNegative else {
 
             print("\nFormatContext.seekWithinStream(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
             throw SeekError(seekResult)

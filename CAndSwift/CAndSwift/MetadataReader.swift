@@ -1,6 +1,6 @@
 import Cocoa
 
-class Reader {
+class MetadataReader {
     
     func readTrack(_ file: URL) -> TrackInfo? {
         

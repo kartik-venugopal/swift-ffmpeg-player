@@ -3,13 +3,13 @@ import Foundation
 class Stream {
     
     var pointer: UnsafeMutablePointer<AVStream>
-    let avStream: AVStream
+    var avStream: AVStream {pointer.pointee}
     
     let mediaType: AVMediaType
     let index: Int32
     
     var codecPointer: UnsafeMutablePointer<AVCodec>
-    var avCodec: AVCodec
+    var avCodec: AVCodec {codecPointer.pointee}
     
     var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
     var codec: Codec
@@ -31,16 +31,14 @@ class Stream {
     init(_ pointer: UnsafeMutablePointer<AVStream>, _ mediaType: AVMediaType) {
         
         self.pointer = pointer
-        self.avStream = pointer.pointee
         
         self.mediaType = mediaType
-        self.index = avStream.index
+        self.index = pointer.pointee.index
         
-        self.codecPointer = avcodec_find_decoder(avStream.codecpar.pointee.codec_id)
-        self.avCodec = codecPointer.pointee
+        self.codecPointer = avcodec_find_decoder(pointer.pointee.codecpar.pointee.codec_id)
         
         self.codecContextPointer = avcodec_alloc_context3(codecPointer)
-        avcodec_parameters_to_context(codecContextPointer, avStream.codecpar)
+        avcodec_parameters_to_context(codecContextPointer, pointer.pointee.codecpar)
         
         switch mediaType {
             
@@ -72,9 +70,6 @@ class AudioStream: Stream {
     
     var duration: Double {Double(avStream.duration) * avStream.time_base.ratio}
     var timeBase: AVRational {avStream.time_base}
-    
-    private var _audioCodec: AudioCodec {codec as! AudioCodec}
-    
     var frameCount: Int64 {avStream.duration}
     
     init(_ pointer: UnsafeMutablePointer<AVStream>) {
@@ -85,9 +80,10 @@ class AudioStream: Stream {
         
         print("\n---------- Stream Info ----------\n")
         
-        print(String(format: "Index:        %7d", index))
-        print(String(format: "Duration:     %7.2lf", duration))
-        print(String(format: "Total Frames: %7ld", frameCount))
+        print(String(format: "Index:         %7d", index))
+        print(String(format: "Duration:      %7.2lf", duration))
+        print(String(format: "Time Base:     %d / %d", timeBase.num, timeBase.den))
+        print(String(format: "Total Frames:  %7ld", frameCount))
         
         print("---------------------------------\n")
     }

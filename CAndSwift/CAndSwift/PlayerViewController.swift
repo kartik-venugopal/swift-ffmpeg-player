@@ -32,7 +32,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
     let avFileTypes: [String] = [AVFileType.mp3.rawValue, AVFileType.m4a.rawValue, AVFileType.aiff.rawValue, AVFileType.aifc.rawValue, AVFileType.caf.rawValue, AVFileType.wav.rawValue, AVFileType.ac3.rawValue]
     
     private let player = Player()
-    private let reader = Reader()
+    private let metadataReader = MetadataReader()
     
     private var seekInterval: Double = 5
     
@@ -79,7 +79,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         if dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url {
             
             self.file = url
-            if let trackInfo: TrackInfo = reader.readTrack(url) {
+            if let trackInfo: TrackInfo = metadataReader.readTrack(url) {
                 
                 self.trackInfo = trackInfo
 
