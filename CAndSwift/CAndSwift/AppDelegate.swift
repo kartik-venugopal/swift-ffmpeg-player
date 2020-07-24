@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import ffmpeg
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {

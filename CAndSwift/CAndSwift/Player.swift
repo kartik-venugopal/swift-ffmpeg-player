@@ -1,5 +1,4 @@
 import AVFoundation
-import ffmpeg
 
 class Player {
     

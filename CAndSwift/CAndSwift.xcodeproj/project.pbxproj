@@ -20,25 +20,24 @@
 		3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECC824C3533800FF69D7 /* Mapper.swift */; };
 		3E0BECCD24C386B700FF69D7 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */; };
 		3E293BEF24C45885003749F2 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E293BEE24C45885003749F2 /* Player.swift */; };
+		3E2F240124CB5E2A0030CC43 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F240024CB5E050030CC43 /* libavcodec.a */; };
+		3E2F240224CB5E2A0030CC43 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23FC24CB5E040030CC43 /* libavdevice.a */; };
+		3E2F240324CB5E2A0030CC43 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23FB24CB5E040030CC43 /* libavfilter.a */; };
+		3E2F240424CB5E2A0030CC43 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23FA24CB5E040030CC43 /* libavformat.a */; };
+		3E2F240524CB5E2A0030CC43 /* libavresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23F824CB5E040030CC43 /* libavresample.a */; };
+		3E2F240624CB5E2A0030CC43 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23F924CB5E040030CC43 /* libavutil.a */; };
+		3E2F240724CB5E2A0030CC43 /* libpostproc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23FD24CB5E050030CC43 /* libpostproc.a */; };
+		3E2F240824CB5E2A0030CC43 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23FE24CB5E050030CC43 /* libswresample.a */; };
+		3E2F240924CB5E2A0030CC43 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2F23FF24CB5E050030CC43 /* libswscale.a */; };
 		3E4DF96024C886CE008988FF /* AudioFileContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DF95F24C886CE008988FF /* AudioFileContext.swift */; };
 		3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DF96124C895D4008988FF /* PlayerViewController.swift */; };
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
-		3E52519924C23FA40023F696 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E52519724C23FA40023F696 /* ffmpeg.c */; };
 		3E67F36A24C823330023C2D3 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36924C823330023C2D3 /* Stream.swift */; };
 		3E67F36C24C823530023C2D3 /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36B24C823530023C2D3 /* Codec.swift */; };
 		3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36D24C8237A0023C2D3 /* Packet.swift */; };
 		3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36F24C823AA0023C2D3 /* Errors.swift */; };
-		3E7A9DA324C58B2900FBCDF7 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9D24C58AFF00FBCDF7 /* libavcodec.a */; };
-		3E7A9DA424C58B2900FBCDF7 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9E24C58AFF00FBCDF7 /* libavdevice.a */; };
-		3E7A9DA524C58B2900FBCDF7 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9A24C58AFF00FBCDF7 /* libavfilter.a */; };
-		3E7A9DA624C58B2900FBCDF7 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9C24C58AFF00FBCDF7 /* libavformat.a */; };
-		3E7A9DA724C58B2900FBCDF7 /* libavresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9DA224C58B0000FBCDF7 /* libavresample.a */; };
-		3E7A9DA824C58B2900FBCDF7 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9DA124C58B0000FBCDF7 /* libavutil.a */; };
-		3E7A9DA924C58B2900FBCDF7 /* libpostproc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9B24C58AFF00FBCDF7 /* libpostproc.a */; };
-		3E7A9DAA24C58B2900FBCDF7 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9D9F24C58AFF00FBCDF7 /* libswresample.a */; };
-		3E7A9DAB24C58B2900FBCDF7 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7A9DA024C58B0000FBCDF7 /* libswscale.a */; };
 		3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C6D24C983D2000379BF /* BufferFileWriter.swift */; };
 		3E857C7024C9D8C0000379BF /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C6F24C9D8C0000379BF /* Frame.swift */; };
 		3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C7124C9E3C9000379BF /* SampleFormat.swift */; };
@@ -60,6 +59,15 @@
 		3E0BECC824C3533800FF69D7 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
 		3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		3E293BEE24C45885003749F2 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		3E2F23F824CB5E040030CC43 /* libavresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavresample.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavresample.a; sourceTree = "<group>"; };
+		3E2F23F924CB5E040030CC43 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavutil.a; sourceTree = "<group>"; };
+		3E2F23FA24CB5E040030CC43 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavformat.a; sourceTree = "<group>"; };
+		3E2F23FB24CB5E040030CC43 /* libavfilter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavfilter.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavfilter.a; sourceTree = "<group>"; };
+		3E2F23FC24CB5E040030CC43 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavdevice.a; sourceTree = "<group>"; };
+		3E2F23FD24CB5E050030CC43 /* libpostproc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpostproc.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libpostproc.a; sourceTree = "<group>"; };
+		3E2F23FE24CB5E050030CC43 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libswresample.a; sourceTree = "<group>"; };
+		3E2F23FF24CB5E050030CC43 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libswscale.a; sourceTree = "<group>"; };
+		3E2F240024CB5E050030CC43 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.3_1/lib/libavcodec.a; sourceTree = "<group>"; };
 		3E4DF95F24C886CE008988FF /* AudioFileContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileContext.swift; sourceTree = "<group>"; };
 		3E4DF96124C895D4008988FF /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		3E52510024C23CC30023F696 /* CAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,22 +77,11 @@
 		3E52510A24C23CC30023F696 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E52510B24C23CC30023F696 /* CAndSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CAndSwift.entitlements; sourceTree = "<group>"; };
 		3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CAndSwift-Bridging-Header.h"; sourceTree = "<group>"; };
-		3E52519724C23FA40023F696 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E52519824C23FA40023F696 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
-		3E5251A424C240FD0023F696 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		3E67F36924C823330023C2D3 /* Stream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
 		3E67F36B24C823530023C2D3 /* Codec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codec.swift; sourceTree = "<group>"; };
 		3E67F36D24C8237A0023C2D3 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		3E67F36F24C823AA0023C2D3 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		3E7A9D9A24C58AFF00FBCDF7 /* libavfilter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavfilter.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavfilter.a; sourceTree = "<group>"; };
-		3E7A9D9B24C58AFF00FBCDF7 /* libpostproc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpostproc.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libpostproc.a; sourceTree = "<group>"; };
-		3E7A9D9C24C58AFF00FBCDF7 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavformat.a; sourceTree = "<group>"; };
-		3E7A9D9D24C58AFF00FBCDF7 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavcodec.a; sourceTree = "<group>"; };
-		3E7A9D9E24C58AFF00FBCDF7 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavdevice.a; sourceTree = "<group>"; };
-		3E7A9D9F24C58AFF00FBCDF7 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libswresample.a; sourceTree = "<group>"; };
-		3E7A9DA024C58B0000FBCDF7 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libswscale.a; sourceTree = "<group>"; };
-		3E7A9DA124C58B0000FBCDF7 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavutil.a; sourceTree = "<group>"; };
-		3E7A9DA224C58B0000FBCDF7 /* libavresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavresample.a; path = ../../../../../usr/local/Cellar/ffmpeg/4.2.2_3/lib/libavresample.a; sourceTree = "<group>"; };
 		3E857C6D24C983D2000379BF /* BufferFileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferFileWriter.swift; sourceTree = "<group>"; };
 		3E857C6F24C9D8C0000379BF /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		3E857C7124C9E3C9000379BF /* SampleFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleFormat.swift; sourceTree = "<group>"; };
@@ -97,15 +94,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E7A9DAA24C58B2900FBCDF7 /* libswresample.a in Frameworks */,
-				3E7A9DA824C58B2900FBCDF7 /* libavutil.a in Frameworks */,
-				3E7A9DA924C58B2900FBCDF7 /* libpostproc.a in Frameworks */,
-				3E7A9DA524C58B2900FBCDF7 /* libavfilter.a in Frameworks */,
-				3E7A9DA424C58B2900FBCDF7 /* libavdevice.a in Frameworks */,
-				3E7A9DA324C58B2900FBCDF7 /* libavcodec.a in Frameworks */,
-				3E7A9DAB24C58B2900FBCDF7 /* libswscale.a in Frameworks */,
-				3E7A9DA624C58B2900FBCDF7 /* libavformat.a in Frameworks */,
-				3E7A9DA724C58B2900FBCDF7 /* libavresample.a in Frameworks */,
+				3E2F240824CB5E2A0030CC43 /* libswresample.a in Frameworks */,
+				3E2F240624CB5E2A0030CC43 /* libavutil.a in Frameworks */,
+				3E2F240724CB5E2A0030CC43 /* libpostproc.a in Frameworks */,
+				3E2F240324CB5E2A0030CC43 /* libavfilter.a in Frameworks */,
+				3E2F240224CB5E2A0030CC43 /* libavdevice.a in Frameworks */,
+				3E2F240124CB5E2A0030CC43 /* libavcodec.a in Frameworks */,
+				3E2F240924CB5E2A0030CC43 /* libswscale.a in Frameworks */,
+				3E2F240424CB5E2A0030CC43 /* libavformat.a in Frameworks */,
+				3E2F240524CB5E2A0030CC43 /* libavresample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +129,6 @@
 		3E52510224C23CC30023F696 /* CAndSwift */ = {
 			isa = PBXGroup;
 			children = (
-				3E5251A424C240FD0023F696 /* module.modulemap */,
 				3E52510324C23CC30023F696 /* AppDelegate.swift */,
 				3E52510724C23CC30023F696 /* MainMenu.xib */,
 				3E4DF96124C895D4008988FF /* PlayerViewController.swift */,
@@ -153,11 +149,10 @@
 				3E0BECBA24C3342B00FF69D7 /* libswresample */,
 				3E0BECBB24C3342B00FF69D7 /* libswscale */,
 				3E52510A24C23CC30023F696 /* Info.plist */,
-				3E52519724C23FA40023F696 /* ffmpeg.c */,
 				3E52519824C23FA40023F696 /* ffmpeg.h */,
-				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
 				3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */,
 				3E52510524C23CC30023F696 /* Assets.xcassets */,
+				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
 			);
 			path = CAndSwift;
 			sourceTree = "<group>";
@@ -165,15 +160,15 @@
 		3E52519A24C23FD10023F696 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3E7A9D9D24C58AFF00FBCDF7 /* libavcodec.a */,
-				3E7A9D9E24C58AFF00FBCDF7 /* libavdevice.a */,
-				3E7A9D9A24C58AFF00FBCDF7 /* libavfilter.a */,
-				3E7A9D9C24C58AFF00FBCDF7 /* libavformat.a */,
-				3E7A9DA224C58B0000FBCDF7 /* libavresample.a */,
-				3E7A9DA124C58B0000FBCDF7 /* libavutil.a */,
-				3E7A9D9B24C58AFF00FBCDF7 /* libpostproc.a */,
-				3E7A9D9F24C58AFF00FBCDF7 /* libswresample.a */,
-				3E7A9DA024C58B0000FBCDF7 /* libswscale.a */,
+				3E2F240024CB5E050030CC43 /* libavcodec.a */,
+				3E2F23FC24CB5E040030CC43 /* libavdevice.a */,
+				3E2F23FB24CB5E040030CC43 /* libavfilter.a */,
+				3E2F23FA24CB5E040030CC43 /* libavformat.a */,
+				3E2F23F824CB5E040030CC43 /* libavresample.a */,
+				3E2F23F924CB5E040030CC43 /* libavutil.a */,
+				3E2F23FD24CB5E050030CC43 /* libpostproc.a */,
+				3E2F23FE24CB5E050030CC43 /* libswresample.a */,
+				3E2F23FF24CB5E050030CC43 /* libswscale.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -282,7 +277,6 @@
 				3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */,
 				3E0BECC724C3507500FF69D7 /* Reader.swift in Sources */,
 				3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */,
-				3E52519924C23FA40023F696 /* ffmpeg.c in Sources */,
 				3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */,
 				3E0BECCD24C386B700FF69D7 /* AudioEngine.swift in Sources */,
 				3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */,
@@ -447,9 +441,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavutil,
-					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavformat,
-					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavcodec,
+					/usr/local/Cellar/ffmpeg/4.3_1/include/libavutil,
+					/usr/local/Cellar/ffmpeg/4.3_1/include/libavformat,
+					/usr/local/Cellar/ffmpeg/4.3_1/include/libavcodec,
 					"${SOURCE_ROOT}/CAndSwift/libavutil",
 					"${SOURCE_ROOT}/CAndSwift/libavformat",
 					"${SOURCE_ROOT}/CAndSwift/libavcodec",
@@ -460,10 +454,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"/usr/local/Cellar/ffmpeg/4.3_1/lib/**",
-					"/usr/local/Cellar/ffmpeg/4.2.2_3/lib/**",
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_LDFLAGS = (
 					"-lavformat",
@@ -477,8 +468,8 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "CAndSwift/CAndSwift-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				SYSTEM_HEADER_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.2.2_3/include/**";
-				USER_HEADER_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.2.2_3/include/**";
+				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
+				USER_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
 			};
 			name = Debug;
 		};
@@ -491,9 +482,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavutil,
-					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavformat,
-					/usr/local/Cellar/ffmpeg/4.2.2_3/include/libavcodec,
+					/usr/local/Cellar/ffmpeg/4.3_1/include/libavutil,
+					/usr/local/Cellar/ffmpeg/4.3_1/include/libavformat,
+					/usr/local/Cellar/ffmpeg/4.3_1/include/libavcodec,
 					"${SOURCE_ROOT}/CAndSwift/libavutil",
 					"${SOURCE_ROOT}/CAndSwift/libavformat",
 					"${SOURCE_ROOT}/CAndSwift/libavcodec",
@@ -504,10 +495,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"/usr/local/Cellar/ffmpeg/4.3_1/lib/**",
-					"/usr/local/Cellar/ffmpeg/4.2.2_3/lib/**",
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_LDFLAGS = (
 					"-lavformat",
@@ -520,8 +508,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CAndSwift/CAndSwift-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				SYSTEM_HEADER_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.2.2_3/include/**";
-				USER_HEADER_SEARCH_PATHS = "/usr/local/Cellar/ffmpeg/4.2.2_3/include/**";
+				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
+				USER_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
 			};
 			name = Release;
 		};

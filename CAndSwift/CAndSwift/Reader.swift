@@ -1,5 +1,4 @@
 import Cocoa
-import ffmpeg
 
 class Reader {
     

@@ -1,6 +1,6 @@
 import AVFoundation
 import Accelerate
-import ffmpeg
+//import ffmpeg
 
 class SamplesBuffer {
     
