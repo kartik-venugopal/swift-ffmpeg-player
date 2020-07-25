@@ -90,18 +90,31 @@ class FormatContext {
         }
     }
     
+    var readTime: Double = 0
+    
     func readPacket(_ stream: Stream) throws -> Packet? {
         
-        let packet = Packet()
-
-        let readResult: ResultCode = av_read_frame(pointer, packet.pointer)
-        guard readResult.isNonNegative else {
+        var ret: Packet? = nil
+        
+        let time = measureTime {
             
-            print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
-            throw PacketReadError(readResult)
+            let packet = Packet()
+
+            let readResult: ResultCode = av_read_frame(pointer, packet.pointer)
+            if !readResult.isNonNegative {
+                
+//                print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
+//                throw PacketReadError(readResult)
+                ret = nil
+            } else {
+            
+                ret = packet.streamIndex == stream.index ? packet : nil
+            }
         }
         
-        return packet.streamIndex == stream.index ? packet : nil
+        readTime += time
+        
+        return ret
     }
     
     func seekWithinStream(_ stream: AudioStream, _ time: Double) throws {

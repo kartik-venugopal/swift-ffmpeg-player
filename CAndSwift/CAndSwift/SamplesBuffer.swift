@@ -13,18 +13,6 @@ class SamplesBuffer {
     
     var isFull: Bool {sampleCount >= maxSampleCount}
     
-    init(sampleFormat: SampleFormat, maxSampleCount: Int32) {
-        
-        self.sampleFormat = sampleFormat
-        self.maxSampleCount = maxSampleCount
-    }
-    
-    func appendFrame(frame: Frame) {
-        
-        self.sampleCount += frame.sampleCount
-        frames.append(frame)
-    }
-    
     var opq: OperationQueue = {
         
         let opq = OperationQueue()
@@ -36,7 +24,37 @@ class SamplesBuffer {
         return opq
     }()
     
-    let planarDataMap: ConcurrentMap<Int, [[Float]]> = ConcurrentMap<Int, [[Float]]>("planar-unpacking")
+    var planarDataMap: ConcurrentMap<Int, [[Float]]>!
+    var packedDataMap: ConcurrentMap<Int, [Float]>!
+    
+    init(sampleFormat: SampleFormat, maxSampleCount: Int32) {
+        
+        self.sampleFormat = sampleFormat
+        self.maxSampleCount = maxSampleCount
+        
+        if sampleFormat.isPlanar {
+            planarDataMap = ConcurrentMap<Int, [[Float]]>("planarData-unpacking")
+        } else {
+            packedDataMap = ConcurrentMap<Int, [Float]>("packedData-unpacking")
+        }
+    }
+    
+    func appendFrame(frame: Frame) {
+        
+        self.sampleCount += frame.sampleCount
+        frames.append(frame)
+        
+        let index = frames.count - 1
+        
+        opq.addOperation {
+            
+            if self.sampleFormat.isPlanar {
+                self.planarDataMap[index] = self.frames[index].planarFloatData
+            } else {
+                self.packedDataMap[index] = self.frames[index].packedFloatData
+            }
+        }
+    }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
         
@@ -55,18 +73,16 @@ class SamplesBuffer {
                 buffer.frameLength = buffer.frameCapacity
                 let channels = buffer.floatChannelData
                 
-                var allFrames: [[[Float]]] = []
-                planarDataMap.removeAll()
-                
-                opq.addOperations((0..<frames.count).map {index in
-                    
-                    BlockOperation {
-                        self.planarDataMap[index] = self.frames[index].planarFloatData
-                    }
-                    
-                }, waitUntilFinished: true)
-                
-                allFrames = planarDataMap.kvPairs.sorted(by: {$0.0 < $1.0}).map {$0.value}
+//                opq.addOperations((0..<frames.count).map {index in
+//
+//                    BlockOperation {
+//                        self.planarDataMap[index] = self.frames[index].planarFloatData
+//                    }
+//
+//                }, waitUntilFinished: true)
+
+                opq.waitUntilAllOperationsAreFinished()
+                let allFrames: [[[Float]]] = planarDataMap.kvPairs.sorted(by: {$0.0 < $1.0}).map {$0.value}
                 
                 var sampleCountSoFar: Int = 0
                 
@@ -85,7 +101,6 @@ class SamplesBuffer {
                     
                     sampleCountSoFar += Int(frame.sampleCount)
                 }
-                
             }
             
             print("\nConstruct PLANAR: \(time * 1000) msec")
@@ -95,8 +110,6 @@ class SamplesBuffer {
         
         return nil
     }
-    
-    let packedDataMap: ConcurrentMap<Int, [Float]> = ConcurrentMap<Int, [Float]>("unpacking")
     
     func constructAudioBuffer_packed(format: AVAudioFormat) -> AVAudioPCMBuffer? {
         
@@ -109,22 +122,11 @@ class SamplesBuffer {
                 buffer.frameLength = buffer.frameCapacity
                 let channels = buffer.floatChannelData
                 
-                var allFrames: [[Float]] = []
-                packedDataMap.removeAll()
-                
-                opq.addOperations((0..<frames.count).map {index in
-                    
-                    BlockOperation {
-                        self.packedDataMap[index] = self.frames[index].packedFloatData
-                    }
-                    
-                }, waitUntilFinished: true)
-                
-                allFrames = packedDataMap.kvPairs.sorted(by: {$0.0 < $1.0}).map {$0.value}
+                opq.waitUntilAllOperationsAreFinished()
+                let allFrames: [[Float]] = packedDataMap.kvPairs.sorted(by: {$0.0 < $1.0}).map {$0.value}
                 
                 let numChannels = Int(format.channelCount)
                 var sampleCountSoFar: Int = 0
-                
                 
                 for index in 0..<frames.count {
                     

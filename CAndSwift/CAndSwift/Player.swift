@@ -43,25 +43,21 @@ class Player {
             fileCtx.audioStream.printInfo()
             fileCtx.audioCodec.printInfo()
             
-            if !fileCtx.audioCodec.open() {return}
-            
-            var time = measureTime {
-                scheduleOneBuffer(fileCtx, initialBufferDuration)
+            if !fileCtx.audioCodec.open() {
+                
+                print("\nUnable to open audio codec for file: \(file.path). Aborting playback.")
+                return
             }
             
-            print("\nTook \(Int(round(time * 1000))) msec to decode \(initialBufferDuration) seconds")
-
+            scheduleOneBuffer(fileCtx, initialBufferDuration)
+            
             audioEngine.seekTo(0)
             audioEngine.play()
             state = .playing
 
             NSLog("Playback Started !\n")
 
-            time = measureTime {
-                scheduleOneBuffer(fileCtx, 5)
-            }
-
-            print("\nTook \(Int(round(time * 1000))) msec to decode another \(initialBufferDuration) seconds")
+            scheduleOneBuffer(fileCtx, initialBufferDuration)
 
         } catch {
 
@@ -94,8 +90,9 @@ class Player {
     
     private func scheduleOneBuffer(_ fileCtx: AudioFileContext, _ seconds: Double = 10) {
         
-        print()
         NSLog("Began decoding ... \(seconds) seconds of audio")
+        
+        let time = measureTime {
         
         let formatCtx: FormatContext = fileCtx.format
         let stream = fileCtx.audioStream
@@ -122,6 +119,16 @@ class Player {
                 }
             }
         }
+        
+        print("----------------------------- BEGIN -----------------------------")
+        
+        print("\nPkt Read Time: \(Int(round(fileCtx.format.readTime * 1000))) msec")
+        print("\nDecode-Send Time: \(Int(round(fileCtx.audioCodec.sendTime * 1000))) msec")
+        print("\nDecode-Rcv Time: \(Int(round(fileCtx.audioCodec.rcvTime * 1000))) msec")
+        
+        fileCtx.format.readTime = 0
+        fileCtx.audioCodec.sendTime = 0
+        fileCtx.audioCodec.rcvTime = 0
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
@@ -160,6 +167,11 @@ class Player {
         if eof {
             NSLog("Reached EOF !!!")
         }
+        }
+        
+        print("\nTook \(Int(round(time * 1000))) msec to schedule \(seconds) seconds")
+        
+        print("\n----------------------------- END -----------------------------\n")
     }
     
     private func playbackCompleted() {

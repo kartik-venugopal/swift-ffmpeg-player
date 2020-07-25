@@ -18,7 +18,11 @@ class Frame {
     
     let sampleFormat: SampleFormat
     
+    let timestamp: Int64
+    
     init(_ frame: UnsafeMutablePointer<AVFrame>, sampleFormat: SampleFormat) {
+        
+        self.timestamp = frame.pointee.best_effort_timestamp
         
         self.channelCount = Int(frame.pointee.channels)
         self.sampleCount = frame.pointee.nb_samples

@@ -19,6 +19,7 @@ class Codec {
     }
     
     // Returns true if open was successful.
+    // TODO: Make it throw an error ???
     func open() -> Bool {
         
         let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
@@ -82,33 +83,49 @@ class AudioCodec: Codec {
         print("---------------------------------\n")
     }
     
+    var sendTime: Double = 0
+    var rcvTime: Double = 0
+    
     func decode(_ packet: Packet) throws -> [Frame] {
         
-        // Send the packet to the decoder
-        var resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
-        packet.destroy()
-
-        if resultCode.isNegative {
+        var resultCode: ResultCode = 0
+        
+        let stime = measureTime {
             
-            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode.description))")
-            throw DecoderError(resultCode)
+            // Send the packet to the decoder
+            resultCode = avcodec_send_packet(contextPointer, packet.pointer)
+            packet.destroy()
+            
+            if resultCode.isNegative {
+                
+                print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode.description))")
+                //            throw DecoderError(resultCode)
+            }
         }
+        
+        sendTime += stime
         
         // Receive (potentially) multiple frames
-
-        var frames: [Frame] = []
-        var avFrame = AVFrame()
         
-        resultCode = avcodec_receive_frame(contextPointer, &avFrame)
-
-        // Keep receiving frames while no errors are encountered
-        while resultCode.isZero, avFrame.nb_samples.isPositive {
+        var frames: [Frame] = []
+        
+        let rtime = measureTime {
             
-            frames.append(Frame(&avFrame, sampleFormat: sampleFormat))
+            var avFrame: AVFrame = AVFrame()
+            
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+            
+            // Keep receiving frames while no errors are encountered
+            while resultCode.isZero, avFrame.nb_samples.isPositive {
+                
+                frames.append(Frame(&avFrame, sampleFormat: sampleFormat))
+                resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+            }
+            
+            av_frame_unref(&avFrame)
         }
         
-        av_frame_unref(&avFrame)
+        rcvTime += rtime
         
         return frames
     }
