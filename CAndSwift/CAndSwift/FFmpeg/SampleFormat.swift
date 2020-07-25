@@ -10,6 +10,12 @@ struct SampleFormat {
     let isPlanar: Bool
     var isInterleaved: Bool {!isPlanar}
     
+    var isIntegral: Bool {
+        
+        [AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
+         AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P].contains(avFormat)
+    }
+    
     init(avFormat: AVSampleFormat) {
         
         self.avFormat = avFormat

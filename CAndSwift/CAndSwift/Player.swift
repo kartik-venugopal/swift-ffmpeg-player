@@ -4,6 +4,8 @@ class Player {
     
     let audioEngine: AudioEngine = AudioEngine()
     var audioFormat: AVAudioFormat!
+    
+    // TODO: Move this flag to the audio stream or codec
     var eof: Bool = false
     
     var scheduledBufferCount: Int = 0
@@ -26,6 +28,8 @@ class Player {
         state = audioEngine.isPlaying ? .playing : .paused
     }
     
+    private let initialBufferDuration: Double = 5
+    
     func play(_ file: URL) {
         
         stop()
@@ -42,10 +46,10 @@ class Player {
             if !fileCtx.audioCodec.open() {return}
             
             var time = measureTime {
-                scheduleOneBuffer(fileCtx, 5)
+                scheduleOneBuffer(fileCtx, initialBufferDuration)
             }
             
-            print("\nTook \(Int(round(time * 1000))) msec to decode 5 seconds")
+            print("\nTook \(Int(round(time * 1000))) msec to decode \(initialBufferDuration) seconds")
 
             audioEngine.seekTo(0)
             audioEngine.play()
@@ -57,7 +61,7 @@ class Player {
                 scheduleOneBuffer(fileCtx, 5)
             }
 
-            print("\nTook \(Int(round(time * 1000))) msec to decode another 5 seconds")
+            print("\nTook \(Int(round(time * 1000))) msec to decode another \(initialBufferDuration) seconds")
 
         } catch {
 
@@ -121,6 +125,8 @@ class Player {
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
+//            print("\nConversion time: \(Frame.convTime * 1000) msec")
+            
             audioEngine.scheduleBuffer(audioBuffer, {
 
                 self.scheduledBufferCount -= 1
@@ -136,7 +142,7 @@ class Player {
                         NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
 
                     } else if self.scheduledBufferCount == 0 {
-                        
+
                         DispatchQueue.main.async {
                             self.playbackCompleted()
                         }
@@ -167,6 +173,7 @@ class Player {
         NotificationCenter.default.post(name: .playbackCompleted, object: self)
     }
     
+    // TODO: Why doesn't seeking work for high sample rate FLAC files ? (32-bit integer interleaved)
     func seekToTime(_ seconds: Double, _ beginPlayback: Bool = true) {
         
         if let thePlayingFile = playingFile {
@@ -177,11 +184,16 @@ class Player {
                 
                 try thePlayingFile.format.seekWithinStream(thePlayingFile.audioStream, seconds)
                 
+                // TODO: Check how much seek time is remaining (i.e. duration - seekPos)
+                // and set the buffer size accordingly. Don't schedule the 2nd buffer unless necessary.
+                
                 scheduleOneBuffer(thePlayingFile, 5)
                 
                 audioEngine.seekTo(seconds)
                 audioEngine.play()
                 state = .playing
+                
+                // TODO: Check for EOF before scheduling another buffer
                 
                 scheduleOneBuffer(thePlayingFile, 5)
                 

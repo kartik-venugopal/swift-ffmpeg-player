@@ -8,8 +8,8 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var artView: NSImageView!
     @IBOutlet weak var lblTitle: NSTextField!
     
-    @IBOutlet weak var txtMetadata: NSTextView!
-    @IBOutlet weak var txtAudioInfo: NSTextView!
+    @IBOutlet var txtMetadata: NSTextView!
+    @IBOutlet var txtAudioInfo: NSTextView!
     
     @IBOutlet weak var seekSlider: NSSlider!
     @IBOutlet weak var lblSeekPos: NSTextField!
@@ -71,6 +71,9 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
     }
     
     func windowWillClose(_ notification: Notification) {
+        
+        // TODO: player.shutDownEngine() OR deinit {audioEngine.shutDown()} in Player
+        
         NSApp.terminate(self)
     }
     
@@ -79,18 +82,25 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         if dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url {
             
             self.file = url
-            if let trackInfo: TrackInfo = metadataReader.readTrack(url) {
+            
+            player.play(url)
+            btnPlayPause.image = imgPause
+            
+            DispatchQueue.global(qos: .userInteractive).async {
                 
-                self.trackInfo = trackInfo
-
-                showMetadata(url, trackInfo)
-                showAudioInfo(trackInfo.audioInfo)
-                
-                player.play(url)
-                btnPlayPause.image = imgPause
-                
-                if seekPosTimer == nil {
-                    seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateSeekPosition(_:)), userInfo: nil, repeats: true)
+                if let trackInfo: TrackInfo = self.metadataReader.readTrack(url) {
+                    
+                    self.trackInfo = trackInfo
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.showMetadata(url, trackInfo)
+                        self.showAudioInfo(trackInfo.audioInfo)
+                        
+                        if self.seekPosTimer == nil {
+                            self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
+                        }
+                    }
                 }
             }
         }

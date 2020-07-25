@@ -97,6 +97,8 @@ class Frame {
         return allFloatData
     }
     
+    static var convTime: Double = 0
+    
     var packedFloatData: [Float] {
         
         let sampleCountForAllChannels: Int = Int(sampleCount) * channelCount
@@ -123,8 +125,16 @@ class Frame {
         // Signed 32-bit integer
         case AV_SAMPLE_FMT_S32:
             
-            let reboundData: UnsafePointer<Int32> = allBytes.withMemoryRebound(to: Int32.self, capacity: sampleCountForAllChannels){$0}
-            return (0..<sampleCountForAllChannels).map {Float(reboundData[$0]) / max32BitFloatVal}
+            var floats: [Float] = []
+            
+            let ctime = measureTime {
+                
+                let reboundData: UnsafePointer<Int32> = allBytes.withMemoryRebound(to: Int32.self, capacity: sampleCountForAllChannels){$0}
+                floats = (0..<sampleCountForAllChannels).map {Float(reboundData[$0]) / max32BitFloatVal}
+            }
+            
+            Self.convTime += ctime
+            return floats
             
         // Signed 64-bit integer
         case AV_SAMPLE_FMT_S64:
