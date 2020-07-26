@@ -40,9 +40,11 @@
 		3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36D24C8237A0023C2D3 /* Packet.swift */; };
 		3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36F24C823AA0023C2D3 /* Errors.swift */; };
 		3E6ADBD524CC1B9400AB2678 /* ConcurrentMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */; };
+		3E6ADBD724CCC21E00AB2678 /* AtomicCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */; };
 		3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C6D24C983D2000379BF /* BufferFileWriter.swift */; };
 		3E857C7024C9D8C0000379BF /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C6F24C9D8C0000379BF /* Frame.swift */; };
 		3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E857C7124C9E3C9000379BF /* SampleFormat.swift */; };
+		3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E88343724CE13BF00B81A2C /* Resampler.swift */; };
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
 		3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */; };
 /* End PBXBuildFile section */
@@ -86,9 +88,11 @@
 		3E67F36D24C8237A0023C2D3 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		3E67F36F24C823AA0023C2D3 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentMap.swift; sourceTree = "<group>"; };
+		3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicCounter.swift; sourceTree = "<group>"; };
 		3E857C6D24C983D2000379BF /* BufferFileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferFileWriter.swift; sourceTree = "<group>"; };
 		3E857C6F24C9D8C0000379BF /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		3E857C7124C9E3C9000379BF /* SampleFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleFormat.swift; sourceTree = "<group>"; };
+		3E88343724CE13BF00B81A2C /* Resampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resampler.swift; sourceTree = "<group>"; };
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
 		3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesBuffer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -159,6 +163,8 @@
 				3E52510A24C23CC30023F696 /* Info.plist */,
 				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
 				3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */,
+				3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */,
+				3E88343724CE13BF00B81A2C /* Resampler.swift */,
 			);
 			path = CAndSwift;
 			sourceTree = "<group>";
@@ -279,8 +285,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E0BECC924C3533800FF69D7 /* Mapper.swift in Sources */,
+				3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */,
 				3E857C7024C9D8C0000379BF /* Frame.swift in Sources */,
 				3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */,
+				3E6ADBD724CCC21E00AB2678 /* AtomicCounter.swift in Sources */,
 				3E0BECC724C3507500FF69D7 /* MetadataReader.swift in Sources */,
 				3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */,
 				3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */,
@@ -445,18 +453,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = CAndSwift/CAndSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/Cellar/ffmpeg/4.3_1/include/libavutil,
-					/usr/local/Cellar/ffmpeg/4.3_1/include/libavformat,
-					/usr/local/Cellar/ffmpeg/4.3_1/include/libavcodec,
-					"${SOURCE_ROOT}/CAndSwift/libavutil",
-					"${SOURCE_ROOT}/CAndSwift/libavformat",
-					"${SOURCE_ROOT}/CAndSwift/libavcodec",
-					"${SOURCE_ROOT}/**",
-				);
+				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/**";
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -486,18 +487,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = CAndSwift/CAndSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/Cellar/ffmpeg/4.3_1/include/libavutil,
-					/usr/local/Cellar/ffmpeg/4.3_1/include/libavformat,
-					/usr/local/Cellar/ffmpeg/4.3_1/include/libavcodec,
-					"${SOURCE_ROOT}/CAndSwift/libavutil",
-					"${SOURCE_ROOT}/CAndSwift/libavformat",
-					"${SOURCE_ROOT}/CAndSwift/libavcodec",
-					"${SOURCE_ROOT}/**",
-				);
+				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/**";
 				INFOPLIST_FILE = CAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

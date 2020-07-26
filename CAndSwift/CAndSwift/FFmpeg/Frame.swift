@@ -1,11 +1,32 @@
 import Foundation
 
-fileprivate let max8BitFloatVal: Float = Float(Int8.max)
-fileprivate let max16BitFloatVal: Float = Float(Int16.max)
-fileprivate let max32BitFloatVal: Float = Float(Int32.max)
-fileprivate let max64BitDoubleVal: Double = Double(Int64.max)
+// The 0.5 correction is added because, for signed integers, abs(min) = abs(max) + 1
+// (eg. for Int8, the range is -128...127, which would result in some converted Float sample values being < -1.
+// The 0.5 correction shifts the range up so that it is centered exactly at 0 which is where our samples should
+// be centered (-1...1).
 
-class Frame {
+fileprivate let max8BitFloatVal: Float = Float(Int8.max) + 0.5
+fileprivate let max16BitFloatVal: Float = Float(Int16.max) + 0.5
+fileprivate let max32BitFloatVal: Float = Float(Int32.max) + 0.5
+fileprivate let max64BitDoubleVal: Double = Double(Int64.max) + 0.5
+
+protocol SignedIntegerFrameProtocol {
+    
+}
+
+protocol UnsignedIntegerFrameProtocol {
+    
+}
+
+class Frame: Hashable {
+    
+    static func == (lhs: Frame, rhs: Frame) -> Bool {
+        lhs.timestamp == rhs.timestamp
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(timestamp)
+    }
     
     private var _dataArray: [Data]
     var dataArray: [Data] {_dataArray}
@@ -64,7 +85,11 @@ class Frame {
             case AV_SAMPLE_FMT_S16P:
                 
                 let reboundData: UnsafePointer<Int16> = bytesForChannel.withMemoryRebound(to: Int16.self, capacity: intSampleCount){$0}
-                floatsForChannel = (0..<intSampleCount).map {Float(reboundData[$0]) / max16BitFloatVal}
+                floatsForChannel = (0..<intSampleCount).map {(Float(reboundData[$0]) + 0.5) / max16BitFloatVal}
+                
+//                let swr = swr_alloc()
+//                av_opt_set_channel_layout(swr, "in_channel_layout", AV_CH_LAYOUT_STEREO, <#T##search_flags: Int32##Int32#>)
+//                av_samples_alloc(<#T##audio_data: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!##UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!#>, <#T##linesize: UnsafeMutablePointer<Int32>!##UnsafeMutablePointer<Int32>!#>, <#T##nb_channels: Int32##Int32#>, <#T##nb_samples: Int32##Int32#>, <#T##sample_fmt: AVSampleFormat##AVSampleFormat#>, <#T##align: Int32##Int32#>)
 
             // Signed 32-bit integer
             case AV_SAMPLE_FMT_S32P:
@@ -124,7 +149,7 @@ class Frame {
         case AV_SAMPLE_FMT_S16:
             
             let reboundData: UnsafePointer<Int16> = allBytes.withMemoryRebound(to: Int16.self, capacity: sampleCountForAllChannels){$0}
-            return (0..<sampleCountForAllChannels).map {Float(reboundData[$0]) / max16BitFloatVal}
+            return (0..<sampleCountForAllChannels).map {(Float(reboundData[$0]) + 0.5) / max16BitFloatVal}
 
         // Signed 32-bit integer
         case AV_SAMPLE_FMT_S32:
@@ -161,6 +186,66 @@ class Frame {
         
             print("Invalid sample format", sampleFormat.name)
             return []
+        }
+    }
+}
+
+class Unsigned8BitIntegerFrame: Frame {
+
+    var floatData: [[Float]] {
+        
+        var allFloatData: [[Float]] = []
+        let intSampleCount: Int = Int(sampleCount)
+        
+        for bytesForChannel in dataPointers {
+            
+            // Subtract 127 to make the unsigned byte signed (8-bit samples are always unsigned)
+            let reboundData: UnsafePointer<UInt8> = bytesForChannel.withMemoryRebound(to: UInt8.self, capacity: intSampleCount){$0}
+            let floatsForChannel: [Float] = (0..<intSampleCount).map {Float(Int16(reboundData[$0]) - 128) / max8BitFloatVal}
+            
+            allFloatData.append(floatsForChannel)
+        }
+        
+        return allFloatData
+    }
+}
+
+class SignedIntegerFrame<T>: Frame where T : SignedInteger {
+    
+    // Override this !
+    var maxSignedValueAsFloat: Float {0}
+
+    var floatData: [[Float]] {
+        
+        let intSampleCount: Int = Int(sampleCount)
+        
+        return dataPointers.map {bytesForChannel in
+            
+            let reboundData: UnsafePointer<T> = bytesForChannel.withMemoryRebound(to: T.self, capacity: intSampleCount){$0}
+            return (0..<intSampleCount).map {Float(reboundData[$0]) / maxSignedValueAsFloat}
+        }
+    }
+}
+
+class Signed16BitIntegerFrame: SignedIntegerFrame<Int16> {
+    override var maxSignedValueAsFloat: Float {max16BitFloatVal}
+}
+
+class Signed32BitIntegerFrame: SignedIntegerFrame<Int32> {
+    override var maxSignedValueAsFloat: Float {max32BitFloatVal}
+}
+
+class Signed64BitIntegerFrame: Frame {
+    
+    var floatData: [[Float]] {
+        
+        let intSampleCount: Int = Int(sampleCount)
+        
+        return dataPointers.map {bytesForChannel in
+            
+            // Subtract 127 to make the unsigned byte signed (8-bit samples are always unsigned)
+            let reboundData: UnsafePointer<Int64> = bytesForChannel.withMemoryRebound(to: Int64.self, capacity: intSampleCount){$0}
+            return (0..<intSampleCount).map {Float(Double(reboundData[$0]) / max64BitDoubleVal)}
         }
     }
 }
