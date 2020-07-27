@@ -6,6 +6,7 @@ fileprivate let resampler: Resampler = Resampler()
 class SamplesBuffer {
     
     var frames: [Frame] = []
+    var cls: Set<UInt64> = Set<UInt64>()
     
     let sampleFormat: SampleFormat
     var sampleCount: Int32 = 0
@@ -23,9 +24,16 @@ class SamplesBuffer {
         
         self.sampleCount += frame.sampleCount
         frames.append(frame)
+        
+//        if frames.count == 1 {
+//        print("\n\(frames.count): Frame Channel Layout:", frame.channelLayout)
+        cls.insert(frame.channelLayout)
+//        }
     }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
+        
+        print("\nFrames Channel Layout:", cls)
         
         guard sampleCount > 0 else {return nil}
         

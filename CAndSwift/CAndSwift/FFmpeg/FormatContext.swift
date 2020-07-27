@@ -94,27 +94,16 @@ class FormatContext {
     
     func readPacket(_ stream: Stream) throws -> Packet? {
         
-        var ret: Packet? = nil
-        
-        let time = measureTime {
-            
-            let packet = Packet()
+        let packet = Packet()
 
-            let readResult: ResultCode = av_read_frame(pointer, packet.pointer)
-            if !readResult.isNonNegative {
-                
-//                print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
-//                throw PacketReadError(readResult)
-                ret = nil
-            } else {
+        let readResult: Int32 = av_read_frame(pointer, &packet.avPacket)
+        guard readResult >= 0 else {
             
-                ret = packet.streamIndex == stream.index ? packet : nil
-            }
+            print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
+            throw PacketReadError(readResult)
         }
         
-        readTime += time
-        
-        return ret
+        return packet.streamIndex == stream.index ? packet : nil
     }
     
     func seekWithinStream(_ stream: AudioStream, _ time: Double) throws {
@@ -149,19 +138,19 @@ class FormatContext {
         return metadata
     }
     
-    private var destroyed: Bool = false
-    
-    func destroy() {
-        
-        if destroyed {return}
-        
-        avformat_close_input(&pointer)
-        avformat_free_context(pointer)
-        
-        destroyed = true
-    }
-    
-    deinit {
-        destroy()
-    }
+//    private var destroyed: Bool = false
+//
+//    func destroy() {
+//
+//        if destroyed {return}
+//
+//        avformat_close_input(&pointer)
+//        avformat_free_context(pointer)
+//        
+//        destroyed = true
+//    }
+//
+//    deinit {
+//        destroy()
+//    }
 }

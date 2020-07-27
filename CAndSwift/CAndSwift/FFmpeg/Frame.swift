@@ -2,6 +2,8 @@ import Foundation
 
 class Frame: Hashable {
     
+    static var ctr: Int = 0
+    
     var dataPointers: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?>
     
     let channelLayout: UInt64
@@ -14,11 +16,15 @@ class Frame: Hashable {
     
     let timestamp: Int64
     
-    init(_ frame: UnsafeMutablePointer<AVFrame>, sampleFormat: SampleFormat) {
+    // channelLayout comes from the Codec (cannot rely on avFrame.channel_layout).
+    init(_ frame: UnsafeMutablePointer<AVFrame>, sampleFormat: SampleFormat, channelLayout: UInt64) {
+        
+        Self.ctr += 1
+        print("\nCreating frame# \(Self.ctr) \(frame.pointee.nb_samples) \(frame.pointee.format)")
         
         self.timestamp = frame.pointee.best_effort_timestamp
 
-        self.channelLayout = frame.pointee.channel_layout
+        self.channelLayout = channelLayout
         self.channelCount = Int(frame.pointee.channels)
         self.sampleCount = frame.pointee.nb_samples
         self.sampleRate = frame.pointee.sample_rate
@@ -26,18 +32,17 @@ class Frame: Hashable {
         
         self.sampleFormat = sampleFormat
         
-        let inData = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: 4)
-        inData.initialize(to: nil)
-        av_samples_alloc(inData, nil, Int32(channelCount), sampleCount, sampleFormat.avFormat, 0)
-        self.dataPointers = UnsafeMutableBufferPointer(start: inData, count: 4)
-        
         let bufferPointers = frame.pointee.dataPointers
+        let ptrs = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: channelCount)
         
         for channelIndex in (0..<8) {
             
             guard let buffer = bufferPointers[channelIndex] else {break}
-            memcpy(inData[channelIndex], buffer, lineSize)
+            ptrs[channelIndex] = UnsafeMutablePointer<UInt8>.allocate(capacity: lineSize)
+            ptrs[channelIndex]?.initialize(from: buffer, count: lineSize)
         }
+        
+        self.dataPointers = UnsafeMutableBufferPointer(start: ptrs, count: channelCount)
     }
     
     static func == (lhs: Frame, rhs: Frame) -> Bool {

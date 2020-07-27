@@ -30,27 +30,27 @@ class Codec {
         return codecOpenResult.isZero
     }
     
-    private var destroyed: Bool = false
+//    private var destroyed: Bool = false
     
-    func destroy() {
-        
-        if destroyed {return}
-        
-        // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
-        // Can we check something before proceeding ???
-        
-        if avcodec_is_open(contextPointer).isPositive {
-            avcodec_close(contextPointer)
-        }
-        
-        avcodec_free_context(&contextPointer)
-        
-        destroyed = true
-    }
-    
-    deinit {
-        destroy()
-    }
+//    func destroy() {
+//
+//        if destroyed {return}
+//
+//        // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
+//        // Can we check something before proceeding ???
+//
+//        if avcodec_is_open(contextPointer).isPositive {
+//            avcodec_close(contextPointer)
+//        }
+//
+//        avcodec_free_context(&contextPointer)
+//
+//        destroyed = true
+//    }
+//
+//    deinit {
+//        destroy()
+//    }
 }
 
 class AudioCodec: Codec {
@@ -59,6 +59,7 @@ class AudioCodec: Codec {
     var sampleRate: Int32 = 0
     var sampleFormat: SampleFormat = SampleFormat(avFormat: AVSampleFormat(0))
     var channelCount: Int = 0
+    var channelLayout: UInt64 = 0
     
     override init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
         
@@ -69,7 +70,13 @@ class AudioCodec: Codec {
         self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
         self.channelCount = Int(context.channels)
         
-        print("\nCh Layout in Codec is:", context.channel_layout)
+        // Correct channel layout if necessary
+        self.channelLayout = context.channel_layout
+        if self.channelLayout == 0 {
+            
+            self.channelLayout = UInt64(av_get_default_channel_layout(context.channels))
+            print("\nCodec - Corrected channel layout from \(context.channel_layout) -> \(self.channelLayout)")
+        }
     }
     
     func printInfo() {
@@ -90,44 +97,36 @@ class AudioCodec: Codec {
     
     func decode(_ packet: Packet) throws -> [Frame] {
         
-        var resultCode: ResultCode = 0
-        
-        let stime = measureTime {
+        // Send the packet to the decoder
+        var resultCode: Int32 = packet.sendTo(contextPointer)
+        packet.destroy()
+
+        if resultCode.isNegative {
             
-            // Send the packet to the decoder
-            resultCode = avcodec_send_packet(contextPointer, packet.pointer)
-            packet.destroy()
-            
-            if resultCode.isNegative {
-                
-                print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode.description))")
-                //            throw DecoderError(resultCode)
-            }
+            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode) \(resultCode.errorDescription))")
+            throw DecoderError(resultCode)
         }
-        
-        sendTime += stime
         
         // Receive (potentially) multiple frames
-        
+
         var frames: [Frame] = []
+        var avFrame = AVFrame()
         
-        let rtime = measureTime {
+        var ctr: Int = 0
+        
+        resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+        
+        // Keep receiving frames while no errors are encountered
+        while resultCode.isZero, avFrame.nb_samples.isPositive {
             
-            var avFrame: AVFrame = AVFrame()
+            ctr += 1
+            print("\nCODEC - CTR: \(ctr)")
             
+            frames.append(Frame(&avFrame, sampleFormat: sampleFormat, channelLayout: self.channelLayout))
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
-            
-            // Keep receiving frames while no errors are encountered
-            while resultCode.isZero, avFrame.nb_samples.isPositive {
-                
-                frames.append(Frame(&avFrame, sampleFormat: sampleFormat))
-                resultCode = avcodec_receive_frame(contextPointer, &avFrame)
-            }
-            
-            av_frame_unref(&avFrame)
         }
         
-        rcvTime += rtime
+        av_frame_unref(&avFrame)
         
         return frames
     }

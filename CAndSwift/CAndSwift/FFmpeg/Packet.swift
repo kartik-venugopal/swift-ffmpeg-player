@@ -2,7 +2,6 @@ import Foundation
 
 class Packet {
     
-    let pointer: UnsafeMutablePointer<AVPacket>
     var avPacket: AVPacket
     
     var streamIndex: Int32 {avPacket.stream_index}
@@ -10,12 +9,18 @@ class Packet {
     var duration: Int64 {avPacket.duration}
     
     init() {
-        
         self.avPacket = AVPacket()
-        self.pointer = withUnsafeMutablePointer(to: &avPacket, {$0})
     }
     
     func destroy() {
-        av_packet_unref(pointer)
+        av_packet_unref(&avPacket)
+    }
+    
+    func readFrom(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) -> ResultCode {
+        return av_read_frame(formatCtx, &avPacket)
+    }
+    
+    func sendTo(_ codecCtx: UnsafeMutablePointer<AVCodecContext>?) -> ResultCode {
+        return avcodec_send_packet(codecCtx, &avPacket)
     }
 }

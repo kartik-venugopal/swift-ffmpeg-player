@@ -4,19 +4,21 @@ class Resampler {
     
     var outData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
+    private let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
+    
     init() {
         
         let time = measureTime {
             
         // Initialize memory space to hold the output of conversions. This memory space will be reused for all conversions.
         // It is inefficient to do this repeatedly, once per conversion. So do it once and reuse the space.
-        outData = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: 4)
+        outData = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: 8)
         outData.initialize(to: nil)
         
         // Assume a maximum required memory space corresponding to sampleRate=352,800Hz, duration=10sec, channelCount=8.
         // This should accommodate (be big enough for) all possible conversions.
-        av_samples_alloc(outData, nil, 2, 44100 * 60, AV_SAMPLE_FMT_FLTP, 0)
-            
+        av_samples_alloc(outData, nil, 8, 352800 * 60, AV_SAMPLE_FMT_FLTP, 0)
+        
         }
         
         print("\nTook \(time * 1000) msec to allocate space for Resampler.")
@@ -29,10 +31,7 @@ class Resampler {
         var swr: OpaquePointer? = swr_alloc()
         let uswr = UnsafeMutableRawPointer(swr)
         
-        // TODO: Check channel layout of Bourne.wav ... I saw 0 before. Should be 3 ??? STEREO ???
-        
-        var channelLayout = Int64(frame.channelLayout)
-        channelLayout = channelLayout == 0 ? 3 : channelLayout
+        let channelLayout = frame.channelLayout > 0 ? Int64(frame.channelLayout) : defaultChannelLayout
         av_opt_set_channel_layout(uswr, "in_channel_layout", channelLayout, 0)
         av_opt_set_channel_layout(uswr, "out_channel_layout", channelLayout, 0)
         
@@ -47,7 +46,7 @@ class Resampler {
         
         // Destination
         
-        let outDataPtr: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outData, count: 4)
+        let outDataPtr: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outData, count: 8)
         
         _ = frame.dataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self) { inDataPtr in
             swr_convert(swr, outDataPtr.baseAddress, sampleCount, inDataPtr.baseAddress!, sampleCount)
@@ -76,6 +75,7 @@ class Resampler {
             
             guard let bytesForChannel = ptr[channelIndex] else {break}
             
+            // TODO: Can we simply read the floats here instead of returning the pointer ? Is this safe ???
             floats.append(bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
             {Array(UnsafeBufferPointer(start: $0, count: intSampleCount))})
         }

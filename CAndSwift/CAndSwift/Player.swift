@@ -92,7 +92,7 @@ class Player {
         
         NSLog("Began decoding ... \(seconds) seconds of audio")
         
-        let time = measureTime {
+//        let time = measureTime {
         
         let formatCtx: FormatContext = fileCtx.format
         let stream = fileCtx.audioStream
@@ -122,13 +122,15 @@ class Player {
         
         print("----------------------------- BEGIN -----------------------------")
         
-        print("\nPkt Read Time: \(Int(round(fileCtx.format.readTime * 1000))) msec")
-        print("\nDecode-Send Time: \(Int(round(fileCtx.audioCodec.sendTime * 1000))) msec")
-        print("\nDecode-Rcv Time: \(Int(round(fileCtx.audioCodec.rcvTime * 1000))) msec")
+//        print("\nPkt Read Time: \(Int(round(fileCtx.format.readTime * 1000))) msec")
+//        print("\nDecode-Send Time: \(Int(round(fileCtx.audioCodec.sendTime * 1000))) msec")
+//        print("\nDecode-Rcv Time: \(Int(round(fileCtx.audioCodec.rcvTime * 1000))) msec")
         
         fileCtx.format.readTime = 0
         fileCtx.audioCodec.sendTime = 0
         fileCtx.audioCodec.rcvTime = 0
+            
+        print("\nCodec Channel Layout:", fileCtx.audioCodec.context.channel_layout)
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
@@ -167,9 +169,9 @@ class Player {
         if eof {
             NSLog("Reached EOF !!!")
         }
-        }
+//        }
         
-        print("\nTook \(Int(round(time * 1000))) msec to schedule \(seconds) seconds")
+//        print("\nTook \(Int(round(time * 1000))) msec to schedule \(seconds) seconds")
         
         print("\n----------------------------- END -----------------------------\n")
     }
@@ -180,7 +182,7 @@ class Player {
         
         stop()
         audioEngine.playbackCompleted()
-        playingFile?.destroy()
+//        playingFile?.destroy()
         
         NotificationCenter.default.post(name: .playbackCompleted, object: self)
     }

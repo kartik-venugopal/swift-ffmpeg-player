@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
         
         super.init()
-        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
+//        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
