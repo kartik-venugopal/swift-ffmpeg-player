@@ -68,14 +68,11 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         self.view.window?.delegate = self
         
         NotificationCenter.default.addObserver(forName: .playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
-        
-//        player.play(URL(fileURLWithPath: "/Volumes/MyData/Music/Aural-Test/0Rednex.ogg"))
     }
     
     func windowWillClose(_ notification: Notification) {
         
         // TODO: player.shutDownEngine() OR deinit {audioEngine.shutDown()} in Player
-        
         NSApp.terminate(self)
     }
     
@@ -88,23 +85,23 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
             player.play(url)
             btnPlayPause.image = imgPause
             
-//            DispatchQueue.global(qos: .userInteractive).async {
-//
-//                if let trackInfo: TrackInfo = self.metadataReader.readTrack(url) {
-//
-//                    self.trackInfo = trackInfo
-//
-//                    DispatchQueue.main.async {
-//
-//                        self.showMetadata(url, trackInfo)
-//                        self.showAudioInfo(trackInfo.audioInfo)
-//
-//                        if self.seekPosTimer == nil {
-//                            self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
-//                        }
-//                    }
-//                }
-//            }
+            DispatchQueue.global(qos: .userInteractive).async {
+
+                if let trackInfo: TrackInfo = self.metadataReader.readTrack(url) {
+
+                    self.trackInfo = trackInfo
+
+                    DispatchQueue.main.async {
+
+                        self.showMetadata(url, trackInfo)
+                        self.showAudioInfo(trackInfo.audioInfo)
+
+                        if self.seekPosTimer == nil {
+                            self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -198,7 +195,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
     @IBAction func stopAction(_ sender: AnyObject) {
         
         player.stop()
-        btnPlayPause.image = imgPlay
+        playbackCompleted()
     }
     
     @IBAction func seekAction(_ sender: AnyObject) {

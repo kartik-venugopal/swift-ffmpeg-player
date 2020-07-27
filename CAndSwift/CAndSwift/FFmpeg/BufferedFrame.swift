@@ -16,7 +16,6 @@ class BufferedFrame: Hashable {
     
     let timestamp: Int64
     
-    // channelLayout comes from the Codec (cannot rely on avFrame.channel_layout).
     init(_ frame: Frame) {
         
         self.timestamp = frame.timestamp
