@@ -68,6 +68,8 @@ class AudioCodec: Codec {
         self.sampleRate = context.sample_rate
         self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
         self.channelCount = Int(context.channels)
+        
+        print("\nCh Layout in Codec is:", context.channel_layout)
     }
     
     func printInfo() {

@@ -29,7 +29,10 @@ class Resampler {
         var swr: OpaquePointer? = swr_alloc()
         let uswr = UnsafeMutableRawPointer(swr)
         
-        let channelLayout = Int64(frame.channelLayout)
+        // TODO: Check channel layout of Bourne.wav ... I saw 0 before. Should be 3 ??? STEREO ???
+        
+        var channelLayout = Int64(frame.channelLayout)
+        channelLayout = channelLayout == 0 ? 3 : channelLayout
         av_opt_set_channel_layout(uswr, "in_channel_layout", channelLayout, 0)
         av_opt_set_channel_layout(uswr, "out_channel_layout", channelLayout, 0)
         
@@ -52,18 +55,7 @@ class Resampler {
         
         swr_free(&swr)
         
-        var floats: [[Float]] = []
-        let intSampleCount: Int = Int(sampleCount)
-        
-        for channelIndex in 0..<frame.channelCount {
-            
-            guard let bytesForChannel = outData[channelIndex] else {break}
-            
-            floats.append(bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
-            {Array(UnsafeBufferPointer(start: $0, count: intSampleCount))})
-        }
-        
-        return floats
+        return pointerToFloats(outData, frame)
     }
     
     func resample(_ frame: Frame) -> [[Float]] {
@@ -72,11 +64,22 @@ class Resampler {
             return doResample(frame)
         }
         
-        let sampleCount: Int = Int(frame.sampleCount)
-        return []
+        return pointerToFloats(frame.dataPointers.baseAddress!, frame)
+    }
+    
+    private func pointerToFloats(_ ptr: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>, _ frame: Frame) -> [[Float]] {
         
-//        return frame.dataPointers.map {
-//            Array(UnsafeBufferPointer(start: $0.withMemoryRebound(to: Float.self, capacity: sampleCount){$0}, count: sampleCount))
-//        }
+        var floats: [[Float]] = []
+        let intSampleCount: Int = Int(frame.sampleCount)
+        
+        for channelIndex in 0..<frame.channelCount {
+            
+            guard let bytesForChannel = ptr[channelIndex] else {break}
+            
+            floats.append(bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
+            {Array(UnsafeBufferPointer(start: $0, count: intSampleCount))})
+        }
+        
+        return floats
     }
 }
