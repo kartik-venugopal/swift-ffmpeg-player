@@ -41,3 +41,10 @@ class Frame {
         destroy()
     }
 }
+
+extension AVFrame {
+    
+    var dataPointers: [UnsafeMutablePointer<UInt8>?] {
+        Array(UnsafeBufferPointer(start: self.extended_data, count: 8))
+    }
+}

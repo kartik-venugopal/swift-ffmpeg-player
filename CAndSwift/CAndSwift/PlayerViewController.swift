@@ -86,8 +86,16 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
             btnPlayPause.image = imgPause
             
             DispatchQueue.global(qos: .userInteractive).async {
+                
+                var info: TrackInfo?
+                
+                let time = measureTime {
+                    info = self.metadataReader.readTrack(url)
+                }
+                
+                print("Time to read info: \(time * 1000) msec")
 
-                if let trackInfo: TrackInfo = self.metadataReader.readTrack(url) {
+                if let trackInfo: TrackInfo = info {
 
                     self.trackInfo = trackInfo
 
