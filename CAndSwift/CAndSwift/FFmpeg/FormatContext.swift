@@ -133,19 +133,19 @@ class FormatContext {
         return metadata
     }
     
-//    private var destroyed: Bool = false
-//
-//    func destroy() {
-//
-//        if destroyed {return}
-//
-//        avformat_close_input(&pointer)
-//        avformat_free_context(pointer)
-//        
-//        destroyed = true
-//    }
-//
-//    deinit {
-//        destroy()
-//    }
+    private var destroyed: Bool = false
+
+    func destroy() {
+
+        if destroyed {return}
+
+        avformat_close_input(&pointer)
+        avformat_free_context(pointer)
+        
+        destroyed = true
+    }
+
+    deinit {
+        destroy()
+    }
 }

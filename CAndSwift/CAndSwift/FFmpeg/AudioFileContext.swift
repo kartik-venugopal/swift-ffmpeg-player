@@ -29,13 +29,19 @@ class AudioFileContext {
         self.imageCodec = imageStream?.codec as? ImageCodec
     }
     
-//    func destroy() {
-//
-//        audioCodec.destroy()
-//        format.destroy()
-//    }
-//
-//    deinit {
-//        destroy()
-//    }
+    private var destroyed: Bool = false
+    
+    func destroy() {
+        
+        if destroyed {return}
+
+        audioCodec.destroy()
+        format.destroy()
+        
+        destroyed = true
+    }
+
+    deinit {
+        destroy()
+    }
 }

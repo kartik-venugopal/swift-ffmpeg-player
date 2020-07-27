@@ -61,8 +61,6 @@ class Player {
             audioEngine.play()
             state = .playing
 
-            NSLog("Playback Started !\n")
-
             scheduleOneBuffer(fileCtx, initialBufferDuration)
 
         } catch {
@@ -96,8 +94,6 @@ class Player {
     
     private func scheduleOneBuffer(_ fileCtx: AudioFileContext, _ seconds: Double = 10) {
         
-        NSLog("Began decoding ... \(seconds) seconds of audio")
-        
         let time = measureTime {
         
         let formatCtx: FormatContext = fileCtx.format
@@ -111,6 +107,7 @@ class Player {
             do {
                 
                 if let packet = try formatCtx.readPacket(stream) {
+                    
                     for frame in try codec.decode(packet) {
                         buffer.appendFrame(frame: frame)
                     }
@@ -136,8 +133,6 @@ class Player {
         fileCtx.audioCodec.sendTime = 0
         fileCtx.audioCodec.rcvTime = 0
             
-        print("\nCodec Channel Layout:", fileCtx.audioCodec.context.channel_layout)
-        
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
             audioEngine.scheduleBuffer(audioBuffer, {
@@ -148,11 +143,7 @@ class Player {
 
                     if !self.eof {
 
-                        let time = measureTime {
-                            self.scheduleOneBuffer(fileCtx)
-                        }
-
-                        NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
+                        self.scheduleOneBuffer(fileCtx)
 
                     } else if self.scheduledBufferCount == 0 {
 
@@ -167,12 +158,14 @@ class Player {
 //            BufferFileWriter.writeBuffer(audioBuffer)
 //            BufferFileWriter.closeFile()
             
-//            scheduledBufferCount += 1
+            scheduledBufferCount += 1
         }
         
         if eof {
             NSLog("Reached EOF !!!")
         }
+            
+        buffer.destroy()
             
         }
         
@@ -187,7 +180,7 @@ class Player {
         
         stop()
         audioEngine.playbackCompleted()
-//        playingFile?.destroy()
+        playingFile?.destroy()
         
         NotificationCenter.default.post(name: .playbackCompleted, object: self)
     }

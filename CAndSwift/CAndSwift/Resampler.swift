@@ -10,8 +10,6 @@ class Resampler {
     
     private init() {
         
-        print("\nRESAMPLER INIT !!!")
-        
         let time = measureTime {
             
         // Initialize memory space to hold the output of conversions. This memory space will be reused for all conversions.

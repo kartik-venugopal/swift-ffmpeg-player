@@ -49,6 +49,8 @@ class SamplesBuffer {
                     cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: sampleCountSoFar), 1)
                 }
                 
+                frameFloats.forEach {$0.deallocate()}
+                
                 sampleCountSoFar += Int(frame.sampleCount)
             }
             
@@ -58,7 +60,17 @@ class SamplesBuffer {
         return nil
     }
     
+    private var destroyed: Bool = false
+    
+    func destroy() {
+        
+        if destroyed {return}
+        
+        frames.forEach {$0.destroy()}
+        destroyed = true
+    }
+    
     deinit {
-        // TODO: Free all the allocated memory
+        destroy()
     }
 }

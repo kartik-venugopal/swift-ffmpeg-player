@@ -30,27 +30,27 @@ class Codec {
         return codecOpenResult.isZero
     }
     
-//    private var destroyed: Bool = false
+    private var destroyed: Bool = false
     
-//    func destroy() {
-//
-//        if destroyed {return}
-//
-//        // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
-//        // Can we check something before proceeding ???
-//
-//        if avcodec_is_open(contextPointer).isPositive {
-//            avcodec_close(contextPointer)
-//        }
-//
-//        avcodec_free_context(&contextPointer)
-//
-//        destroyed = true
-//    }
-//
-//    deinit {
-//        destroy()
-//    }
+    func destroy() {
+
+        if destroyed {return}
+
+        // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
+        // Can we check something before proceeding ???
+
+        if avcodec_is_open(contextPointer).isPositive {
+            avcodec_close(contextPointer)
+        }
+
+        avcodec_free_context(&contextPointer)
+
+        destroyed = true
+    }
+
+    deinit {
+        destroy()
+    }
 }
 
 class AudioCodec: Codec {

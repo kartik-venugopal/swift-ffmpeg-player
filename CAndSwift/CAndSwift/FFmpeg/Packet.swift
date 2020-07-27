@@ -19,15 +19,24 @@ class Packet {
         }
     }
     
-    func destroy() {
-        av_packet_unref(&avPacket)
-    }
-    
     func readFrom(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) -> ResultCode {
         return av_read_frame(formatCtx, &avPacket)
     }
     
     func sendTo(_ codec: Codec) -> ResultCode {
         return avcodec_send_packet(codec.contextPointer, &avPacket)
+    }
+    
+    private var destroyed: Bool = false
+    
+    func destroy() {
+        
+        if destroyed {return}
+        av_packet_unref(&avPacket)
+        destroyed = true
+    }
+    
+    deinit {
+        destroy()
     }
 }

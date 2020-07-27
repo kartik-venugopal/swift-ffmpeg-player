@@ -39,6 +39,23 @@ class BufferedFrame: Hashable {
         self.dataPointers = UnsafeMutableBufferPointer(start: destinationBuffers, count: channelCount)
     }
     
+    private var destroyed: Bool = false
+    
+    func destroy() {
+        
+        if destroyed {return}
+        
+        for index in 0..<channelCount {
+            self.dataPointers[index]?.deallocate()
+        }
+        
+        destroyed = true
+    }
+    
+    deinit {
+        destroy()
+    }
+    
     static func == (lhs: BufferedFrame, rhs: BufferedFrame) -> Bool {
         lhs.timestamp == rhs.timestamp
     }
