@@ -16,6 +16,10 @@ struct SampleFormat {
          AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P].contains(avFormat)
     }
     
+    var needsResampling: Bool {
+        avFormat != AV_SAMPLE_FMT_FLTP
+    }
+    
     init(avFormat: AVSampleFormat) {
         
         self.avFormat = avFormat

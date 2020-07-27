@@ -145,7 +145,10 @@
 				3E64411524C79FEB0089859E /* FFmpeg */,
 				3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */,
 				3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */,
+				3E88343724CE13BF00B81A2C /* Resampler.swift */,
 				3E857C6D24C983D2000379BF /* BufferFileWriter.swift */,
+				3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */,
+				3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */,
 				3E0BECC824C3533800FF69D7 /* Mapper.swift */,
 				3E0BECC424C3353000FF69D7 /* libavcodec */,
 				3E0BECB524C3342B00FF69D7 /* libavdevice */,
@@ -162,9 +165,6 @@
 				3E52510524C23CC30023F696 /* Assets.xcassets */,
 				3E52510A24C23CC30023F696 /* Info.plist */,
 				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
-				3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */,
-				3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */,
-				3E88343724CE13BF00B81A2C /* Resampler.swift */,
 			);
 			path = CAndSwift;
 			sourceTree = "<group>";

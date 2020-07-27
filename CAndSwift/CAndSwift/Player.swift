@@ -28,7 +28,7 @@ class Player {
         state = audioEngine.isPlaying ? .playing : .paused
     }
     
-    private let initialBufferDuration: Double = 5
+    private let initialBufferDuration: Double = 35
     
     func play(_ file: URL) {
         
@@ -51,13 +51,13 @@ class Player {
             
             scheduleOneBuffer(fileCtx, initialBufferDuration)
             
-            audioEngine.seekTo(0)
-            audioEngine.play()
-            state = .playing
-
-            NSLog("Playback Started !\n")
-
-            scheduleOneBuffer(fileCtx, initialBufferDuration)
+//            audioEngine.seekTo(0)
+//            audioEngine.play()
+//            state = .playing
+//
+//            NSLog("Playback Started !\n")
+//
+//            scheduleOneBuffer(fileCtx, initialBufferDuration)
 
         } catch {
 
@@ -134,34 +134,34 @@ class Player {
             
 //            print("\nConversion time: \(Frame.convTime * 1000) msec")
             
-            audioEngine.scheduleBuffer(audioBuffer, {
-
-                self.scheduledBufferCount -= 1
-
-                if self.state != .stopped {
-
-                    if !self.eof {
-
-                        let time = measureTime {
-                            self.scheduleOneBuffer(fileCtx)
-                        }
-
-                        NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
-
-                    } else if self.scheduledBufferCount == 0 {
-
-                        DispatchQueue.main.async {
-                            self.playbackCompleted()
-                        }
-                    }
-                }
-            })
+//            audioEngine.scheduleBuffer(audioBuffer, {
+//
+//                self.scheduledBufferCount -= 1
+//
+//                if self.state != .stopped {
+//
+//                    if !self.eof {
+//
+//                        let time = measureTime {
+//                            self.scheduleOneBuffer(fileCtx)
+//                        }
+//
+//                        NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
+//
+//                    } else if self.scheduledBufferCount == 0 {
+//
+//                        DispatchQueue.main.async {
+//                            self.playbackCompleted()
+//                        }
+//                    }
+//                }
+//            })
             
             // Write out the raw samples to a .raw file for testing in Audacity
-//            BufferFileWriter.writeBuffer(audioBuffer)
-//            BufferFileWriter.closeFile()
+            BufferFileWriter.writeBuffer(audioBuffer)
+            BufferFileWriter.closeFile()
             
-            scheduledBufferCount += 1
+//            scheduledBufferCount += 1
         }
         
         if eof {
