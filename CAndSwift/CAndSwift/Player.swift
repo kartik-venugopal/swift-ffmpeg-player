@@ -28,7 +28,13 @@ class Player {
         state = audioEngine.isPlaying ? .playing : .paused
     }
     
-    private let initialBufferDuration: Double = 35
+    private let initialBufferDuration: Double = 5
+    
+    init() {
+        
+        // Hack to eagerly initialize a lazy variable (so that the resampler is ready to go when required)
+        _ = Resampler.instance
+    }
     
     func play(_ file: URL) {
         
@@ -51,13 +57,13 @@ class Player {
             
             scheduleOneBuffer(fileCtx, initialBufferDuration)
             
-//            audioEngine.seekTo(0)
-//            audioEngine.play()
-//            state = .playing
-//
-//            NSLog("Playback Started !\n")
-//
-//            scheduleOneBuffer(fileCtx, initialBufferDuration)
+            audioEngine.seekTo(0)
+            audioEngine.play()
+            state = .playing
+
+            NSLog("Playback Started !\n")
+
+            scheduleOneBuffer(fileCtx, initialBufferDuration)
 
         } catch {
 
@@ -92,7 +98,7 @@ class Player {
         
         NSLog("Began decoding ... \(seconds) seconds of audio")
         
-//        let time = measureTime {
+        let time = measureTime {
         
         let formatCtx: FormatContext = fileCtx.format
         let stream = fileCtx.audioStream
@@ -134,34 +140,32 @@ class Player {
         
         if buffer.isFull || eof, let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
             
-//            print("\nConversion time: \(Frame.convTime * 1000) msec")
-            
-//            audioEngine.scheduleBuffer(audioBuffer, {
-//
-//                self.scheduledBufferCount -= 1
-//
-//                if self.state != .stopped {
-//
-//                    if !self.eof {
-//
-//                        let time = measureTime {
-//                            self.scheduleOneBuffer(fileCtx)
-//                        }
-//
-//                        NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
-//
-//                    } else if self.scheduledBufferCount == 0 {
-//
-//                        DispatchQueue.main.async {
-//                            self.playbackCompleted()
-//                        }
-//                    }
-//                }
-//            })
+            audioEngine.scheduleBuffer(audioBuffer, {
+
+                self.scheduledBufferCount -= 1
+
+                if self.state != .stopped {
+
+                    if !self.eof {
+
+                        let time = measureTime {
+                            self.scheduleOneBuffer(fileCtx)
+                        }
+
+                        NSLog("Decoded 10 seconds of audio in \(Int(round(time * 1000))) msec\n")
+
+                    } else if self.scheduledBufferCount == 0 {
+
+                        DispatchQueue.main.async {
+                            self.playbackCompleted()
+                        }
+                    }
+                }
+            })
             
             // Write out the raw samples to a .raw file for testing in Audacity
-            BufferFileWriter.writeBuffer(audioBuffer)
-            BufferFileWriter.closeFile()
+//            BufferFileWriter.writeBuffer(audioBuffer)
+//            BufferFileWriter.closeFile()
             
 //            scheduledBufferCount += 1
         }
@@ -169,9 +173,10 @@ class Player {
         if eof {
             NSLog("Reached EOF !!!")
         }
-//        }
+            
+        }
         
-//        print("\nTook \(Int(round(time * 1000))) msec to schedule \(seconds) seconds")
+        print("\nTook \(Int(round(time * 1000))) msec to schedule \(seconds) seconds")
         
         print("\n----------------------------- END -----------------------------\n")
     }

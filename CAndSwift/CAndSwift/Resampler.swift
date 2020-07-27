@@ -2,11 +2,15 @@ import Foundation
 
 class Resampler {
     
+    static let instance = Resampler()
+    
     var outData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
     private let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
-    init() {
+    private init() {
+        
+        print("\nRESAMPLER INIT !!!")
         
         let time = measureTime {
             
@@ -17,14 +21,14 @@ class Resampler {
         
         // Assume a maximum required memory space corresponding to sampleRate=352,800Hz, duration=10sec, channelCount=8.
         // This should accommodate (be big enough for) all possible conversions.
-        av_samples_alloc(outData, nil, 8, 352800 * 60, AV_SAMPLE_FMT_FLTP, 0)
+        av_samples_alloc(outData, nil, 8, 352800 * 10, AV_SAMPLE_FMT_FLTP, 0)
         
         }
         
         print("\nTook \(time * 1000) msec to allocate space for Resampler.")
     }
     
-    private func doResample(_ frame: Frame) -> [[Float]] {
+    private func doResample(_ frame: BufferedFrame) -> [UnsafePointer<Float>] {
         
         let sampleCount: Int32 = frame.sampleCount
         
@@ -57,7 +61,7 @@ class Resampler {
         return pointerToFloats(outData, frame)
     }
     
-    func resample(_ frame: Frame) -> [[Float]] {
+    func resample(_ frame: BufferedFrame) -> [UnsafePointer<Float>] {
         
         if frame.sampleFormat.needsResampling {
             return doResample(frame)
@@ -66,18 +70,22 @@ class Resampler {
         return pointerToFloats(frame.dataPointers.baseAddress!, frame)
     }
     
-    private func pointerToFloats(_ ptr: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>, _ frame: Frame) -> [[Float]] {
+    private func pointerToFloats(_ ptr: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>, _ frame: BufferedFrame) -> [UnsafePointer<Float>] {
         
-        var floats: [[Float]] = []
+        var floats: [UnsafePointer<Float>] = []
         let intSampleCount: Int = Int(frame.sampleCount)
         
         for channelIndex in 0..<frame.channelCount {
             
             guard let bytesForChannel = ptr[channelIndex] else {break}
             
-            // TODO: Can we simply read the floats here instead of returning the pointer ? Is this safe ???
             floats.append(bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
-            {Array(UnsafeBufferPointer(start: $0, count: intSampleCount))})
+            {(pointer: UnsafeMutablePointer<Float>) in
+                
+                let newPointer: UnsafeMutablePointer<Float> = UnsafeMutablePointer<Float>.allocate(capacity: intSampleCount)
+                newPointer.initialize(from: pointer, count: intSampleCount)
+                return UnsafePointer(newPointer)
+            })
         }
         
         return floats

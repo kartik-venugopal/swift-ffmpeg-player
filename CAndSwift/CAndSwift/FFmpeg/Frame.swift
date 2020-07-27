@@ -1,62 +1,38 @@
 import Foundation
 
-class Frame: Hashable {
+class Frame {
+ 
+    var avFrame: AVFrame
     
-    static var ctr: Int = 0
+    var hasSamples: Bool {avFrame.nb_samples.isPositive}
     
-    var dataPointers: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?>
+    var channelLayout: UInt64 {avFrame.channel_layout}
     
-    let channelLayout: UInt64
-    let channelCount: Int
-    let sampleCount: Int32
-    let sampleRate: Int32
-    let lineSize: Int
+    var channelCount: Int32 {avFrame.channels}
     
-    let sampleFormat: SampleFormat
+    var sampleCount: Int32 {avFrame.nb_samples}
     
-    let timestamp: Int64
+    var sampleRate: Int32 {avFrame.sample_rate}
     
-    // channelLayout comes from the Codec (cannot rely on avFrame.channel_layout).
-    init(_ frame: UnsafeMutablePointer<AVFrame>, sampleFormat: SampleFormat, channelLayout: UInt64) {
+    var lineSize: Int {Int(avFrame.linesize.0)}
+    
+    var sampleFormat: SampleFormat
+    
+    var timestamp: Int64 {avFrame.best_effort_timestamp}
+    
+    var dataPointers: [UnsafeMutablePointer<UInt8>?] {avFrame.dataPointers}
+    
+    init(sampleFormat: SampleFormat) {
         
-        Self.ctr += 1
-        print("\nCreating frame# \(Self.ctr) \(frame.pointee.nb_samples) \(frame.pointee.format)")
-        
-        self.timestamp = frame.pointee.best_effort_timestamp
-
-        self.channelLayout = channelLayout
-        self.channelCount = Int(frame.pointee.channels)
-        self.sampleCount = frame.pointee.nb_samples
-        self.sampleRate = frame.pointee.sample_rate
-        self.lineSize = Int(frame.pointee.linesize.0)
-        
+        self.avFrame = AVFrame()
         self.sampleFormat = sampleFormat
-        
-        let bufferPointers = frame.pointee.dataPointers
-        let ptrs = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: channelCount)
-        
-        for channelIndex in (0..<8) {
-            
-            guard let buffer = bufferPointers[channelIndex] else {break}
-            ptrs[channelIndex] = UnsafeMutablePointer<UInt8>.allocate(capacity: lineSize)
-            ptrs[channelIndex]?.initialize(from: buffer, count: lineSize)
-        }
-        
-        self.dataPointers = UnsafeMutableBufferPointer(start: ptrs, count: channelCount)
     }
     
-    static func == (lhs: Frame, rhs: Frame) -> Bool {
-        lhs.timestamp == rhs.timestamp
+    func receiveFrom(_ codec: Codec) -> ResultCode {
+        return avcodec_receive_frame(codec.contextPointer, &avFrame)
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(timestamp)
-    }
-}
-
-extension AVFrame {
-    
-    var dataPointers: [UnsafeMutablePointer<UInt8>?] {
-        Array(UnsafeBufferPointer(start: self.extended_data, count: 8))
+    func destroy() {
+        av_frame_unref(&avFrame)
     }
 }

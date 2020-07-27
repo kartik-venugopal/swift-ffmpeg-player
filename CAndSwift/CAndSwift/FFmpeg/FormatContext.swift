@@ -94,16 +94,11 @@ class FormatContext {
     
     func readPacket(_ stream: Stream) throws -> Packet? {
         
-        let packet = Packet()
-
-        let readResult: Int32 = av_read_frame(pointer, &packet.avPacket)
-        guard readResult >= 0 else {
-            
-            print("\nFormatContext.readPacket(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
-            throw PacketReadError(readResult)
+        if let packet = try Packet(pointer), packet.streamIndex == stream.index {
+            return packet
         }
-        
-        return packet.streamIndex == stream.index ? packet : nil
+
+        return nil
     }
     
     func seekWithinStream(_ stream: AudioStream, _ time: Double) throws {

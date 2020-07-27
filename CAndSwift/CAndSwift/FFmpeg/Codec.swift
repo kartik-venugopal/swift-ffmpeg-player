@@ -95,10 +95,10 @@ class AudioCodec: Codec {
     var sendTime: Double = 0
     var rcvTime: Double = 0
     
-    func decode(_ packet: Packet) throws -> [Frame] {
+    func decode(_ packet: Packet) throws -> [BufferedFrame] {
         
         // Send the packet to the decoder
-        var resultCode: Int32 = packet.sendTo(contextPointer)
+        var resultCode: Int32 = packet.sendTo(self)
         packet.destroy()
 
         if resultCode.isNegative {
@@ -109,26 +109,21 @@ class AudioCodec: Codec {
         
         // Receive (potentially) multiple frames
 
-        var frames: [Frame] = []
-        var avFrame = AVFrame()
+        var bufferedFrames: [BufferedFrame] = []
+        let frame = Frame(sampleFormat: self.sampleFormat)
         
-        var ctr: Int = 0
-        
-        resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+        resultCode = frame.receiveFrom(self)
         
         // Keep receiving frames while no errors are encountered
-        while resultCode.isZero, avFrame.nb_samples.isPositive {
+        while resultCode.isZero, frame.hasSamples {
             
-            ctr += 1
-            print("\nCODEC - CTR: \(ctr)")
-            
-            frames.append(Frame(&avFrame, sampleFormat: sampleFormat, channelLayout: self.channelLayout))
-            resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+            bufferedFrames.append(BufferedFrame(frame))
+            resultCode = frame.receiveFrom(self)
         }
         
-        av_frame_unref(&avFrame)
+        frame.destroy()
         
-        return frames
+        return bufferedFrames
     }
 }
 
