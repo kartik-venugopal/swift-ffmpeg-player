@@ -3,6 +3,8 @@ import Foundation
 class BufferedFrame: Hashable {
     
     var dataPointers: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?>
+    private var actualDataPointers: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>
+    private var allocatedDataPointerCount: Int
     
     let channelLayout: UInt64
     let channelCount: Int
@@ -27,16 +29,20 @@ class BufferedFrame: Hashable {
         self.sampleFormat = frame.sampleFormat
         
         let sourceBuffers = frame.dataPointers
-        let destinationBuffers = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: channelCount)
+        self.actualDataPointers = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: channelCount)
+        self.allocatedDataPointerCount = 0
         
         for channelIndex in (0..<8) {
             
             guard let sourceBuffer = sourceBuffers[channelIndex] else {break}
-            destinationBuffers[channelIndex] = UnsafeMutablePointer<UInt8>.allocate(capacity: lineSize)
-            destinationBuffers[channelIndex]?.initialize(from: sourceBuffer, count: lineSize)
+            
+            actualDataPointers[channelIndex] = UnsafeMutablePointer<UInt8>.allocate(capacity: lineSize)
+            actualDataPointers[channelIndex]?.initialize(from: sourceBuffer, count: lineSize)
+            
+            allocatedDataPointerCount += 1
         }
         
-        self.dataPointers = UnsafeMutableBufferPointer(start: destinationBuffers, count: channelCount)
+        self.dataPointers = UnsafeMutableBufferPointer(start: actualDataPointers, count: channelCount)
     }
     
     private var destroyed: Bool = false
@@ -45,9 +51,11 @@ class BufferedFrame: Hashable {
         
         if destroyed {return}
         
-        for index in 0..<channelCount {
-            self.dataPointers[index]?.deallocate()
+        for index in 0..<allocatedDataPointerCount {
+            self.actualDataPointers[index]?.deallocate()
         }
+        
+        self.actualDataPointers.deallocate()
         
         destroyed = true
     }
