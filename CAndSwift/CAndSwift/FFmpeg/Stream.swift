@@ -60,7 +60,8 @@ class Stream {
         
         print("\n---------- Stream Info ----------\n")
         
-        print(String(format: "Index:   %7d", index))
+        print(String(format: "Index:        %7d", index))
+        print(String(format: "Media Type:   %7d", mediaType.rawValue))
         
         print("---------------------------------\n")
     }
@@ -78,7 +79,7 @@ class AudioStream: Stream {
     
     override func printInfo() {
         
-        print("\n---------- Stream Info ----------\n")
+        print("\n---------- Audio Stream Info ----------\n")
         
         print(String(format: "Index:         %7d", index))
         print(String(format: "Duration:      %7.2lf", duration))

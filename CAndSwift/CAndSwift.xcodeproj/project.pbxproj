@@ -40,6 +40,7 @@
 		3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E88343724CE13BF00B81A2C /* Resampler.swift */; };
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
 		3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */; };
+		3EF9D03724CF84F4006138D0 /* MetadataFileContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF9D03624CF84F4006138D0 /* MetadataFileContext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +91,7 @@
 		3E88343724CE13BF00B81A2C /* Resampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resampler.swift; sourceTree = "<group>"; };
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
 		3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesBuffer.swift; sourceTree = "<group>"; };
+		3EF9D03624CF84F4006138D0 /* MetadataFileContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataFileContext.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				3E4DF95F24C886CE008988FF /* AudioFileContext.swift */,
+				3EF9D03624CF84F4006138D0 /* MetadataFileContext.swift */,
 				3E9CD3B024C7A8CB00499954 /* FormatContext.swift */,
 				3E67F36924C823330023C2D3 /* Stream.swift */,
 				3E67F36B24C823530023C2D3 /* Codec.swift */,
@@ -309,6 +312,7 @@
 				3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */,
 				3E67F36A24C823330023C2D3 /* Stream.swift in Sources */,
 				3E6ADBD524CC1B9400AB2678 /* ConcurrentMap.swift in Sources */,
+				3EF9D03724CF84F4006138D0 /* MetadataFileContext.swift in Sources */,
 				3E293BEF24C45885003749F2 /* Player.swift in Sources */,
 				3E4DF96024C886CE008988FF /* AudioFileContext.swift in Sources */,
 				3E67F36C24C823530023C2D3 /* Codec.swift in Sources */,

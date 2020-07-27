@@ -4,7 +4,7 @@ class MetadataReader {
     
     func readTrack(_ file: URL) -> TrackInfo? {
         
-        if let fileCtx = AudioFileContext(file) {
+        if let fileCtx = MetadataFileContext(file) {
             
             let audioInfo: AudioInfo = readAudioInfo(file, fileCtx.audioStream)
             
@@ -21,7 +21,7 @@ class MetadataReader {
         }
     }
     
-    private func readMetadata(_ fileCtx: AudioFileContext) -> [String: String] {
+    private func readMetadata(_ fileCtx: MetadataFileContext) -> [String: String] {
         
         var metadata: [String: String] = [:]
         
@@ -60,7 +60,7 @@ class MetadataReader {
                           channelCount: channelCount, frameCount: frames)
     }
     
-    private func readCoverArt(_ fileCtx: AudioFileContext) -> NSImage? {
+    private func readCoverArt(_ fileCtx: MetadataFileContext) -> NSImage? {
         
         if let imageStream = fileCtx.imageStream, let imageCodec = fileCtx.imageCodec {
             

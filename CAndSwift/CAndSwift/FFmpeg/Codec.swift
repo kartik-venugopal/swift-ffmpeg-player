@@ -65,6 +65,7 @@ class AudioCodec: Codec {
         
         super.init(pointer: pointer, contextPointer: contextPointer)
         
+        // TODO: These values should be obtained from AVCodecParameters, not from the context.
         self.bitRate = context.bit_rate
         self.sampleRate = context.sample_rate
         self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
@@ -109,8 +110,8 @@ class AudioCodec: Codec {
         
         // Receive (potentially) multiple frames
 
-        var bufferedFrames: [BufferedFrame] = []
         let frame = Frame(sampleFormat: self.sampleFormat)
+        var bufferedFrames: [BufferedFrame] = []
         
         resultCode = frame.receiveFrom(self)
         

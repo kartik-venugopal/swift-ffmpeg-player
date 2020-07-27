@@ -8,15 +8,20 @@ class FormatContext {
     var pointer: UnsafeMutablePointer<AVFormatContext>?
     var avContext: AVFormatContext {pointer!.pointee}
     
+    var mediaTypes: [AVMediaType]
+    
+    private var shouldReadAudioStream: Bool {mediaTypes.contains(AVMEDIA_TYPE_AUDIO)}
+    private var shouldReadImageStream: Bool {mediaTypes.contains(AVMEDIA_TYPE_VIDEO)}
+    
     var streams: [Stream]
     var streamCount: Int {streams.count}
     
     var audioStream: AudioStream? {
-        streams.compactMap {$0 as? AudioStream}.first
+        shouldReadAudioStream ? streams.compactMap {$0 as? AudioStream}.first : nil
     }
     
     var imageStream: ImageStream? {
-        streams.compactMap {$0 as? ImageStream}.first
+        shouldReadImageStream ? streams.compactMap {$0 as? ImageStream}.first : nil
     }
     
     var metadata: [String: String] {
@@ -48,12 +53,14 @@ class FormatContext {
         return chapters
     }
     
-    init?(_ file: URL) {
+    init?(_ file: URL, _ mediaTypes: [AVMediaType] = [AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_VIDEO]) {
         
         self.file = file
         self.filePath = file.path
         
         self.pointer = avformat_alloc_context()
+        
+        self.mediaTypes = mediaTypes
         
         var resultCode: ResultCode = avformat_open_input(&pointer, file.path, nil, nil)
         guard resultCode.isNonNegative, pointer?.pointee != nil else {
@@ -79,9 +86,9 @@ class FormatContext {
                 
                 switch pointer.pointee.codecpar.pointee.codec_type {
                     
-                case AVMEDIA_TYPE_AUDIO:    return AudioStream(pointer)
+                case AVMEDIA_TYPE_AUDIO:    return shouldReadAudioStream ? AudioStream(pointer) : nil
                     
-                case AVMEDIA_TYPE_VIDEO:    return ImageStream(pointer)
+                case AVMEDIA_TYPE_VIDEO:    return shouldReadImageStream ? ImageStream(pointer) : nil
                     
                 default:                    return nil
                     
