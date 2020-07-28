@@ -272,7 +272,7 @@ class PlayerViewController: NSViewController {
         if includeMsec {
             
             let msec = Int(round((timeSecondsDouble - floor(timeSecondsDouble)) * 1000))
-            return hrs > 0 ? String(format: "%d : %02d : %02d.%3d", hrs, mins, secs, msec) : String(format: "%d : %02d.%3d", mins, secs, msec)
+            return hrs > 0 ? String(format: "%d : %02d : %02d.%03d", hrs, mins, secs, msec) : String(format: "%d : %02d.%03d", mins, secs, msec)
             
         } else {
             return hrs > 0 ? String(format: "%d : %02d : %02d", hrs, mins, secs) : String(format: "%d : %02d", mins, secs)

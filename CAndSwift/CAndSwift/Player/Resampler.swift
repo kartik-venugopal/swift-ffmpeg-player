@@ -5,6 +5,9 @@ class Resampler {
     
     static let instance = Resampler()
     
+    // TODO: In Player, limit the number of buffer samples to this value
+    static let maxSamplesPerBuffer: Int32 = 355000 * 10
+    
     var outData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
     private let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
@@ -20,7 +23,7 @@ class Resampler {
         
         // Assume a maximum required memory space corresponding to sampleRate=352,800Hz, duration=10sec, channelCount=8.
         // This should accommodate (be big enough for) all possible conversions.
-        av_samples_alloc(outData, nil, 8, 352800 * 10, AV_SAMPLE_FMT_FLTP, 0)
+        av_samples_alloc(outData, nil, 8, Self.maxSamplesPerBuffer, AV_SAMPLE_FMT_FLTP, 0)
         
         }
         

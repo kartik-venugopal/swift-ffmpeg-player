@@ -30,6 +30,16 @@ class Player {
     
     private let initialBufferDuration: Double = 5
     
+    private let schedulingOpQueue: OperationQueue = {
+
+        let queue = OperationQueue()
+        queue.underlyingQueue = DispatchQueue.global(qos: .userInitiated)
+        queue.qualityOfService = .userInitiated
+        queue.maxConcurrentOperationCount = 1
+        
+        return queue
+    }()
+
     init() {
         
         // Hack to eagerly initialize a lazy variable (so that the resampler is ready to go when required)
@@ -38,7 +48,7 @@ class Player {
     
     func play(_ file: URL) {
         
-        stop()
+        stopAndWait()
         
         do {
             
@@ -57,11 +67,13 @@ class Player {
             
             scheduleOneBuffer(fileCtx, initialBufferDuration)
             
-            audioEngine.seekTo(0)
-            audioEngine.play()
-            state = .playing
-
-            scheduleOneBuffer(fileCtx, initialBufferDuration)
+            beginPlayback(0)
+            
+            self.schedulingOpQueue.addOperation {
+                self.scheduleOneBuffer(fileCtx, self.initialBufferDuration)
+            }
+            
+            print("\nEnqueued one scheduling op ... (\(self.schedulingOpQueue.operationCount))")
 
         } catch {
 
@@ -70,14 +82,39 @@ class Player {
         }
     }
     
+    func beginPlayback(_ seekTime: Double) {
+
+        audioEngine.seekTo(seekTime)
+        audioEngine.play()
+        state = .playing
+    }
+    
     func stop(_ playbackFinished: Bool = true) {
         
         state = .stopped
         audioEngine.stop()
         
         if playbackFinished {
+            
             playingFile = nil
+            audioEngine.playbackCompleted()
         }
+    }
+    
+    func stopAndWait(_ playbackFinished: Bool = true) {
+        
+        stop(playbackFinished)
+        
+        let time = measureTime {
+            
+            if schedulingOpQueue.operationCount > 0 {
+                
+                schedulingOpQueue.cancelAllOperations()
+                schedulingOpQueue.waitUntilAllOperationsAreFinished()
+            }
+        }
+        
+        print("\nWaited \(time * 1000) msec for previous ops to stop.")
     }
     
     func setupForFile(_ file: URL) throws -> AudioFileContext {
@@ -92,6 +129,9 @@ class Player {
         return fileCtx
     }
     
+    // TODO
+    private var overflowFrames: [BufferedFrame] = []
+    
     private func scheduleOneBuffer(_ fileCtx: AudioFileContext, _ seconds: Double = 10) {
         
         let time = measureTime {
@@ -100,7 +140,8 @@ class Player {
         let stream = fileCtx.audioStream
         let codec: AudioCodec = fileCtx.audioCodec
         
-        let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: Int32(seconds * Double(codec.sampleRate)))
+        let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat,
+                                                      maxSampleCount: min(Resampler.maxSamplesPerBuffer,  Int32(seconds * Double(codec.sampleRate))))
         
         while !(buffer.isFull || eof) {
             
@@ -108,6 +149,8 @@ class Player {
                 
                 if let packet = try formatCtx.readPacket(stream) {
                     
+                    // TODO: What if buffer fills up during the middle of this loop ?
+                    // Need to reject any excess "overflow" frames and store them for later.
                     for frame in try codec.decode(packet) {
                         buffer.appendFrame(frame: frame)
                     }
@@ -143,7 +186,11 @@ class Player {
 
                     if !self.eof {
 
-                        self.scheduleOneBuffer(fileCtx)
+                        self.schedulingOpQueue.addOperation {
+                            self.scheduleOneBuffer(fileCtx)
+                        }
+                        
+                        print("\nEnqueued one scheduling op ... (\(self.schedulingOpQueue.operationCount))")
 
                     } else if self.scheduledBufferCount == 0 {
 
@@ -186,11 +233,14 @@ class Player {
     }
     
     // TODO: Why doesn't seeking work for high sample rate FLAC files ? (32-bit integer interleaved)
-    func seekToTime(_ seconds: Double, _ beginPlayback: Bool = true) {
+    func seekToTime(_ seconds: Double, _ shouldBeginPlayback: Bool = true) {
+        
+        // BUG: After EOF is reached (but track is still playing last few seconds),
+        // it should still be possible to seek backwards.
         
         if let thePlayingFile = playingFile {
 
-            stop(false)
+            stopAndWait(false)
             
             do {
                 
@@ -201,13 +251,12 @@ class Player {
                 
                 scheduleOneBuffer(thePlayingFile, 5)
                 
-                audioEngine.seekTo(seconds)
-                audioEngine.play()
-                state = .playing
+                shouldBeginPlayback ? beginPlayback(seconds) : audioEngine.seekTo(seconds)
                 
                 // TODO: Check for EOF before scheduling another buffer
-                
-                scheduleOneBuffer(thePlayingFile, 5)
+                self.schedulingOpQueue.addOperation {
+                    self.scheduleOneBuffer(thePlayingFile, 5)
+                }
                 
             } catch {
                 

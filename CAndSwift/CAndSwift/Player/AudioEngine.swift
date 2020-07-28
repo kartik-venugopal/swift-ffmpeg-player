@@ -74,6 +74,7 @@ class AudioEngine {
         let sampleRate = format.sampleRate
         
         startFrame = Int64(sampleRate * seconds)
+        cachedSeekPosn = seconds
     }
     
     func playbackCompleted() {
