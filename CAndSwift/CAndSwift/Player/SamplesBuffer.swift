@@ -9,7 +9,7 @@ class SamplesBuffer {
     var sampleCount: Int32 = 0
     let maxSampleCount: Int32
     
-    var isFull: Bool {sampleCount >= maxSampleCount}
+//    var isFull: Bool {sampleCount >= maxSampleCount}
     
     init(sampleFormat: SampleFormat, maxSampleCount: Int32) {
         
@@ -17,10 +17,19 @@ class SamplesBuffer {
         self.maxSampleCount = maxSampleCount
     }
     
-    func appendFrame(frame: BufferedFrame) {
+    // Returns whether or not the frame was appended to the buffer.
+    // Will be false if/when the new frame's sample count would cause the buffer to exceed its maxSampleCount.
+    func appendFrame(frame: BufferedFrame) -> Bool {
         
-        self.sampleCount += frame.sampleCount
-        frames.append(frame)
+        if self.sampleCount + frame.sampleCount <= maxSampleCount {
+            
+            self.sampleCount += frame.sampleCount
+            frames.append(frame)
+            
+            return true
+        }
+        
+        return false
     }
     
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {

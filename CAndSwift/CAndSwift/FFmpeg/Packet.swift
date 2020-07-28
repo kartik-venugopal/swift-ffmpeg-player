@@ -8,7 +8,7 @@ class Packet {
     var size: Int32 {avPacket.size}
     var duration: Int64 {avPacket.duration}
     
-    init?(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
+    init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
         self.avPacket = AVPacket()
         let readResult: Int32 = av_read_frame(formatCtx, &avPacket)

@@ -24,14 +24,14 @@ class Codec {
     
     // Returns true if open was successful.
     // TODO: Make it throw an error ???
-    func open() -> Bool {
+    func open() throws {
         
         let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
         if codecOpenResult.isNonZero {
+            
             print("\nCodec.open(): Failed to open codec '\(name)'. Error: \(codecOpenResult.errorDescription))")
+            throw DecoderInitializationError(codecOpenResult)
         }
-        
-        return codecOpenResult.isZero
     }
     
     private var destroyed: Bool = false

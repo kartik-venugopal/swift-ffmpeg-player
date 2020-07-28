@@ -98,3 +98,9 @@ class ImageStream: Stream {
         super.init(pointer, AVMEDIA_TYPE_VIDEO)
     }
 }
+
+extension AVRational {
+
+    var ratio: Double {Double(num) / Double(den)}
+    var reciprocal: Double {Double(den) / Double(num)}
+}

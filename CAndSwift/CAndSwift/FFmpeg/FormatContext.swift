@@ -103,18 +103,12 @@ class FormatContext {
     
     func readPacket(_ stream: Stream) throws -> Packet? {
         
-        if let packet = try Packet(pointer), packet.streamIndex == stream.index {
-            return packet
-        }
-
-        return nil
+        let packet = try Packet(pointer)
+        return packet.streamIndex == stream.index ? packet : nil
     }
     
-    func seekWithinStream(_ stream: AudioStream, _ time: Double) throws {
+    func seekWithinStream(_ stream: AudioStream, _ targetFrame: Int64) throws {
         
-        let seekPosRatio = time / stream.duration
-        let targetFrame = Int64(seekPosRatio * Double(stream.avStream.duration))
-
         // Track playback completed. Send EOF code.
         if targetFrame >= stream.frameCount {
             throw SeekError(EOF_CODE)

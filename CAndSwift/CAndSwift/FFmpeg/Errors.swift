@@ -44,4 +44,6 @@ class PacketReadError: CodedError {}
 
 class SeekError: CodedError {}
 
-class DecoderInitializationError: Error {}
+class DecoderInitializationError: CodedError {}
+
+class PlayerInitializationError: Error {}

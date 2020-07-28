@@ -66,10 +66,10 @@ class MetadataReader {
         if let imageStream = fileCtx.imageStream, let imageCodec = fileCtx.imageCodec {
             
             do {
+                
+                try imageCodec.open()
             
-                if imageCodec.open(), let imageDataPacket = try fileCtx.format.readPacket(imageStream),
-                    let imageData = imageCodec.decode(imageDataPacket) {
-                    
+                if let imageDataPacket = try fileCtx.format.readPacket(imageStream), let imageData = imageCodec.decode(imageDataPacket) {
                     return NSImage(data: imageData)
                 }
                 
