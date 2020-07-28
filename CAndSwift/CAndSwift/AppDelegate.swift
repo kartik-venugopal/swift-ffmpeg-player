@@ -12,6 +12,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var playerVC: PlayerViewController!
     
     override init() {
         
@@ -19,9 +20,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
     }
     
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
+    func applicationWillTerminate(_ notification: Notification) {
+        playerVC.applicationWillTerminate(notification)
     }
+    
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {true}
 }
 
 func measureTime(_ task: () -> Void) -> Double {

@@ -10,8 +10,8 @@ class Stream {
     
     var codecPointer: UnsafeMutablePointer<AVCodec>
     var avCodec: AVCodec {codecPointer.pointee}
-    
     var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
+    
     var codec: Codec
     
     var metadata: [String: String] {
@@ -44,15 +44,15 @@ class Stream {
             
         case AVMEDIA_TYPE_AUDIO:
             
-            self.codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer)
+            self.codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
             
         case AVMEDIA_TYPE_VIDEO:
             
-            self.codec = ImageCodec(pointer: codecPointer, contextPointer: codecContextPointer)
+            self.codec = ImageCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
             
         default:
             
-            self.codec = Codec(pointer: codecPointer, contextPointer: codecContextPointer)
+            self.codec = Codec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
         }
     }
     
@@ -69,12 +69,14 @@ class Stream {
 
 class AudioStream: Stream {
     
-    var duration: Double {Double(avStream.duration) * avStream.time_base.ratio}
+    var duration: Double = 0
     var timeBase: AVRational {avStream.time_base}
     var frameCount: Int64 {avStream.duration}
     
     init(_ pointer: UnsafeMutablePointer<AVStream>) {
+        
         super.init(pointer, AVMEDIA_TYPE_AUDIO)
+        self.duration = Double(avStream.duration) * avStream.time_base.ratio
     }
     
     override func printInfo() {

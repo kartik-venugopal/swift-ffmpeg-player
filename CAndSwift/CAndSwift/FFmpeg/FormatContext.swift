@@ -28,6 +28,8 @@ class FormatContext {
         readMetadata(ptr: avContext.metadata)
     }
     
+    var bitRate: Int64 {avContext.bit_rate}
+    
     var chapters: [Chapter] {
         
         var chapters: [Chapter] = []

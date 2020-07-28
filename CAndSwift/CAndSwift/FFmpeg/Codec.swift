@@ -8,14 +8,18 @@ class Codec {
     var contextPointer: UnsafeMutablePointer<AVCodecContext>?
     var context: AVCodecContext {contextPointer!.pointee}
     
+    var paramsPointer: UnsafeMutablePointer<AVCodecParameters>
+    var params: AVCodecParameters {paramsPointer.pointee}
+    
     var id: UInt32 {avCodec.id.rawValue}
     var name: String {String(cString: avCodec.name)}
     var longName: String {String(cString: avCodec.long_name)}
     
-    init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
+    init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>, paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
         self.pointer = pointer
         self.contextPointer = contextPointer
+        self.paramsPointer = paramsPointer
     }
     
     // Returns true if open was successful.
@@ -55,29 +59,20 @@ class Codec {
 
 class AudioCodec: Codec {
     
-    var bitRate: Int64 = 0
-    var sampleRate: Int32 = 0
+    var bitRate: Int64 {params.bit_rate}
+    var sampleRate: Int32 {params.sample_rate}
     var sampleFormat: SampleFormat = SampleFormat(avFormat: AVSampleFormat(0))
-    var channelCount: Int = 0
-    var channelLayout: UInt64 = 0
+    var channelCount: Int {Int(params.channels)}
+    var channelLayout: Int64 = 0
     
-    override init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>) {
+    override init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>, paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
-        super.init(pointer: pointer, contextPointer: contextPointer)
+        super.init(pointer: pointer, contextPointer: contextPointer, paramsPointer: paramsPointer)
         
-        // TODO: These values should be obtained from AVCodecParameters, not from the context.
-        self.bitRate = context.bit_rate
-        self.sampleRate = context.sample_rate
         self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
-        self.channelCount = Int(context.channels)
         
         // Correct channel layout if necessary
-        self.channelLayout = context.channel_layout
-        if self.channelLayout == 0 {
-            
-            self.channelLayout = UInt64(av_get_default_channel_layout(context.channels))
-            print("\nCodec - Corrected channel layout from \(context.channel_layout) -> \(self.channelLayout)")
-        }
+        self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
     }
     
     func printInfo() {

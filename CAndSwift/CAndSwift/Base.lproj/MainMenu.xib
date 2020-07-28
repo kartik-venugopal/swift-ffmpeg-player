@@ -15,6 +15,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="CAndSwift" customModuleProvider="target">
             <connections>
+                <outlet property="playerVC" destination="1E5-MG-zPn" id="nh1-Ie-e97"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="zhM-H7-xTF"/>
             </connections>
         </customObject>
@@ -699,7 +700,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="922" height="491"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="922" height="491"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -727,15 +728,15 @@
                         <rect key="frame" x="644" y="140" width="260" height="250"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Ke5-sZ-otq">
-                            <rect key="frame" x="0.0" y="0.0" width="260" height="250"/>
+                            <rect key="frame" x="0.0" y="0.0" width="245" height="250"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="SXF-ed-2hn">
-                                    <rect key="frame" x="0.0" y="0.0" width="260" height="250"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="245" height="250"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="260" height="250"/>
+                                    <size key="minSize" width="245" height="250"/>
                                     <size key="maxSize" width="320" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
@@ -746,7 +747,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="1fJ-JQ-I8C">
-                            <rect key="frame" x="244" y="0.0" width="16" height="250"/>
+                            <rect key="frame" x="245" y="0.0" width="15" height="250"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -754,15 +755,15 @@
                         <rect key="frame" x="305" y="140" width="312" height="250"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="lcj-6C-89B">
-                            <rect key="frame" x="0.0" y="0.0" width="312" height="250"/>
+                            <rect key="frame" x="0.0" y="0.0" width="297" height="250"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="wCZ-7Y-tR8">
-                                    <rect key="frame" x="0.0" y="0.0" width="312" height="250"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="297" height="250"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="312" height="250"/>
+                                    <size key="minSize" width="297" height="250"/>
                                     <size key="maxSize" width="321" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
@@ -774,7 +775,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="ske-Ff-D3W">
-                            <rect key="frame" x="296" y="0.0" width="16" height="250"/>
+                            <rect key="frame" x="297" y="0.0" width="15" height="250"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>

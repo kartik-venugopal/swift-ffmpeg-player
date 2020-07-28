@@ -1,7 +1,7 @@
 import Cocoa
 import AVFoundation
 
-class PlayerViewController: NSViewController, NSWindowDelegate {
+class PlayerViewController: NSViewController {
     
     @IBOutlet weak var btnPlayPause: NSButton!
     
@@ -55,7 +55,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         
         dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
         
-        player.volume = 0.5
+        player.volume = UserDefaults.standard.value(forKey: "playerVolume") as? Float ?? 0.5
         volumeSlider.floatValue = player.volume
         let intVolume = Int(round(player.volume * 100))
         lblVolume.stringValue = "\(intVolume) %"
@@ -65,49 +65,37 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         
         artView.cornerRadius = 5
         
-        self.view.window?.delegate = self
-        
         NotificationCenter.default.addObserver(forName: .playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
     }
-    
-    func windowWillClose(_ notification: Notification) {
-        
-        // TODO: player.shutDownEngine() OR deinit {audioEngine.shutDown()} in Player
-        NSApp.terminate(self)
+
+    // Remember player volume on next app launch
+    func applicationWillTerminate(_ notification: Notification) {
+        UserDefaults.standard.set(player.volume, forKey: "playerVolume")
     }
     
     @IBAction func openFileAction(_ sender: AnyObject) {
         
-        if dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url {
+        guard dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url else {return}
+        
+        self.file = url
+        
+        player.play(url)
+        btnPlayPause.image = imgPause
+        
+        DispatchQueue.global(qos: .userInteractive).async {
             
-            self.file = url
+            guard let trackInfo: TrackInfo = self.metadataReader.readTrack(url) else {return}
+                
+            self.trackInfo = trackInfo
             
-            player.play(url)
-            btnPlayPause.image = imgPause
-            
-            DispatchQueue.global(qos: .userInteractive).async {
+            DispatchQueue.main.async {
                 
-                var info: TrackInfo?
+                self.showMetadata(url, trackInfo)
+                self.showAudioInfo(trackInfo.audioInfo)
                 
-                let time = measureTime {
-                    info = self.metadataReader.readTrack(url)
-                }
-                
-                print("Time to read info: \(time * 1000) msec")
-
-                if let trackInfo: TrackInfo = info {
-
-                    self.trackInfo = trackInfo
-
-                    DispatchQueue.main.async {
-
-                        self.showMetadata(url, trackInfo)
-                        self.showAudioInfo(trackInfo.audioInfo)
-
-                        if self.seekPosTimer == nil {
-                            self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
-                        }
-                    }
+                if self.seekPosTimer == nil {
+                    
+                    self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
                 }
             }
         }
@@ -133,11 +121,11 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         }
         
         if let trackNum = trackInfo.displayedTrackNum {
-            txtMetadata.string += "Track:\n\(trackNum)\n\n"
+            txtMetadata.string += "Track#:\n\(trackNum)\n\n"
         }
         
         if let discNum = trackInfo.displayedDiscNum {
-            txtMetadata.string += "Disc:\n\(discNum)\n\n"
+            txtMetadata.string += "Disc#:\n\(discNum)\n\n"
         }
         
         if let genre = trackInfo.genre {
@@ -165,7 +153,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         
         txtAudioInfo.string += "Codec:\n\(audioInfo.codec)\n\n"
         
-        txtAudioInfo.string += "Duration:\n\(formatSecondsToHMS(audioInfo.duration))\n\n"
+        txtAudioInfo.string += "Duration:\n\(formatSecondsToHMS(audioInfo.duration, true))\n\n"
         
         txtAudioInfo.string += "Sample Rate:\n\(readableLongInteger(Int64(audioInfo.sampleRate))) Hz\n\n"
         
@@ -273,7 +261,7 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         seekSlider.doubleValue = 0
     }
     
-    private func formatSecondsToHMS(_ timeSecondsDouble: Double, _ includeMinusPrefix: Bool = false) -> String {
+    private func formatSecondsToHMS(_ timeSecondsDouble: Double, _ includeMsec: Bool = false) -> String {
         
         let timeSeconds = Int(round(timeSecondsDouble))
         
@@ -281,7 +269,14 @@ class PlayerViewController: NSViewController, NSWindowDelegate {
         let mins = (timeSeconds / 60) % 60
         let hrs = timeSeconds / 3600
         
-        return hrs > 0 ? String(format: "%@%d:%02d:%02d", includeMinusPrefix ? "- " : "", hrs, mins, secs) : String(format: "%@%d:%02d", includeMinusPrefix ? "- " : "", mins, secs)
+        if includeMsec {
+            
+            let msec = Int(round((timeSecondsDouble - floor(timeSecondsDouble)) * 1000))
+            return hrs > 0 ? String(format: "%d : %02d : %02d.%3d", hrs, mins, secs, msec) : String(format: "%d : %02d.%3d", mins, secs, msec)
+            
+        } else {
+            return hrs > 0 ? String(format: "%d : %02d : %02d", hrs, mins, secs) : String(format: "%d : %02d", mins, secs)
+        }
     }
     
     private func readableLongInteger(_ num: Int64) -> String {
