@@ -1,4 +1,5 @@
-import Foundation
+import AVFoundation
+import Accelerate
 
 class Resampler {
     
@@ -26,7 +27,7 @@ class Resampler {
         print("\nTook \(time * 1000) msec to allocate space for Resampler.")
     }
     
-    private func doResample(_ frame: BufferedFrame) -> [UnsafePointer<Float>] {
+    func resample(_ frame: BufferedFrame, copyTo audioBuffer: AVAudioPCMBuffer, withOffset offset: Int) {
         
         let sampleCount: Int32 = frame.sampleCount
         
@@ -50,42 +51,28 @@ class Resampler {
         
         let outDataPtr: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outData, count: 8)
         
-        _ = frame.dataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self) { inDataPtr in
+        _ = frame.rawDataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self) { inDataPtr in
             swr_convert(swr, outDataPtr.baseAddress, sampleCount, inDataPtr.baseAddress!, sampleCount)
         }
         
         swr_free(&swr)
         
-        return pointerToFloats(outData, frame)
+        copyOutputToAudioBuffer(frame, buffer: audioBuffer, withOffset: offset)
     }
     
-    func resample(_ frame: BufferedFrame) -> [UnsafePointer<Float>] {
+    private func copyOutputToAudioBuffer(_ frame: BufferedFrame, buffer: AVAudioPCMBuffer, withOffset offset: Int) {
         
-        if frame.sampleFormat.needsResampling {
-            return doResample(frame)
-        }
-        
-        return pointerToFloats(frame.dataPointers.baseAddress!, frame)
-    }
-    
-    private func pointerToFloats(_ ptr: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>, _ frame: BufferedFrame) -> [UnsafePointer<Float>] {
-        
-        var floats: [UnsafePointer<Float>] = []
+        let channels = buffer.floatChannelData
         let intSampleCount: Int = Int(frame.sampleCount)
         
-        for channelIndex in 0..<frame.channelCount {
+        for channelIndex in 0..<min(2, frame.channelCount) {
             
-            guard let bytesForChannel = ptr[channelIndex] else {break}
+            guard let bytesForChannel = outData[channelIndex], let channel = channels?[channelIndex] else {break}
             
-            floats.append(bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
+            bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
             {(pointer: UnsafeMutablePointer<Float>) in
-                
-                let newPointer: UnsafeMutablePointer<Float> = UnsafeMutablePointer<Float>.allocate(capacity: intSampleCount)
-                newPointer.initialize(from: pointer, count: intSampleCount)
-                return UnsafePointer(newPointer)
-            })
+                cblas_scopy(frame.sampleCount, pointer, 1, channel.advanced(by: offset), 1)
+            }
         }
-        
-        return floats
     }
 }

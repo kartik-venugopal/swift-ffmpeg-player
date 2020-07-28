@@ -3,8 +3,6 @@ import Accelerate
 
 class SamplesBuffer {
     
-    // TODO: Add a destroy method to release/free all the memory after the buffer has been scheduled for playback
-    
     var frames: [BufferedFrame] = []
     
     let sampleFormat: SampleFormat
@@ -29,32 +27,36 @@ class SamplesBuffer {
         
         guard sampleCount > 0 else {return nil}
         
-        if let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(sampleCount)) {
+        if let audioBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(sampleCount)) {
             
-            buffer.frameLength = buffer.frameCapacity
-            let channels = buffer.floatChannelData
+            audioBuffer.frameLength = audioBuffer.frameCapacity
+            let channels = audioBuffer.floatChannelData
             
             var sampleCountSoFar: Int = 0
             
-            for index in 0..<frames.count {
+            for frame in frames {
                 
-                let frame = frames[index]
-                let frameFloats: [UnsafePointer<Float>] = Resampler.instance.resample(frame)
-                
-                for channelIndex in 0..<min(2, frameFloats.count) {
+                if sampleFormat.needsResampling {
                     
-                    guard let channel = channels?[channelIndex] else {break}
-                    let frameFloatsForChannel = frameFloats[channelIndex]
+                    Resampler.instance.resample(frame, copyTo: audioBuffer, withOffset: sampleCountSoFar)
                     
-                    cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: sampleCountSoFar), 1)
+                } else {
+                    
+                    let frameFloats: [UnsafePointer<Float>] = frame.playableFloatPointers
+                    
+                    for channelIndex in 0..<min(2, frameFloats.count) {
+                        
+                        guard let channel = channels?[channelIndex] else {break}
+                        let frameFloatsForChannel = frameFloats[channelIndex]
+                        
+                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: sampleCountSoFar), 1)
+                    }
                 }
-                
-                frameFloats.forEach {$0.deallocate()}
                 
                 sampleCountSoFar += Int(frame.sampleCount)
             }
             
-            return buffer
+            return audioBuffer
         }
         
         return nil

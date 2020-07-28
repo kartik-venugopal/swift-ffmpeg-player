@@ -6,7 +6,7 @@ class MetadataReader {
         
         if let fileCtx = MetadataFileContext(file) {
             
-            let audioInfo: AudioInfo = readAudioInfo(file, fileCtx.audioStream)
+            let audioInfo: AudioInfo = readAudioInfo(file, fileCtx)
             
             let metadata: [String: String] = readMetadata(fileCtx)
             let chapters: [Chapter] = fileCtx.format.chapters
@@ -43,8 +43,9 @@ class MetadataReader {
         return metadata
     }
     
-    private func readAudioInfo(_ file: URL, _ stream: AudioStream) -> AudioInfo {
+    private func readAudioInfo(_ file: URL, _ fileCtx: MetadataFileContext) -> AudioInfo {
         
+        let stream = fileCtx.audioStream
         let codec = stream.codec as! AudioCodec
 
         let fileType: String = file.pathExtension.uppercased()
@@ -52,9 +53,9 @@ class MetadataReader {
         let duration: Double = stream.duration
         let sampleRate: Int = Int(codec.sampleRate)
         let sampleFormat: SampleFormat = codec.sampleFormat
-        let bitRate: Int64 = codec.bitRate
+        let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate
         let channelCount: Int = codec.channelCount
-        let frames: Int64 = stream.frameCount
+        let frames: Int64 = Int64(round(duration * Double(sampleRate)))
 
         return AudioInfo(fileType: fileType, codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
                           channelCount: channelCount, frameCount: frames)
