@@ -124,6 +124,8 @@ class Scheduler {
                                 DispatchQueue.main.async {
                                     self.playbackCompleted()
                                 }
+                            } else {
+                                print("\nNOT DOING ANYTHING !!! ... (\(self.scheduledBufferCount))")
                             }
                         }
                     })
@@ -142,9 +144,9 @@ class Scheduler {
                 print("\nDecoder threw error: \(error)")
             }
             
-//            if eof {
-//                NSLog("Reached EOF !!!")
-//            }
+            if eof {
+                NSLog("Reached EOF !!!")
+            }
         }
         
         print("Took \(Int(round(time * 1000))) msec to schedule a buffer\n")
@@ -159,12 +161,19 @@ class Scheduler {
                 schedulingOpQueue.cancelAllOperations()
                 schedulingOpQueue.waitUntilAllOperationsAreFinished()
             }
+            
+            decoder.playbackStopped()
         }
         
         print("\nSCHEDULER - Waited \(time * 1000) msec for previous ops to stop.")
     }
     
     private func playbackCompleted() {
+        
+        print("\nSCHEDULER - PC")
+        
+        self.file = nil
+        decoder.playbackCompleted()
         NotificationCenter.default.post(name: .scheduler_playbackCompleted, object: self)
     }
 }

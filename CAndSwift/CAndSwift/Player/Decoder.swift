@@ -13,8 +13,10 @@ class Decoder {
     func initialize(with file: AudioFileContext) throws {
         
         self.file = file
-        try codec.open()
+        self.frameQueue.clear()
+        self.eof = false
         
+        try codec.open()
         print("\nSuccessfully opened file: \(file.file.path). File is ready for decoding.")
         
         file.audioStream.printInfo()
@@ -48,6 +50,8 @@ class Decoder {
         return buffer
     }
     
+    // TODO: BUG: If already reached EOF, should still be able to seek forward (because the last few seconds have not
+    // yet been played)
     func seekToTime(_ seconds: Double) throws {
         
         let seekPosRatio = seconds / stream.duration
@@ -55,11 +59,12 @@ class Decoder {
         
         do {
             try format.seekWithinStream(stream, targetFrame)
+            self.eof = false
             
-        } catch let packetReadError as PacketReadError {
+        } catch let seekError as SeekError {
             
-            self.eof = packetReadError.isEOF
-            throw DecoderError(packetReadError.code)
+            self.eof = seekError.isEOF
+            throw DecoderError(seekError.code)
         }
     }
     
@@ -78,5 +83,13 @@ class Decoder {
         }
         
         return frameQueue.peek()!
+    }
+    
+    func playbackStopped() {
+        frameQueue.clear()
+    }
+    
+    func playbackCompleted() {
+        frameQueue.clear()
     }
 }

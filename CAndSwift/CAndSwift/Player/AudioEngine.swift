@@ -53,11 +53,7 @@ class AudioEngine {
     func stop() {
         
         hasBeenStopped = true
-        
-        if playerNode.isPlaying {
-            playerNode.stop()
-        }
-        
+        playerNode.stop()
         hasBeenStopped = false
     }
     

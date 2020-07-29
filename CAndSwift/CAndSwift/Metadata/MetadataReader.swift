@@ -55,7 +55,8 @@ class MetadataReader {
         let sampleFormat: SampleFormat = codec.sampleFormat
         let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate
         let channelCount: Int = codec.channelCount
-        let frames: Int64 = Int64(round(duration * Double(sampleRate)))
+//        let frames: Int64 = Int64(round(duration * Double(sampleRate)))
+        let frames: Int64 = 0
 
         return AudioInfo(fileType: fileType, codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
                           channelCount: channelCount, frameCount: frames)
