@@ -3,7 +3,7 @@ import AVFoundation
 class Scheduler {
     
     let decoder: Decoder = Decoder()
-    let audioEngine: AudioEngine = AudioEngine()
+    let audioEngine: AudioEngine
     
     private var file: AudioFileContext!
     private var codec: AudioCodec! {file.audioCodec}
@@ -12,8 +12,12 @@ class Scheduler {
     private var sampleCountForDeferredPlayback: Int32 = 0
     
     var audioFormat: AVAudioFormat!
-    
     var scheduledBufferCount: Int = 0
+    var eof: Bool {decoder.eof}
+    
+    init(audioEngine: AudioEngine) {
+        self.audioEngine = audioEngine
+    }
     
     private let schedulingOpQueue: OperationQueue = {
         
@@ -28,6 +32,9 @@ class Scheduler {
     func initialize(with file: AudioFileContext) throws {
         
         self.file = file
+        try decoder.initialize(with: file)
+        
+        audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(codec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
         
         let sampleRate: Int32 = codec.sampleRate
         let channelCount: Int32 = codec.params.channels
@@ -56,44 +63,58 @@ class Scheduler {
             sampleCountForImmediatePlayback = 2 * sampleRate
             sampleCountForDeferredPlayback = 7 * sampleRate
         }
-        
-        try decoder.initialize(with: file)
     }
     
-    func initiateScheduling(from seekPosition: Double? = nil) throws {
+    func initiateScheduling(from seekPosition: Double? = nil) {
         
-        if let theSeekPosition = seekPosition {
-            try decoder.seekToTime(theSeekPosition)
+        do {
+            
+            if let theSeekPosition = seekPosition {
+                try decoder.seekToTime(theSeekPosition)
+            }
+            
+            scheduleOneBuffer()
+            
+            let time = measureTime {
+                scheduleOneBufferAsync()
+            }
+            
+            print("\nTook \(time * 1000) msec for async scheduling.")
+            
+        } catch {
+            
+            if (error as? PacketReadError)?.isEOF ?? false {
+                playbackCompleted()
+            }
         }
-        
-        scheduleOneBuffer()
-        
-        // TODO: Check for EOF here ???
-        scheduleOneBufferAsync()
     }
     
     private func scheduleOneBufferAsync() {
         
+        if eof {return}
+        
         self.schedulingOpQueue.addOperation {
-            self.scheduleOneBuffer()
+            self.scheduleOneBuffer(sampleCount: self.sampleCountForDeferredPlayback)
         }
     }
     
-    private func scheduleOneBuffer() {
+    private func scheduleOneBuffer(sampleCount: Int32? = nil) {
+        
+        if eof {return}
         
         let time = measureTime {
             
             do {
             
-                if let buffer: SamplesBuffer = try decoder.decode(sampleCountForImmediatePlayback), let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
+                if let buffer: SamplesBuffer = try decoder.decode(sampleCount ?? sampleCountForImmediatePlayback), let audioBuffer: AVAudioPCMBuffer = buffer.constructAudioBuffer(format: audioFormat) {
                     
                     audioEngine.scheduleBuffer(audioBuffer, {
                         
                         self.scheduledBufferCount -= 1
                         
-                        if self.audioEngine.isPlaying {
+                        if !self.audioEngine.hasBeenStopped {
                             
-                            if !self.decoder.eof {
+                            if !self.eof {
     
                                 self.scheduleOneBufferAsync()
                                 print("\nEnqueued one scheduling op ... (\(self.schedulingOpQueue.operationCount))")
@@ -106,6 +127,8 @@ class Scheduler {
                             }
                         }
                     })
+                    
+                    print("\nScheduled a buffer with \(buffer.frames.count) frames, \(buffer.sampleCount) samples, equaling \(Double(buffer.sampleCount) / Double(codec.sampleRate)) seconds of playback.")
                     
                     // Write out the raw samples to a .raw file for testing in Audacity
                     //            BufferFileWriter.writeBuffer(audioBuffer)
@@ -124,7 +147,7 @@ class Scheduler {
 //            }
         }
         
-        print("\nTook \(Int(round(time * 1000))) msec to schedule a buffer")
+        print("Took \(Int(round(time * 1000))) msec to schedule a buffer\n")
     }
     
     func stop() {
@@ -142,14 +165,6 @@ class Scheduler {
     }
     
     private func playbackCompleted() {
-        
-        // TODO: What does the scheduler need to do here ?
-        
-        NSLog("Playback completed !!!\n")
-        
-        stop()
-        audioEngine.playbackCompleted()
-        
-        NotificationCenter.default.post(name: .playbackCompleted, object: self)
+        NotificationCenter.default.post(name: .scheduler_playbackCompleted, object: self)
     }
 }

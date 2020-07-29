@@ -5,7 +5,7 @@ class Player {
     let audioEngine: AudioEngine = AudioEngine()
     var audioFormat: AVAudioFormat!
     
-    var scheduler: Scheduler = Scheduler()
+    var scheduler: Scheduler
     
     // TODO: Move this flag to the audio stream or codec
     var eof: Bool = false
@@ -27,34 +27,43 @@ class Player {
     
     init() {
         
+        scheduler = Scheduler(audioEngine: self.audioEngine)
+        
         // Hack to eagerly initialize a lazy variable (so that the resampler is ready to go when required)
         _ = Resampler.instance
+        
+        NotificationCenter.default.addObserver(forName: .scheduler_playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
     }
     
-    private func initialize(with file: AudioFileContext) {
+    private func initialize(with file: AudioFileContext) throws {
         
         self.playingFile = file
         
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(file.audioCodec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
         audioEngine.prepare(audioFormat)
+        
+        try scheduler.initialize(with: file)
     }
     
     func play(_ file: URL) {
         
         stopAndWait()
+    
+        guard let fileCtx = AudioFileContext(file) else {
+
+            print("\nError opening file for playback: \(file.path)")
+            return
+        }
         
         do {
         
-            guard let fileCtx = AudioFileContext(file) else {throw PlayerInitializationError()}
-            initialize(with: fileCtx)
+            try initialize(with: fileCtx)
             
-            try scheduler.initiateScheduling()
+            scheduler.initiateScheduling()
             beginPlayback()
-
+            
         } catch {
-
-            print("\nFFmpeg / audio engine setup failure !")
-            return
+            print("Player setup for file '\(file.path)' failed !")
         }
     }
     
@@ -65,17 +74,9 @@ class Player {
         
         guard playingFile != nil else {return}
         
-        do {
-        
-            stopAndWait(false)
-            try scheduler.initiateScheduling(from: seconds)
-            shouldBeginPlayback ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
-
-        } catch {
-
-            print("\nPlayer: Unable to seek !")
-            return
-        }
+        stopAndWait(false)
+        scheduler.initiateScheduling(from: seconds)
+        shouldBeginPlayback ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
     }
     
     func togglePlayPause() {
@@ -123,7 +124,7 @@ class Player {
         audioEngine.playbackCompleted()
         playingFile?.destroy()
         
-        NotificationCenter.default.post(name: .playbackCompleted, object: self)
+        NotificationCenter.default.post(name: .player_playbackCompleted, object: self)
     }
 }
 

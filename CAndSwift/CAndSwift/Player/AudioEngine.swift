@@ -52,9 +52,13 @@ class AudioEngine {
     
     func stop() {
         
+        hasBeenStopped = true
+        
         if playerNode.isPlaying {
             playerNode.stop()
         }
+        
+        hasBeenStopped = false
     }
     
     var volume: Float {
@@ -63,6 +67,7 @@ class AudioEngine {
         set {playerNode.volume = min(1, max(0, newValue))}
     }
     
+    var hasBeenStopped: Bool = false
     var isPlaying: Bool {playerNode.isPlaying}
 
     var startFrame: AVAudioFramePosition = 0

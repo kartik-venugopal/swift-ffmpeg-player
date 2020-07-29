@@ -38,9 +38,13 @@ class CodedError: Error {
     }
 }
 
-class DecoderError: CodedError {}
+class DecoderError: CodedError {
+    static let eof: DecoderError = DecoderError(EOF_CODE)
+}
 
-class PacketReadError: CodedError {}
+class PacketReadError: CodedError {
+    static let eof: PacketReadError = PacketReadError(EOF_CODE)
+}
 
 class SeekError: CodedError {}
 

@@ -38,13 +38,10 @@ class Decoder {
                     break
                 }
                 
-            } catch {
+            } catch let packetReadError as PacketReadError {
                 
-                // TODO: Possibility of infinite loop with continuous errors suppressed here.
-                // Maybe set a maximum consecutive error limit ??? eg. If 3 consecutive errors are encountered, then break from the loop.
-                if (error as? PacketReadError)?.isEOF ?? false {
-                    self.eof = true
-                }
+                self.eof = packetReadError.isEOF
+                if !eof {throw DecoderError(packetReadError.code)}
             }
         }
         
@@ -56,7 +53,14 @@ class Decoder {
         let seekPosRatio = seconds / stream.duration
         let targetFrame = Int64(seekPosRatio * Double(stream.frameCount))
         
-        try format.seekWithinStream(stream, targetFrame)
+        do {
+            try format.seekWithinStream(stream, targetFrame)
+            
+        } catch let packetReadError as PacketReadError {
+            
+            self.eof = packetReadError.isEOF
+            throw DecoderError(packetReadError.code)
+        }
     }
     
     private var frameQueue: Queue<BufferedFrame> = Queue<BufferedFrame>()

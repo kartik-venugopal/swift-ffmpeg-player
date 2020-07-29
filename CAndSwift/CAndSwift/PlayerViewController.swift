@@ -65,7 +65,7 @@ class PlayerViewController: NSViewController {
         
         artView.cornerRadius = 5
         
-        NotificationCenter.default.addObserver(forName: .playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
+        NotificationCenter.default.addObserver(forName: .player_playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
     }
 
     // Remember player volume on next app launch
@@ -324,5 +324,6 @@ extension NSImageView {
 
 extension Notification.Name {
     
-    static let playbackCompleted = NSNotification.Name("playbackCompleted")
+    static let scheduler_playbackCompleted = NSNotification.Name("scheduler.playbackCompleted")
+    static let player_playbackCompleted = NSNotification.Name("player.playbackCompleted")
 }
