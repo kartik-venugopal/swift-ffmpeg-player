@@ -161,7 +161,7 @@ class Scheduler {
             }
         }
         
-        print("\nWaited \(time * 1000) msec for previous ops to stop.")
+        print("\nSCHEDULER - Waited \(time * 1000) msec for previous ops to stop.")
     }
     
     private func playbackCompleted() {

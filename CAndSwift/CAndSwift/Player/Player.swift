@@ -47,7 +47,7 @@ class Player {
     
     func play(_ file: URL) {
         
-        stopAndWait()
+        stop()
     
         guard let fileCtx = AudioFileContext(file) else {
 
@@ -74,7 +74,7 @@ class Player {
         
         guard playingFile != nil else {return}
         
-        stopAndWait(false)
+        stop(false)
         scheduler.initiateScheduling(from: seconds)
         shouldBeginPlayback ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
     }
@@ -88,25 +88,19 @@ class Player {
     func stop(_ playbackFinished: Bool = true) {
         
         state = .stopped
-        audioEngine.stop()
-        scheduler.stop()
+        
+        let time = measureTime {
+            audioEngine.stop()
+            scheduler.stop()
+        }
+        
+        print("\nPLAYER - Waited \(time * 1000) msec for previous ops to stop.")
         
         if playbackFinished {
             
             playingFile = nil
             audioEngine.playbackCompleted()
         }
-    }
-    
-    private func stopAndWait(_ playbackFinished: Bool = true) {
-        
-        stop(playbackFinished)
-        
-        let time = measureTime {
-            scheduler.stop()
-        }
-        
-        print("\nWaited \(time * 1000) msec for previous ops to stop.")
     }
     
     private func beginPlayback(from seekPosition: Double = 0) {
