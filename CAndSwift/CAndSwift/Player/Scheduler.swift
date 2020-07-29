@@ -15,6 +15,8 @@ class Scheduler {
     var scheduledBufferCount: Int = 0
     var eof: Bool {decoder.eof}
     
+    var isActive: Bool = false
+    
     init(audioEngine: AudioEngine) {
         self.audioEngine = audioEngine
     }
@@ -32,6 +34,7 @@ class Scheduler {
     func initialize(with file: AudioFileContext) throws {
         
         self.file = file
+        self.isActive = false
         try decoder.initialize(with: file)
         
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(codec.sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
@@ -65,6 +68,14 @@ class Scheduler {
         }
     }
     
+    func done(with file: AudioFileContext) {
+        
+        // TODO:
+        
+        self.file = nil
+        self.isActive = false
+    }
+    
     func initiateScheduling(from seekPosition: Double? = nil) {
         
         do {
@@ -74,16 +85,13 @@ class Scheduler {
             }
             
             scheduleOneBuffer()
+            scheduleOneBufferAsync()
             
-            let time = measureTime {
-                scheduleOneBufferAsync()
-            }
-            
-            print("\nTook \(time * 1000) msec for async scheduling.")
+            isActive = true
             
         } catch {
             
-            if (error as? PacketReadError)?.isEOF ?? false {
+            if (error as? DecoderError)?.isEOF ?? false {
                 playbackCompleted()
             }
         }
@@ -117,15 +125,12 @@ class Scheduler {
                             if !self.eof {
     
                                 self.scheduleOneBufferAsync()
-                                print("\nEnqueued one scheduling op ... (\(self.schedulingOpQueue.operationCount))")
     
                             } else if self.scheduledBufferCount == 0 {
     
                                 DispatchQueue.main.async {
                                     self.playbackCompleted()
                                 }
-                            } else {
-                                print("\nNOT DOING ANYTHING !!! ... (\(self.scheduledBufferCount))")
                             }
                         }
                     })
@@ -149,31 +154,26 @@ class Scheduler {
             }
         }
         
-        print("Took \(Int(round(time * 1000))) msec to schedule a buffer\n")
+        print("Took \(Int(round(time * 1000))) msec to schedule the buffer\n")
     }
     
     func stop() {
         
-        let time = measureTime {
+        if schedulingOpQueue.operationCount > 0 {
             
-            if schedulingOpQueue.operationCount > 0 {
-                
-                schedulingOpQueue.cancelAllOperations()
-                schedulingOpQueue.waitUntilAllOperationsAreFinished()
-            }
-            
-            decoder.playbackStopped()
+            schedulingOpQueue.cancelAllOperations()
+            schedulingOpQueue.waitUntilAllOperationsAreFinished()
         }
         
-        print("\nSCHEDULER - Waited \(time * 1000) msec for previous ops to stop.")
+        decoder.playbackStopped()
     }
     
     private func playbackCompleted() {
         
-        print("\nSCHEDULER - PC")
-        
         self.file = nil
+        self.isActive = false
         decoder.playbackCompleted()
+        
         NotificationCenter.default.post(name: .scheduler_playbackCompleted, object: self)
     }
 }

@@ -76,7 +76,11 @@ class Player {
         
         stop(false)
         scheduler.initiateScheduling(from: seconds)
-        shouldBeginPlayback ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
+        
+        // TODO: BUG: Should not begin playback here if playback has ended (seeking past EOF) !!!
+        if scheduler.isActive {
+            shouldBeginPlayback ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
+        }
     }
     
     func togglePlayPause() {
@@ -89,15 +93,12 @@ class Player {
         
         state = .stopped
         
-        let time = measureTime {
-            audioEngine.stop()
-            scheduler.stop()
-        }
-        
-        print("\nPLAYER - Waited \(time * 1000) msec for previous ops to stop.")
+        audioEngine.stop()
+        scheduler.stop()
         
         if playbackFinished {
-            
+
+            playingFile?.destroy()
             playingFile = nil
             audioEngine.playbackCompleted()
         }
@@ -115,9 +116,6 @@ class Player {
         NSLog("Playback completed !!!\n")
         
         stop()
-        audioEngine.playbackCompleted()
-        playingFile?.destroy()
-        
         NotificationCenter.default.post(name: .player_playbackCompleted, object: self)
     }
 }

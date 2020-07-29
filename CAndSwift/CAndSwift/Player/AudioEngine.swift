@@ -86,6 +86,8 @@ class AudioEngine {
     
     var seekPosition: Double {
         
+        print("\nIsPlaying ? \(playerNode.isPlaying)")
+        
         if let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) {
             cachedSeekPosn = Double(startFrame + playerTime.sampleTime) / playerTime.sampleRate
         }

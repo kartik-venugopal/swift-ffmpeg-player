@@ -94,7 +94,6 @@ class PlayerViewController: NSViewController {
                 self.showAudioInfo(trackInfo.audioInfo)
                 
                 if self.seekPosTimer == nil {
-                    
                     self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
                 }
             }
@@ -216,11 +215,9 @@ class PlayerViewController: NSViewController {
     
     private func doSeekToTime(_ time: Double) {
         
-        if let trackInfo = self.trackInfo {
+        if self.trackInfo != nil {
             
-            let duration = trackInfo.audioInfo.duration
-        
-            player.seekToTime(min(max(0, time), duration))
+            player.seekToTime(max(0, time))
             updateSeekPosition(self)
         }
     }
@@ -259,6 +256,9 @@ class PlayerViewController: NSViewController {
         txtAudioInfo.string = ""
         lblTitle.stringValue = ""
         seekSlider.doubleValue = 0
+        
+        seekPosTimer?.invalidate()
+        seekPosTimer = nil
     }
     
     private func formatSecondsToHMS(_ timeSecondsDouble: Double, _ includeMsec: Bool = false) -> String {
