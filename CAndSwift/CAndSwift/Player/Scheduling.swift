@@ -10,7 +10,7 @@ extension Player {
                 
                 try decoder.seekToTime(theSeekPosition)
                 
-                guard !eof else {
+                if eof {
                     
                     playbackCompleted()
                     return
@@ -20,7 +20,9 @@ extension Player {
             scheduleOneBuffer()
             scheduleOneBufferAsync()
             
-        } catch {}
+        } catch {
+            print("\nDecoder threw error: \(error)")
+        }
     }
     
     private func scheduleOneBufferAsync() {
@@ -64,10 +66,6 @@ extension Player {
                     })
                     
                     print("\nScheduled a buffer with \(buffer.frames.count) frames, \(buffer.sampleCount) samples, equaling \(Double(buffer.sampleCount) / Double(codec.sampleRate)) seconds of playback.")
-                    
-                    // Write out the raw samples to a .raw file for testing in Audacity
-                    //            BufferFileWriter.writeBuffer(audioBuffer)
-                    //            BufferFileWriter.closeFile()
                     
                     scheduledBufferCount.increment()
                     buffer.destroy()

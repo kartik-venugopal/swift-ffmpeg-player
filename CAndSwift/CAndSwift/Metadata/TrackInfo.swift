@@ -4,7 +4,10 @@ struct TrackInfo {
     
     var audioInfo: AudioInfo
     var metadata: [String: String]
+    
     var art: NSImage?
+    var artMetadata: [String: String]?
+    
     var chapters: [Chapter]
     
     var displayedTitle: String? {

@@ -8,11 +8,14 @@ class MetadataReader {
             
             let audioInfo: AudioInfo = readAudioInfo(file, fileCtx)
             
-            let metadata: [String: String] = readMetadata(fileCtx)
-            let chapters: [Chapter] = fileCtx.format.chapters
-            let coverArt: NSImage? = readCoverArt(fileCtx)
+            let metadata: [String: String] = readAudioMetadata(fileCtx)
             
-            return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, chapters: chapters)
+            let coverArt: NSImage? = readCoverArt(fileCtx)
+            let artMetadata: [String: String]? = fileCtx.imageStream?.metadata
+            
+            let chapters: [Chapter] = fileCtx.format.chapters
+            
+            return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata, chapters: chapters)
             
         } else {
             
@@ -21,7 +24,9 @@ class MetadataReader {
         }
     }
     
-    private func readMetadata(_ fileCtx: MetadataFileContext) -> [String: String] {
+    private func readAudioMetadata(_ fileCtx: MetadataFileContext) -> [String: String] {
+        
+        // Combine metadata from the format context and audio stream.
         
         var metadata: [String: String] = [:]
         
@@ -31,13 +36,6 @@ class MetadataReader {
         
         for (key, value) in fileCtx.audioStream.metadata {
             metadata[key] = value
-        }
-        
-        if let imageMetadata = fileCtx.imageStream?.metadata {
-            
-            for (key, value) in imageMetadata {
-                metadata[key] = value
-            }
         }
         
         return metadata

@@ -96,6 +96,8 @@ class PlayerViewController: NSViewController {
                 if self.seekPosTimer == nil {
                     self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
                 }
+                
+                self.updateSeekPosition(self)
             }
         }
     }
@@ -250,7 +252,8 @@ class PlayerViewController: NSViewController {
         self.file = nil
         self.trackInfo = nil
         
-        updateSeekPosition(self)
+        btnPlayPause.image = imgPlay
+        lblSeekPos.stringValue = "0:00"
         artView.image = imgDefaultArt
         txtMetadata.string = ""
         txtAudioInfo.string = ""

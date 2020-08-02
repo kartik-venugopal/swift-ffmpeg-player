@@ -80,7 +80,6 @@ class Player {
     
     func play(_ file: URL) {
         
-        stop()
         playbackCompleted(false)
     
         guard let fileCtx = AudioFileContext(file) else {
@@ -129,10 +128,6 @@ class Player {
         stopScheduling()
         audioEngine.stop()
         decoder.stop()
-        
-//        if scheduledBufferCount.value > 0 {
-//            audioEngine.stop()
-//        }
     }
     
     func beginPlayback(from seekPosition: Double = 0) {

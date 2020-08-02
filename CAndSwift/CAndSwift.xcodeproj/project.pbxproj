@@ -25,7 +25,7 @@
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
-		3E58752824D03BED002774FB /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752724D03BED002774FB /* Scheduler.swift */; };
+		3E58752824D03BED002774FB /* Scheduling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752724D03BED002774FB /* Scheduling.swift */; };
 		3E58752A24D05059002774FB /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752924D05059002774FB /* Decoder.swift */; };
 		3E58752C24D058A6002774FB /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752B24D058A6002774FB /* Queue.swift */; };
 		3E58752E24D06CD1002774FB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752D24D06CD1002774FB /* Extensions.swift */; };
@@ -80,7 +80,7 @@
 		3E52510B24C23CC30023F696 /* CAndSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CAndSwift.entitlements; sourceTree = "<group>"; };
 		3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CAndSwift-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E52519824C23FA40023F696 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
-		3E58752724D03BED002774FB /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
+		3E58752724D03BED002774FB /* Scheduling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduling.swift; sourceTree = "<group>"; };
 		3E58752924D05059002774FB /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		3E58752B24D058A6002774FB /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		3E58752D24D06CD1002774FB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -204,7 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				3E293BEE24C45885003749F2 /* Player.swift */,
-				3E58752724D03BED002774FB /* Scheduler.swift */,
+				3E58752724D03BED002774FB /* Scheduling.swift */,
 				3E58752924D05059002774FB /* Decoder.swift */,
 				3E0BECCC24C386B700FF69D7 /* AudioEngine.swift */,
 				3E88343724CE13BF00B81A2C /* Resampler.swift */,
@@ -321,7 +321,7 @@
 				3E0BECC724C3507500FF69D7 /* MetadataReader.swift in Sources */,
 				3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */,
 				3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */,
-				3E58752824D03BED002774FB /* Scheduler.swift in Sources */,
+				3E58752824D03BED002774FB /* Scheduling.swift in Sources */,
 				3E0BECCD24C386B700FF69D7 /* AudioEngine.swift in Sources */,
 				3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */,
 				3E67F36A24C823330023C2D3 /* Stream.swift in Sources */,
