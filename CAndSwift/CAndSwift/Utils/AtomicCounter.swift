@@ -29,6 +29,12 @@ public final class AtomicCounter<T> where T: SignedInteger {
         return _value
     }
     
+    public func decrement() {
+        lock.wait()
+        defer { lock.signal() }
+        _value -= 1
+    }
+    
     public func incrementAndGet() -> T {
         lock.wait()
         defer { lock.signal() }
@@ -36,10 +42,43 @@ public final class AtomicCounter<T> where T: SignedInteger {
         return _value
     }
     
+    public func increment() {
+        lock.wait()
+        defer { lock.signal() }
+        _value += 1
+    }
+    
     public func add(_ addend: T) {
         
         lock.wait()
         defer { lock.signal() }
         _value += addend
+    }
+}
+
+public final class AtomicBool {
+    
+    private let lock = DispatchSemaphore(value: 1)
+    private var _value: Bool
+    
+    public init(value initialValue: Bool = false) {
+        _value = initialValue
+    }
+    
+    public var value: Bool {
+        
+        get {
+            
+            lock.wait()
+            defer { lock.signal() }
+            return _value
+        }
+        
+        set {
+            
+            lock.wait()
+            defer { lock.signal() }
+            _value = newValue
+        }
     }
 }

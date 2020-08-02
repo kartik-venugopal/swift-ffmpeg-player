@@ -23,7 +23,7 @@ class Decoder {
         file.audioCodec.printInfo()
     }
     
-    func decode(_ maxSampleCount: Int32) throws -> SamplesBuffer? {
+    func decode(_ maxSampleCount: Int32) throws -> SamplesBuffer {
         
         let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: maxSampleCount)
         
@@ -64,7 +64,7 @@ class Decoder {
         } catch let seekError as SeekError {
             
             self.eof = seekError.isEOF
-            throw DecoderError(seekError.code)
+            if !eof {throw DecoderError(seekError.code)}
         }
     }
     
@@ -85,11 +85,7 @@ class Decoder {
         return frameQueue.peek()!
     }
     
-    func playbackStopped() {
-        frameQueue.clear()
-    }
-    
-    func playbackCompleted() {
+    func stop() {
         frameQueue.clear()
     }
 }
