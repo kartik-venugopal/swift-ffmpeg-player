@@ -50,7 +50,7 @@ class Player {
         let channelCount: Int32 = codec.params.channels
         let effectiveSampleRate: Int32 = sampleRate * channelCount
         
-        audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(sampleRate), channels: AVAudioChannelCount(2), interleaved: false)!
+        audioFormat = AVAudioFormat(standardFormatWithSampleRate: Double(sampleRate), channelLayout: ChannelLayouts.mapLayout(ffmpegLayout: Int(codec.channelLayout)))
         audioEngine.prepare(audioFormat)
         
         switch effectiveSampleRate {

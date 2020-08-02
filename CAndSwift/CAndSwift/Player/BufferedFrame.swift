@@ -31,7 +31,7 @@ class BufferedFrame: Hashable {
         self.actualDataPointers = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: channelCount)
         self.allocatedDataPointerCount = 0
         
-        for channelIndex in (0..<8) {
+        for channelIndex in 0..<8 {
             
             guard let sourceBuffer = sourceBuffers[channelIndex] else {break}
             

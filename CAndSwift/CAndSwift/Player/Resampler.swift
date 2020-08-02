@@ -68,7 +68,7 @@ class Resampler {
         let channels = buffer.floatChannelData
         let intSampleCount: Int = Int(frame.sampleCount)
         
-        for channelIndex in 0..<min(2, frame.channelCount) {
+        for channelIndex in 0..<frame.channelCount {
             
             guard let bytesForChannel = outData[channelIndex], let channel = channels?[channelIndex] else {break}
             

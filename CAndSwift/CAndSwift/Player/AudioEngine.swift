@@ -5,16 +5,21 @@ class AudioEngine {
 
     private let audioEngine: AVAudioEngine
     internal let playerNode: AVAudioPlayerNode
+    private let auxMixer: AVAudioMixerNode
 
     init() {
 
         audioEngine = AVAudioEngine()
         playerNode = AVAudioPlayerNode()
+        auxMixer = AVAudioMixerNode()
         
         playerNode.volume = 1
 
         audioEngine.attach(playerNode)
-        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: nil)
+        audioEngine.attach(auxMixer)
+        
+        audioEngine.connect(playerNode, to: auxMixer, format: nil)
+        audioEngine.connect(auxMixer, to: audioEngine.mainMixerNode, format: nil)
 
         audioEngine.prepare()
 
@@ -28,7 +33,7 @@ class AudioEngine {
     func prepare(_ format: AVAudioFormat) {
 
         audioEngine.disconnectNodeOutput(playerNode)
-        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: format)
+        audioEngine.connect(playerNode, to: auxMixer, format: format)
     }
 
     func scheduleBuffer(_ buffer: AVAudioPCMBuffer, _ completionHandler: AVAudioNodeCompletionHandler? = nil) {

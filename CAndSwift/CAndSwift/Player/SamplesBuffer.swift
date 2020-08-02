@@ -9,8 +9,6 @@ class SamplesBuffer {
     var sampleCount: Int32 = 0
     let maxSampleCount: Int32
     
-//    var isFull: Bool {sampleCount >= maxSampleCount}
-    
     init(sampleFormat: SampleFormat, maxSampleCount: Int32) {
         
         self.sampleFormat = sampleFormat
@@ -53,7 +51,7 @@ class SamplesBuffer {
                     
                     let frameFloats: [UnsafePointer<Float>] = frame.playableFloatPointers
                     
-                    for channelIndex in 0..<min(2, frameFloats.count) {
+                    for channelIndex in 0..<frameFloats.count {
                         
                         guard let channel = channels?[channelIndex] else {break}
                         let frameFloatsForChannel = frameFloats[channelIndex]

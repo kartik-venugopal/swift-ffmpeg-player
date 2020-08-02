@@ -32,7 +32,7 @@ class DurationEstimationContext {
         
         if let avStreams = avContext.streams {
         
-            for streamIndex in (0..<Int(avContext.nb_streams)) {
+            for streamIndex in 0..<Int(avContext.nb_streams) {
                 
                 if let avStreamPointer: UnsafeMutablePointer<AVStream> = avStreams.advanced(by: streamIndex).pointee,
                     avStreamPointer.pointee.codecpar.pointee.codec_type == AVMEDIA_TYPE_AUDIO {
