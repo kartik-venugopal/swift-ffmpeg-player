@@ -131,26 +131,6 @@ class FormatContext {
         return packet.streamIndex == stream.index ? packet : nil
     }
     
-    func seekWithinStream(_ stream: AudioStream, targetByte: Int64) throws {
-        
-        stream.codec.flushBuffers()
-        
-        print("\nSeeking ... byte: \(targetByte) / \(fileSize)")
-        
-        // Track playback completed. Send EOF code.
-        if targetByte >= fileSize {
-            throw SeekError(EOF_CODE)
-        }
-        
-        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetByte, AVSEEK_FLAG_BYTE)
-        
-        guard seekResult.isNonNegative else {
-
-            print("\nFormatContext.seekWithinStream(byte): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
-            throw SeekError(seekResult)
-        }
-    }
-    
     func seekWithinStream(_ stream: AudioStream, targetFrame: Int64) throws {
         
         stream.codec.flushBuffers()
@@ -165,6 +145,29 @@ class FormatContext {
         guard seekResult.isNonNegative else {
 
             print("\nFormatContext.seekWithinStream(frame): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
+            throw SeekError(seekResult)
+        }
+    }
+    
+    func seekWithinStream(_ stream: AudioStream, targetByte: Int64) throws {
+        
+        stream.codec.flushBuffers()
+        
+        print("\nSeeking ... byte: \(targetByte) / \(fileSize)")
+        
+        // TODO: Must check if at least a few frames can be played
+        // (i.e. difference between targetByte and fileSize is sufficiently large)
+        
+        // Track playback completed. Send EOF code.
+        if targetByte >= fileSize {
+            throw SeekError(EOF_CODE)
+        }
+        
+        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetByte, AVSEEK_FLAG_BYTE)
+        
+        guard seekResult.isNonNegative else {
+
+            print("\nFormatContext.seekWithinStream(byte): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
             throw SeekError(seekResult)
         }
     }

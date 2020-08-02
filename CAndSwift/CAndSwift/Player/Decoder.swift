@@ -59,6 +59,8 @@ class Decoder {
             throw DecoderError(-1)
         }
         
+        print("\nDecoder-seeking ... seconds: \(seconds) / \(duration)")
+        
         do {
         
             if stream.frameCount > 0 {
