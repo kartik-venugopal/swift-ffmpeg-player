@@ -358,6 +358,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    AV_TIME_BASE
+
     // Print some intersting file information.
     printStreamInformation(codec, codecCtx, audioStreamIndex);
 

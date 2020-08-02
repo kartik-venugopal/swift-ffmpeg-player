@@ -44,6 +44,7 @@
 		3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E88343724CE13BF00B81A2C /* Resampler.swift */; };
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
 		3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */; };
+		3EF3B34D24D6F67600CC8C07 /* DurationEstimationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF3B34C24D6F67600CC8C07 /* DurationEstimationContext.swift */; };
 		3EF9D03724CF84F4006138D0 /* MetadataFileContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF9D03624CF84F4006138D0 /* MetadataFileContext.swift */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,7 @@
 		3E88343724CE13BF00B81A2C /* Resampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resampler.swift; sourceTree = "<group>"; };
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
 		3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesBuffer.swift; sourceTree = "<group>"; };
+		3EF3B34C24D6F67600CC8C07 /* DurationEstimationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationEstimationContext.swift; sourceTree = "<group>"; };
 		3EF9D03624CF84F4006138D0 /* MetadataFileContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataFileContext.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -190,6 +192,7 @@
 				3E4DF95F24C886CE008988FF /* AudioFileContext.swift */,
 				3EF9D03624CF84F4006138D0 /* MetadataFileContext.swift */,
 				3E9CD3B024C7A8CB00499954 /* FormatContext.swift */,
+				3EF3B34C24D6F67600CC8C07 /* DurationEstimationContext.swift */,
 				3E67F36924C823330023C2D3 /* Stream.swift */,
 				3E67F36B24C823530023C2D3 /* Codec.swift */,
 				3E67F36D24C8237A0023C2D3 /* Packet.swift */,
@@ -335,6 +338,7 @@
 				3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */,
 				3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */,
 				3E78F90424CF2ECA00DA4F9B /* Frame.swift in Sources */,
+				3EF3B34D24D6F67600CC8C07 /* DurationEstimationContext.swift in Sources */,
 				3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */,
 				3E58752A24D05059002774FB /* Decoder.swift in Sources */,
 				3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */,

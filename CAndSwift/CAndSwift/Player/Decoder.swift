@@ -34,6 +34,7 @@ class Decoder {
                 let frame = try nextFrame()
                 
                 if buffer.appendFrame(frame: frame) {
+                    
                     _ = frameQueue.dequeue()
                     
                 } else {    // Buffer is full, stop filling it.
@@ -50,15 +51,27 @@ class Decoder {
         return buffer
     }
     
-    // TODO: BUG: If already reached EOF, should still be able to seek forward (because the last few seconds have not
-    // yet been played)
     func seekToTime(_ seconds: Double) throws {
         
-        let seekPosRatio = seconds / stream.duration
-        let targetFrame = Int64(seekPosRatio * Double(stream.frameCount))
+        let duration = format.duration
+        
+        if duration <= 0 {
+            throw DecoderError(-1)
+        }
         
         do {
-            try format.seekWithinStream(stream, targetFrame)
+        
+            if stream.frameCount > 0 {
+                
+                let targetFrame = Int64(seconds * Double(stream.frameCount) / duration)
+                try format.seekWithinStream(stream, targetFrame: targetFrame)
+                
+            } else {
+                
+                let targetByte = Int64(seconds * Double(format.fileSize) / duration)
+                try format.seekWithinStream(stream, targetByte: targetByte)
+            }
+            
             self.eof = false
             
         } catch let seekError as SeekError {

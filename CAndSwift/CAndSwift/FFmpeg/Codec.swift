@@ -88,9 +88,6 @@ class AudioCodec: Codec {
         print("---------------------------------\n")
     }
     
-    var sendTime: Double = 0
-    var rcvTime: Double = 0
-    
     func decode(_ packet: Packet) throws -> [BufferedFrame] {
         
         // Send the packet to the decoder

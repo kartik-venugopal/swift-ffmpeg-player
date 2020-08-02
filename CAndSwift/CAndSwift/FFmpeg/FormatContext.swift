@@ -30,6 +30,32 @@ class FormatContext {
     
     var bitRate: Int64 {avContext.bit_rate}
     
+    var duration: Double {
+        audioStream?.duration ?? estimatedDuration ?? bruteForceDuration ?? 0
+    }
+    
+    private lazy var estimatedDuration: Double? = {
+        avContext.duration > 0 ? (Double(avContext.duration) / Double(AV_TIME_BASE)) : nil
+    }()
+    
+    private lazy var bruteForceDuration: Double? = {
+        DurationEstimationContext(file)?.duration
+    }()
+    
+    lazy var fileSize: UInt64 = {
+        
+        do {
+            
+            let attr = try FileManager.default.attributesOfItem(atPath: filePath)
+            return attr[FileAttributeKey.size] as? UInt64 ?? 0
+            
+        } catch let error as NSError {
+            
+            NSLog("Error getting size of file '%@': %@", filePath, error.description)
+            return 0
+        }
+    }()
+    
     var chapters: [Chapter] {
         
         var chapters: [Chapter] = []
@@ -99,15 +125,33 @@ class FormatContext {
         }
     }
     
-    var readTime: Double = 0
-    
     func readPacket(_ stream: Stream) throws -> Packet? {
         
         let packet = try Packet(pointer)
         return packet.streamIndex == stream.index ? packet : nil
     }
     
-    func seekWithinStream(_ stream: AudioStream, _ targetFrame: Int64) throws {
+    func seekWithinStream(_ stream: AudioStream, targetByte: Int64) throws {
+        
+        stream.codec.flushBuffers()
+        
+        print("\nSeeking ... byte: \(targetByte) / \(fileSize)")
+        
+        // Track playback completed. Send EOF code.
+        if targetByte >= fileSize {
+            throw SeekError(EOF_CODE)
+        }
+        
+        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetByte, AVSEEK_FLAG_BYTE)
+        
+        guard seekResult.isNonNegative else {
+
+            print("\nFormatContext.seekWithinStream(byte): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
+            throw SeekError(seekResult)
+        }
+    }
+    
+    func seekWithinStream(_ stream: AudioStream, targetFrame: Int64) throws {
         
         stream.codec.flushBuffers()
         
@@ -120,7 +164,7 @@ class FormatContext {
         
         guard seekResult.isNonNegative else {
 
-            print("\nFormatContext.seekWithinStream(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
+            print("\nFormatContext.seekWithinStream(frame): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
             throw SeekError(seekResult)
         }
     }

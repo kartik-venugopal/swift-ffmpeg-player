@@ -60,7 +60,7 @@ class AudioStream: Stream {
     
     override var codec: AudioCodec {_codec as! AudioCodec}
     
-    var duration: Double = 0
+    var duration: Double?
     var timeBase: AVRational {avStream.time_base}
     var frameCount: Int64 {avStream.duration}
     
@@ -69,7 +69,9 @@ class AudioStream: Stream {
         super.init(pointer, AVMEDIA_TYPE_AUDIO)
         
         self._codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
-        self.duration = Double(avStream.duration) * avStream.time_base.ratio
+        self.duration = avStream.duration > 0 ? Double(avStream.duration) * avStream.time_base.ratio : nil
+        
+        print("Stream: Duration= \(avStream.duration), TimeBase= \(avStream.time_base.num) / \(avStream.time_base.den)")
     }
     
     override func printInfo() {
@@ -77,7 +79,7 @@ class AudioStream: Stream {
         print("\n---------- Audio Stream Info ----------\n")
         
         print(String(format: "Index:         %7d", index))
-        print(String(format: "Duration:      %7.2lf", duration))
+        print(String(format: "Duration:      %@", duration != nil ? String(format: "%7.2lf", duration!) : "<Unknown>" ))
         print(String(format: "Time Base:     %d / %d", timeBase.num, timeBase.den))
         print(String(format: "Total Frames:  %7ld", frameCount))
         

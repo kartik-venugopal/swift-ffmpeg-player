@@ -48,7 +48,7 @@ class MetadataReader {
 
         let fileType: String = file.pathExtension.uppercased()
         let codecName: String = codec.longName
-        let duration: Double = stream.duration
+        let duration: Double = stream.duration ?? fileCtx.format.duration
         let sampleRate: Int = Int(codec.sampleRate)
         let sampleFormat: SampleFormat = codec.sampleFormat
         let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate

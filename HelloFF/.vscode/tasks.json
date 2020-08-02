@@ -12,7 +12,7 @@
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
-                "-L/usr/local/Cellar/ffmpeg/4.3.1/lib",
+                "-L/usr/local/Cellar/ffmpeg/4.3_1/lib",
                 // "-L/Users/kven/ffmpeg-build",
                 "-lavformat",
                 "-lavutil",

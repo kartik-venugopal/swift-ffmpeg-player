@@ -8,6 +8,8 @@ class Packet {
     var size: Int32 {avPacket.size}
     var duration: Int64 {avPacket.duration}
     
+    var pts: Int64 {avPacket.pts}
+    
     init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
         self.avPacket = AVPacket()
@@ -18,11 +20,7 @@ class Packet {
             throw PacketReadError(readResult)
         }
     }
-    
-    func readFrom(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) -> ResultCode {
-        return av_read_frame(formatCtx, &avPacket)
-    }
-    
+
     func sendTo(_ codec: Codec) -> ResultCode {
         return avcodec_send_packet(codec.contextPointer, &avPacket)
     }
