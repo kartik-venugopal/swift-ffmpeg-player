@@ -121,6 +121,10 @@ class AudioCodec: Codec {
         
         return bufferedFrames
     }
+    
+    func flushBuffers() {
+        avcodec_flush_buffers(contextPointer)
+    }
 }
 
 class ImageCodec: Codec {

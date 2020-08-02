@@ -109,12 +109,15 @@ class FormatContext {
     
     func seekWithinStream(_ stream: AudioStream, _ targetFrame: Int64) throws {
         
+        (stream.codec as? AudioCodec)?.flushBuffers()
+        
         // Track playback completed. Send EOF code.
         if targetFrame >= stream.frameCount {
             throw SeekError(EOF_CODE)
         }
-
-        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_ANY)
+        
+        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_BACKWARD)
+        
         guard seekResult.isNonNegative else {
 
             print("\nFormatContext.seekWithinStream(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
