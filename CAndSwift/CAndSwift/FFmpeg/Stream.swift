@@ -12,7 +12,8 @@ class Stream {
     var avCodec: AVCodec {codecPointer.pointee}
     var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
     
-    var codec: Codec
+    fileprivate var _codec: Codec!
+    var codec: Codec {_codec}
     
     var metadata: [String: String] {
         
@@ -36,23 +37,11 @@ class Stream {
         self.index = pointer.pointee.index
         
         self.codecPointer = avcodec_find_decoder(pointer.pointee.codecpar.pointee.codec_id)
-        
         self.codecContextPointer = avcodec_alloc_context3(codecPointer)
         avcodec_parameters_to_context(codecContextPointer, pointer.pointee.codecpar)
         
-        switch mediaType {
-            
-        case AVMEDIA_TYPE_AUDIO:
-            
-            self.codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
-            
-        case AVMEDIA_TYPE_VIDEO:
-            
-            self.codec = ImageCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
-            
-        default:
-            
-            self.codec = Codec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
+        if mediaType != AVMEDIA_TYPE_AUDIO && mediaType != AVMEDIA_TYPE_VIDEO {
+            _codec = Codec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
         }
     }
     
@@ -69,6 +58,8 @@ class Stream {
 
 class AudioStream: Stream {
     
+    override var codec: AudioCodec {_codec as! AudioCodec}
+    
     var duration: Double = 0
     var timeBase: AVRational {avStream.time_base}
     var frameCount: Int64 {avStream.duration}
@@ -76,6 +67,8 @@ class AudioStream: Stream {
     init(_ pointer: UnsafeMutablePointer<AVStream>) {
         
         super.init(pointer, AVMEDIA_TYPE_AUDIO)
+        
+        self._codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
         self.duration = Double(avStream.duration) * avStream.time_base.ratio
     }
     
@@ -94,8 +87,12 @@ class AudioStream: Stream {
 
 class ImageStream: Stream {
     
+    override var codec: ImageCodec {_codec as! ImageCodec}
+    
     init(_ pointer: UnsafeMutablePointer<AVStream>) {
+        
         super.init(pointer, AVMEDIA_TYPE_VIDEO)
+        self._codec = ImageCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
     }
 }
 

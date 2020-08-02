@@ -17,18 +17,18 @@ class MetadataFileContext {
         self.file = file
         
         guard let theFormatContext = FormatContext(file, [AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_VIDEO]),
-            let audioStream = theFormatContext.audioStream, let theCodec = audioStream.codec as? AudioCodec else {
+            let audioStream = theFormatContext.audioStream else {
                 
             return nil
         }
 
         self.format = theFormatContext
         self.audioStream = audioStream
-        self.audioCodec = theCodec
+        self.audioCodec = audioStream.codec
         
         // Image stream, if present, will contain cover art.
         self.imageStream = theFormatContext.imageStream
-        self.imageCodec = imageStream?.codec as? ImageCodec
+        self.imageCodec = imageStream?.codec
     }
     
     private var destroyed: Bool = false

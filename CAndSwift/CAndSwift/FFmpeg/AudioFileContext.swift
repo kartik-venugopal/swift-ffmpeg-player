@@ -14,14 +14,13 @@ class AudioFileContext {
         self.file = file
         
         
-        guard let theFormatContext = FormatContext(file, [AVMEDIA_TYPE_AUDIO]), let audioStream = theFormatContext.audioStream, let theCodec = audioStream.codec as? AudioCodec else {
-            
+        guard let theFormatContext = FormatContext(file, [AVMEDIA_TYPE_AUDIO]), let audioStream = theFormatContext.audioStream else {
             return nil
         }
-
+        
         self.format = theFormatContext
         self.audioStream = audioStream
-        self.audioCodec = theCodec
+        self.audioCodec = audioStream.codec
     }
     
     private var destroyed: Bool = false

@@ -109,7 +109,7 @@ class FormatContext {
     
     func seekWithinStream(_ stream: AudioStream, _ targetFrame: Int64) throws {
         
-        (stream.codec as? AudioCodec)?.flushBuffers()
+        stream.codec.flushBuffers()
         
         // Track playback completed. Send EOF code.
         if targetFrame >= stream.frameCount {
