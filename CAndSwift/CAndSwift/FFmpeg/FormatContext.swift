@@ -1,5 +1,12 @@
 import Foundation
 
+///
+/// Encapsulates an ffmpeg AVFormatContext struct, and provides convenient Swift-style access to its functions and member variables.
+///
+/// - Instantiates and provides all streams (as Stream objects) within the audio file.
+/// - Reads and provides audio data as encoded / compressed packets (which can be passed to the appropriate codec).
+/// - Performs seeking to arbitrary positions within the audio stream.
+///
 class FormatContext {
 
     let file: URL

@@ -1,5 +1,11 @@
 import Foundation
 
+///
+/// Encapsulates an ffmpeg AVStream struct, and provides convenient Swift-style access to its functions and member variables.
+///
+/// - Instantiates and provides the codec corresponding to the stream.
+/// - Performs seeking to arbitrary positions within the audio stream.
+///
 class Stream {
     
     var pointer: UnsafeMutablePointer<AVStream>
@@ -56,6 +62,9 @@ class Stream {
     }
 }
 
+///
+/// A Stream whose media type is audio.
+///
 class AudioStream: Stream {
     
     override var codec: AudioCodec {_codec as! AudioCodec}
@@ -85,6 +94,9 @@ class AudioStream: Stream {
     }
 }
 
+///
+/// A Stream whose media type is video (i.e. cover art).
+///
 class ImageStream: Stream {
     
     override var codec: ImageCodec {_codec as! ImageCodec}
@@ -96,6 +108,9 @@ class ImageStream: Stream {
     }
 }
 
+///
+/// Convenience functions that are useful when converting between stream time units and seconds (used by the user interface).
+///
 extension AVRational {
 
     var ratio: Double {Double(num) / Double(den)}

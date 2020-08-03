@@ -1,5 +1,9 @@
 import Foundation
 
+///
+/// Encapsulates an ffmpeg AVFrame struct, and provides convenient
+/// Swift-style access to its functions and member variables.
+///
 class Frame {
  
     var avFrame: AVFrame
@@ -46,7 +50,10 @@ class Frame {
 }
 
 extension AVFrame {
-    
+
+    ///
+    ///
+    ///
     var dataPointers: [UnsafeMutablePointer<UInt8>?] {
         Array(UnsafeBufferPointer(start: self.extended_data, count: 8))
     }

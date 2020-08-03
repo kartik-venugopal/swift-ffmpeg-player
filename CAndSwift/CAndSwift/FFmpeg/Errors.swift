@@ -2,6 +2,9 @@ import Foundation
 
 typealias ResultCode = Int32
 
+///
+/// Helper functions and properties for convenience in error handling and logging.
+///
 extension ResultCode {
 
     var errorDescription: String {
@@ -26,6 +29,9 @@ extension ResultCode {
     var isNonZero: Bool {self != 0}
 }
 
+///
+/// Represents an error with an associated integer error code.
+///
 class CodedError: Error {
     
     let code: ResultCode
@@ -38,16 +44,32 @@ class CodedError: Error {
     }
 }
 
+///
+/// Represents an error encountered by a codec while decoding audio packets.
+///
 class DecoderError: CodedError {
     static let eof: DecoderError = DecoderError(EOF_CODE)
 }
 
+///
+/// Represents an error encountered while reading audio packets from a stream.
+///
 class PacketReadError: CodedError {
     static let eof: PacketReadError = PacketReadError(EOF_CODE)
 }
 
+///
+/// Represents an error encountered while seeking within an audio stream.
+///
 class SeekError: CodedError {}
 
+///
+/// Represents an error encountered while initializing a decoder.
+///
 class DecoderInitializationError: CodedError {}
 
+///
+/// Represents an error encountered while initializing a player.
+///
 class PlayerInitializationError: Error {}
+

@@ -1,8 +1,18 @@
 import Foundation
 
-// A utility that calculates the duration of an audio track by brute force,
-// i.e. reading all packets. This method of duration computation should
-// be used as the last resort when all other methods have failed.
+///
+/// A utility that 1 - computes the duration of a raw audio stream by brute force,
+/// i.e. reading all packets., 2 - builds a packet table that allows arbitrary seeking
+/// within the stream based on packet byte position.
+///
+/// Typically, this should be necessary only for files with raw audio streams
+/// (e.g. aac, dts, ac3) that have either been extracted (demuxed) from, or not
+/// been muxed into, a container format such as m4a, mka, etc.
+///
+/// NOTE - As it is computationally expensive, this method of duration
+/// computation should be used as the last resort when all other methods
+/// of estimating the duration have failed.
+///
 class DurationEstimationContext {
     
     let file: URL

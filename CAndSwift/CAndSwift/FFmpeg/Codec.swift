@@ -1,5 +1,9 @@
 import Foundation
 
+///
+/// Encapsulates an ffmpeg AVCodec, AVCodecContext, and AVCodecParameters struct, and provides convenient
+/// Swift-style access to their functions and member variables.
+///
 class Codec {
     
     var pointer: UnsafeMutablePointer<AVCodec>
@@ -49,6 +53,9 @@ class Codec {
     }
 }
 
+///
+/// A Codec that decodes (encoded) audio data packets into raw (PCM) frames.
+///
 class AudioCodec: Codec {
     
     var bitRate: Int64 {params.bit_rate}
@@ -147,16 +154,7 @@ class AudioCodec: Codec {
     }
 }
 
-class ImageCodec: Codec {
-
-    func decode(_ packet: Packet) -> Data? {
-        
-        let avPacket = packet.avPacket
-        
-        if let theData = avPacket.data, avPacket.size > 0 {
-            return Data(bytes: theData, count: Int(avPacket.size))
-        }
-        
-        return nil
-    }
-}
+///
+/// A Codec that reads image data (i.e. cover art) from a video stream packet.
+///
+class ImageCodec: Codec {}

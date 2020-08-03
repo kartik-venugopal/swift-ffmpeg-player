@@ -11,6 +11,17 @@ class Packet {
     var pos: Int64 {avPacket.pos}
     var pts: Int64 {avPacket.pts}
     
+    var rawData: UnsafeMutablePointer<UInt8>! {avPacket.data}
+    
+    var data: Data? {
+        
+        if let theData = rawData, size > 0 {
+            return Data(bytes: theData, count: Int(size))
+        }
+        
+        return nil
+    }
+    
     init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
         self.avPacket = AVPacket()

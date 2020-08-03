@@ -1,5 +1,11 @@
 import Foundation
 
+///
+/// Wrapper around an AVSampleFormat struct.
+///
+/// Reads and provides useful information about the format of audio samples,
+/// e.g. whether or not samples of this format need to be resampled for playback.
+///
 struct SampleFormat {
     
     let avFormat: AVSampleFormat
@@ -62,7 +68,7 @@ struct SampleFormat {
                 
         case AV_SAMPLE_FMT_DBLP:      return "Double precision floating-point (Planar)"
             
-        default:    return "<Unknown Sample Format>"
+        default:                      return "<Unknown Sample Format>"
             
         }
     }
