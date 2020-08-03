@@ -13,6 +13,7 @@ class AudioEngine {
         auxMixer = AVAudioMixerNode()
 
         playerNode.volume = 1
+        auxMixer.volume = 1
 
         audioEngine.attach(playerNode)
         audioEngine.attach(auxMixer)

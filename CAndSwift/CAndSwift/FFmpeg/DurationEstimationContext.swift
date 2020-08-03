@@ -69,9 +69,6 @@ class DurationEstimationContext {
             
             if (error as? CodedError)?.isEOF ?? false, let theLastPacket = lastPacket {
                 self.duration = Double(theLastPacket.pts + theLastPacket.duration) * theTimeBase.ratio
-                
-                let avp = theLastPacket.avPacket
-                print("\nLast Packet:", avp.pos, avp.size, self.duration)
             }
         }
     }

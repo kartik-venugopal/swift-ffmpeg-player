@@ -223,7 +223,7 @@
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l09-cp-oOX">
                         <rect key="frame" x="23" y="100" width="881" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="I1F-ob-Nfn"/>
+                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="I1F-ob-Nfn"/>
                         <connections>
                             <action selector="seekAction:" target="1E5-MG-zPn" id="Kzg-zZ-bzL"/>
                         </connections>
@@ -253,7 +253,7 @@
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sec-NR-oOC">
                         <rect key="frame" x="742" y="61" width="120" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" controlSize="mini" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="ZsP-K1-2ZC"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="ZsP-K1-2ZC"/>
                         <connections>
                             <action selector="volumeAction:" target="1E5-MG-zPn" id="awF-3f-04W"/>
                         </connections>
@@ -281,7 +281,7 @@
                     <button toolTip="Seek Forward" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kjC-Bp-aBx">
                         <rect key="frame" x="519" y="49" width="44" height="44"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekForward" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="BpJ-1u-bRW">
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekForward" imagePosition="only" alignment="center" continuous="YES" imageScaling="proportionallyUpOrDown" inset="2" id="BpJ-1u-bRW">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -324,7 +324,7 @@
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="88I-PL-ev9">
                         <rect key="frame" x="359" y="49" width="44" height="44"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekBackward" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="tvX-Be-Pfr">
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekBackward" imagePosition="only" alignment="center" continuous="YES" imageScaling="proportionallyUpOrDown" inset="2" id="tvX-Be-Pfr">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
