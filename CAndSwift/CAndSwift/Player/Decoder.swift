@@ -86,4 +86,8 @@ class Decoder {
     func stop() {
         frameQueue.clear()
     }
+    
+    func playbackCompleted() {
+        self.file = nil
+    }
 }

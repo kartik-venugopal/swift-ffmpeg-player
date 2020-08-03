@@ -1,11 +1,10 @@
 import AVFoundation
-//import ffmpeg
 
 class AudioEngine {
 
-    var audioEngine: AVAudioEngine!
-    var playerNode: AVAudioPlayerNode!
-    var auxMixer: AVAudioMixerNode!
+    let audioEngine: AVAudioEngine
+    let playerNode: AVAudioPlayerNode
+    let auxMixer: AVAudioMixerNode
 
     init() {
 
@@ -37,10 +36,7 @@ class AudioEngine {
     }
 
     func scheduleBuffer(_ buffer: AVAudioPCMBuffer, _ completionHandler: AVAudioNodeCompletionHandler? = nil) {
-
-        playerNode.scheduleBuffer(buffer, completionHandler: completionHandler ?? {
-            print("\nDone playing buffer:", buffer.frameLength)
-        })
+        playerNode.scheduleBuffer(buffer, completionHandler: completionHandler)
     }
 
     func play() {

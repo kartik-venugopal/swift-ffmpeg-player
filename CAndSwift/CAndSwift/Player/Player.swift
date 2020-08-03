@@ -144,6 +144,7 @@ class Player {
         
         haltPlayback()
         audioEngine.playbackCompleted()
+        decoder.playbackCompleted()
         
         playingFile = nil
 
