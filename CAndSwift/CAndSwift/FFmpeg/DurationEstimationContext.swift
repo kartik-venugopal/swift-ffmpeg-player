@@ -11,6 +11,7 @@ class DurationEstimationContext {
     var avContext: AVFormatContext {pointer!.pointee}
     
     var duration: Double = 0
+    var pktInfo: [PacketInfo] = []
     
     init?(_ file: URL) {
         
@@ -47,6 +48,7 @@ class DurationEstimationContext {
         guard audioStreamIndex >= 0, let theTimeBase = timeBase else {return nil}
         
         var lastPacket: Packet!
+        var cnt = 0
         
         do {
             
@@ -55,6 +57,12 @@ class DurationEstimationContext {
                 let packet = try Packet(pointer)
                 if packet.streamIndex == audioStreamIndex {
                     lastPacket = packet
+                    cnt += 1
+                    
+                    let avp = packet.avPacket
+//                    print("\nPacket \(cnt):", Double(avp.pts) * theTimeBase.ratio, avp.pos, avp.size, avp.duration)
+                    
+                    pktInfo.append(PacketInfo(pos: avp.pos, pts: avp.pts))
                 }
             }
             
@@ -62,7 +70,37 @@ class DurationEstimationContext {
             
             if (error as? CodedError)?.isEOF ?? false, let theLastPacket = lastPacket {
                 self.duration = Double(theLastPacket.pts + theLastPacket.duration) * theTimeBase.ratio
+                
+                let avp = theLastPacket.avPacket
+                print("\nLast Packet:", avp.pos, avp.size, self.duration)
             }
         }
     }
+    
+    func packetPosForTime(_ seconds: Double, _ timeBase: AVRational) -> Int64 {
+        
+        var minDiff: Int64 = Int64.max
+        var tgtIndex = -1
+        
+        let tgtPts = Int64(seconds / timeBase.ratio)
+        
+        for (index, info) in pktInfo.enumerated() {
+            
+            let diff = abs(tgtPts - info.pts)
+            
+            if diff < minDiff {
+                
+                minDiff = diff
+                tgtIndex = index
+            }
+        }
+        
+        return tgtIndex < 0 ? 0 : pktInfo[tgtIndex].pos
+    }
+}
+
+struct PacketInfo {
+    
+    let pos: Int64
+    let pts: Int64
 }

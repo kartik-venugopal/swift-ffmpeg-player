@@ -62,17 +62,19 @@ class Decoder {
         print("\nDecoder-seeking ... seconds: \(seconds) / \(duration)")
         
         do {
+            
+            // TODO: Can't rely on stream.framecount ... must check if it's a raw file like AAC or DTS
         
-            if stream.frameCount > 0 {
+//            if stream.frameCount > 0 {
+//
+//                let targetFrame = Int64(seconds * Double(stream.frameCount) / duration)
+//                try format.seekWithinStream(stream, targetFrame: targetFrame)
+//
+//            } else {
                 
-                let targetFrame = Int64(seconds * Double(stream.frameCount) / duration)
-                try format.seekWithinStream(stream, targetFrame: targetFrame)
-                
-            } else {
-                
-                let targetByte = Int64(seconds * Double(format.fileSize) / duration)
-                try format.seekWithinStream(stream, targetByte: targetByte)
-            }
+//                let targetByte = Int64(seconds * Double(format.fileSize) / duration)
+                try format.seekWithinStream(stream, targetSecs: seconds)
+//            }
             
             self.eof = false
             

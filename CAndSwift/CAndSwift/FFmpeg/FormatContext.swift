@@ -30,8 +30,13 @@ class FormatContext {
     
     var bitRate: Int64 {avContext.bit_rate}
     
+    private lazy var durationCtx: DurationEstimationContext? = {
+        DurationEstimationContext(file)
+    }()
+    
     var duration: Double {
-        audioStream?.duration ?? estimatedDuration ?? bruteForceDuration ?? 0
+//        audioStream?.duration ?? estimatedDuration ?? bruteForceDuration ?? 0
+        bruteForceDuration ?? 0
     }
     
     private lazy var estimatedDuration: Double? = {
@@ -39,7 +44,7 @@ class FormatContext {
     }()
     
     private lazy var bruteForceDuration: Double? = {
-        DurationEstimationContext(file)?.duration
+        durationCtx?.duration
     }()
     
     lazy var fileSize: UInt64 = {
@@ -149,11 +154,14 @@ class FormatContext {
         }
     }
     
-    func seekWithinStream(_ stream: AudioStream, targetByte: Int64) throws {
+    func seekWithinStream(_ stream: AudioStream, targetSecs: Double) throws {
         
         stream.codec.flushBuffers()
         
-        print("\nSeeking ... byte: \(targetByte) / \(fileSize)")
+        print("\nSeeking ... seconds: \(targetSecs) / \(duration)")
+        
+        let targetByte = durationCtx?.packetPosForTime(targetSecs, stream.timeBase) ?? 0
+        print("\nTargetByte: \(targetByte) / \(fileSize)")
         
         // TODO: Must check if at least a few frames can be played
         // (i.e. difference between targetByte and fileSize is sufficiently large)
