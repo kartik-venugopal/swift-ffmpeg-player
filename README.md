@@ -11,7 +11,7 @@ A basic audio player project that demonstrates decoding audio with ffmpeg and pl
 
 * Converting between different sample formats (resampling) with ffmpeg.
 * Extracting metadata (artist/album, cover art, etc) with ffmpeg.
-* Upmixing/downmmixing mono/surround audio to stereo, with AVAudioEngine.
+* Upmixing/downmixing from mono/surround audio to stereo, with AVAudioEngine.
 
 ## Why ?
 
