@@ -8,12 +8,12 @@ A basic audio player project that demonstrates decoding audio with ffmpeg and pl
 
 ### In a few more words, ...
 
-* Demuxing an audio file into streams - audio and image (cover art).
-* Reading packets from an audio stream, and using a codec to decode the packets into PCM samples.
-* Converting between different PCM sample formats (resampling) with ffmpeg.
+* Demuxing an audio file into streams - audio and image (cover art), with ffmpeg.
+* Reading packets from an audio stream, and using a codec to decode the packets into PCM samples, with ffmpeg.
+* Converting between different PCM sample formats (resampling), with ffmpeg.
 * Constructing audio buffers with the PCM samples, and scheduling the buffers for playback, with AVAudioEngine.
 * Upmixing/downmixing from mono/surround audio to stereo, with AVAudioEngine.
-* Extracting metadata (artist/album, cover art, etc) with ffmpeg.
+* Extracting metadata (artist/album, cover art, etc), with ffmpeg.
 * Seeking within an audio stream, with ffmpeg.
 
 ## Why ?
