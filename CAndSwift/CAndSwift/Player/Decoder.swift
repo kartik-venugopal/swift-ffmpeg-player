@@ -49,6 +49,20 @@ class Decoder {
             }
         }
         
+        // TODO: 1 - Drain decoder, 2 - Drain frameQueue, 3 - Figure out how to squeeze them into the buffer if it is full.
+        
+        if eof {
+            
+            do {
+                
+                let drainFrames = try codec.drain()
+                print("\nDecoder drain produced \(drainFrames.count) frames, \(frameQueue.size) frames left in queue.")
+                
+            } catch {
+                print("\nDecoder drain error:", error)
+            }
+        }
+        
         return buffer
     }
     

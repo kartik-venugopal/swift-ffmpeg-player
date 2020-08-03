@@ -30,6 +30,7 @@ int ctr = 0;
  * Print an error string describing the errorCode to stderr.
  */
 int printError(const char* prefix, int errorCode) {
+    
     if(errorCode == 0) {
         return 0;
     } else {
@@ -45,8 +46,7 @@ int printError(const char* prefix, int errorCode) {
     }
 }
 
-void formattedDuration(int64_t duration)
-{
+void formattedDuration(int64_t duration) {
 
     long secs = duration / 1000000;
 

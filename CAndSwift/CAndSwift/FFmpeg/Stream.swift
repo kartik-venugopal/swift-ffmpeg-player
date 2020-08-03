@@ -70,8 +70,6 @@ class AudioStream: Stream {
         
         self._codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
         self.duration = avStream.duration > 0 ? Double(avStream.duration) * avStream.time_base.ratio : nil
-        
-//        print("Stream: Duration= \(avStream.duration), TimeBase= \(avStream.time_base.num) / \(avStream.time_base.den)")
     }
     
     override func printInfo() {

@@ -31,7 +31,10 @@ class Packet {
     func destroy() {
         
         if destroyed {return}
+        
         av_packet_unref(&avPacket)
+        av_freep(&avPacket)
+        
         destroyed = true
     }
     

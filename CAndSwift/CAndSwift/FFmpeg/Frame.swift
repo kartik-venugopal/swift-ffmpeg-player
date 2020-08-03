@@ -33,7 +33,10 @@ class Frame {
     func destroy() {
         
         if destroyed {return}
+        
         av_frame_unref(&avFrame)
+        av_freep(&avFrame)
+        
         destroyed = true
     }
     

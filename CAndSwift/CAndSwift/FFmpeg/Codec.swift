@@ -22,8 +22,6 @@ class Codec {
         self.paramsPointer = paramsPointer
     }
     
-    // Returns true if open was successful.
-    // TODO: Make it throw an error ???
     func open() throws {
         
         let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
@@ -40,13 +38,7 @@ class Codec {
 
         if destroyed {return}
 
-        // TODO: This crashes when the context has already been automatically destroyed (after playback completion)
-        // Can we check something before proceeding ???
-
-        if avcodec_is_open(contextPointer).isPositive {
-            avcodec_close(contextPointer)
-        }
-
+        avcodec_close(contextPointer)
         avcodec_free_context(&contextPointer)
 
         destroyed = true
@@ -122,6 +114,36 @@ class AudioCodec: Codec {
     
     func flushBuffers() {
         avcodec_flush_buffers(contextPointer)
+    }
+    
+    func drain() throws -> [BufferedFrame] {
+        
+        // Send the "flush packet" to the decoder
+        var resultCode: Int32 = avcodec_send_packet(contextPointer, nil)
+        
+        if resultCode.isNonZero {
+            
+            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode) \(resultCode.errorDescription))")
+            throw DecoderError(resultCode)
+        }
+        
+        // Receive (potentially) multiple frames
+        
+        let frame = Frame(sampleFormat: self.sampleFormat)
+        var bufferedFrames: [BufferedFrame] = []
+        
+        resultCode = frame.receiveFrom(self)
+        
+        // Keep receiving frames while no errors are encountered
+        while resultCode.isZero, frame.hasSamples {
+            
+            bufferedFrames.append(BufferedFrame(frame))
+            resultCode = frame.receiveFrom(self)
+        }
+        
+        frame.destroy()
+        
+        return bufferedFrames
     }
 }
 
