@@ -1,5 +1,8 @@
 import AVFoundation
 
+///
+/// Part of the Player class that handles all audio buffer scheduling-related tasks.
+///
 extension Player {
     
     func initiateScheduling(from seekPosition: Double? = nil) {

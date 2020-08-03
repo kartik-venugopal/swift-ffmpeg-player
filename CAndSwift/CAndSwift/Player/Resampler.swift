@@ -1,6 +1,10 @@
 import AVFoundation
 import Accelerate
 
+///
+/// Performs conversion of PCM audio samples to the standard sample format suitable for playback in an AVAudioEngine,
+/// i.e. 32-bit floating point non-interleaved. Sample rate and channel layout are not affected by this process.
+///
 class Resampler {
     
     static let instance = Resampler()

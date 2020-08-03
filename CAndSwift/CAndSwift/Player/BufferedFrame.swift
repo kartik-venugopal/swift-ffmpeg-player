@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// A temporary container for the raw audio data from a single buffered frame.
+///
 class BufferedFrame: Hashable {
     
     var rawDataPointers: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?>

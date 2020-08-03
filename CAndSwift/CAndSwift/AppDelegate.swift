@@ -20,18 +20,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
     }
     
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        
-//        let file: URL = URL(fileURLWithPath: "/Volumes/MyData/Music/Aural-Test/sea.ac3")
-//
-//        let time = measureTime {
-//            if let ctx = DurationEstimationContext(file) {
-//            }
-//        }
-//
-        //        print("\n", time * 1000, "msec")
-    }
-    
     func applicationWillTerminate(_ notification: Notification) {
         playerVC.applicationWillTerminate(notification)
     }

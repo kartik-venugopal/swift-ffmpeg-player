@@ -1,5 +1,10 @@
 import Foundation
 
+///
+/// Encapsulates a context for reading audio data / metadata from a single audio track using ffmpeg.
+///
+/// Instantiates and provides several member objects through which several functions can be executed.
+///
 class AudioFileContext {
 
     let file: URL

@@ -148,9 +148,8 @@
 		3E52510224C23CC30023F696 /* CAndSwift */ = {
 			isa = PBXGroup;
 			children = (
-				3E52510724C23CC30023F696 /* MainMenu.xib */,
 				3E52510324C23CC30023F696 /* AppDelegate.swift */,
-				3E4DF96124C895D4008988FF /* PlayerViewController.swift */,
+				3EC9F56B24D89573009B0C19 /* UI */,
 				3E78F90724CF7AC600DA4F9B /* Player */,
 				3E78F90924CF7B8300DA4F9B /* Metadata */,
 				3E64411524C79FEB0089859E /* FFmpeg */,
@@ -243,6 +242,15 @@
 				3E78F90524CF724800DA4F9B /* TrackInfo.swift */,
 			);
 			path = Metadata;
+			sourceTree = "<group>";
+		};
+		3EC9F56B24D89573009B0C19 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				3E52510724C23CC30023F696 /* MainMenu.xib */,
+				3E4DF96124C895D4008988FF /* PlayerViewController.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

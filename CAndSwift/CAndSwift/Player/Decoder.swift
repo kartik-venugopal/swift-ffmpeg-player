@@ -1,5 +1,9 @@
 import Foundation
 
+///
+/// Assists in reading and decoding audio data from a codec.
+/// Handles errors and signals special conditions such as end of file (EOF).
+///
 class Decoder {
     
     private var file: AudioFileContext!

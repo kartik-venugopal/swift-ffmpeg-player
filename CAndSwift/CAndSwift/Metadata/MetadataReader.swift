@@ -1,5 +1,14 @@
 import Cocoa
 
+///
+/// Reads all metadata (audio / image) for an audio track and provides it in a format
+/// suitable for consumption by a user interface.
+///
+/// - Artist / album / genre / year, etc
+/// - Cover art.
+/// - Chapter markings.
+/// - Technical audio data (codec, sample rate, bit rate, bit depth, etc).
+///
 class MetadataReader {
     
     func readTrack(_ fileCtx: AudioFileContext) -> TrackInfo {

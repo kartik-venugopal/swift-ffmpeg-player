@@ -1,5 +1,13 @@
 import AVFoundation
 
+///
+/// Helper class that encapsulates an AVAudioEngine audio graph that sends audio to the output hardware..
+///
+/// - Manages connections between audio graph nodes.
+/// - Directly controls playback state (playing / paused / stopped) and volume through an AVAudioPlayerNode.
+/// - Performs upmixing/downmixing from mono/surround to stereo audio.
+/// - Provides the player's seek position within a track.
+///
 class AudioEngine {
 
     let audioEngine: AVAudioEngine
@@ -91,5 +99,11 @@ class AudioEngine {
         
         // Default to last remembered position when nodeTime is nil
         return cachedSeekPosn
+    }
+    
+    deinit {
+        
+        // Release the audio engine resources
+        audioEngine.stop()
     }
 }

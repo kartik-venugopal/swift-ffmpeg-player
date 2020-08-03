@@ -1,5 +1,8 @@
 import AVFoundation
 
+///
+/// Helps map ffmpeg channel layout identifiers to their corresponding AVFoundation channel layout identifiers.
+///
 struct ChannelLayouts {
     
     static let layouts: [Int] = [
@@ -68,6 +71,10 @@ struct ChannelLayouts {
         CH_LAYOUT_OCTAGONAL: kAudioChannelLayoutTag_WAVE_7_1,
         CH_LAYOUT_HEXADECAGONAL: kAudioChannelLayoutTag_WAVE_7_1]
     
+    static func mapLayout(ffmpegLayout: Int) -> AVAudioChannelLayout {
+        return AVAudioChannelLayout(layoutTag: layoutsMap[ffmpegLayout]!)!
+    }
+    
     static func printLayouts() {
         
         for layout in layouts.map({UInt64($0)}) {
@@ -107,9 +114,5 @@ struct ChannelLayouts {
             .replacingOccurrences(of: "FR", with: "R")
             .replacingOccurrences(of: "FC", with: "C")
         
-    }
-    
-    static func mapLayout(ffmpegLayout: Int) -> AVAudioChannelLayout {
-        return AVAudioChannelLayout(layoutTag: layoutsMap[ffmpegLayout]!)!
     }
 }

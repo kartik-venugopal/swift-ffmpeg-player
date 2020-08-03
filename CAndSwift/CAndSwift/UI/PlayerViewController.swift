@@ -1,6 +1,11 @@
 import Cocoa
 import AVFoundation
 
+///
+/// View controller for the player user interface.
+///
+/// Responds to all player control actions from the main menu and other user interface  elements (buttons, sliders, etc).
+///
 class PlayerViewController: NSViewController, NSMenuDelegate {
     
     @IBOutlet weak var btnPlayPause: NSButton!

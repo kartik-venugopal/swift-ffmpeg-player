@@ -1,5 +1,8 @@
 import Cocoa
 
+///
+/// Encapsulates all metadata for a single audio track.
+///
 struct TrackInfo {
     
     var audioInfo: AudioInfo
@@ -99,6 +102,9 @@ struct TrackInfo {
     }
 }
 
+///
+/// Encapsulates a single chapter marking within an audio track.
+///
 struct Chapter {
     
     var startTime: Double
@@ -106,6 +112,9 @@ struct Chapter {
     var title: String
 }
 
+///
+/// Encapsulates all technical audio data for an audio track.
+///
 struct AudioInfo {
     
     var fileType: String

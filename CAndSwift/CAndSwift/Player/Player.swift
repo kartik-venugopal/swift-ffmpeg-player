@@ -1,5 +1,9 @@
 import AVFoundation
 
+///
+/// Facade for all high-level playback functions - play / pause / stop / seeking / volume control.
+/// Suitable for direct use by a user interface.
+///
 class Player {
     
     let decoder: Decoder = Decoder()
