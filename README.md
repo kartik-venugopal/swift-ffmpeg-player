@@ -4,20 +4,21 @@
 
 A basic audio player project that demonstrates decoding audio with ffmpeg and playback of that audio with AVAudioEngine ... written in Swift.
 
-### In a nutshell, ... this
 ![High level component diagram](/basicFFmpegPlayer.png?raw=true)
 
-### What else ?
+### In a few more words, ...
 
-* Converting between different sample formats (resampling) with ffmpeg.
-* Extracting metadata (artist/album, cover art, etc) with ffmpeg.
+* Demuxing an audio file into streams - audio and image (cover art).
+* Reading packets from an audio stream, and using a codec to decode the packets into PCM samples.
+* Converting between different PCM sample formats (resampling) with ffmpeg.
+* Constructing audio buffers with the PCM samples, and scheduling the buffers for playback, with AVAudioEngine.
 * Upmixing/downmixing from mono/surround audio to stereo, with AVAudioEngine.
+* Extracting metadata (artist/album, cover art, etc) with ffmpeg.
+* Seeking within an audio stream, with ffmpeg.
 
 ## Why ?
 
-There simply aren't enough **beginner-level** demo projects or tutorials related to ffmpeg out there. It should not have to take so much effort for someone to be able to get a quick n dirty ffmpeg-based player up and running in a couple of hours. So, here goes my attempt to make it easier.
-
-That said, I have shared links, below, to much bigger and more comprehensive resources which I myself learned from.
+It should not have to take so much effort to get a quick n dirty ffmpeg-based player up and running in a couple of hours. This is an attempt to make it easier. Take this project as a starting point or quick start guide to getting up and running with ffmpeg audio decoding.
 
 **Tip** - To get the most out of this project, I recommend that you follow [targodan's tutorial](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg) as you play with my demo app.
 
