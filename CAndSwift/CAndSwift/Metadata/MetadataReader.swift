@@ -2,29 +2,21 @@ import Cocoa
 
 class MetadataReader {
     
-    func readTrack(_ file: URL) -> TrackInfo? {
+    func readTrack(_ fileCtx: AudioFileContext) -> TrackInfo {
         
-        if let fileCtx = MetadataFileContext(file) {
-            
-            let audioInfo: AudioInfo = readAudioInfo(file, fileCtx)
-            
-            let metadata: [String: String] = readAudioMetadata(fileCtx)
-            
-            let coverArt: NSImage? = readCoverArt(fileCtx)
-            let artMetadata: [String: String]? = fileCtx.imageStream?.metadata
-            
-            let chapters: [Chapter] = fileCtx.format.chapters
-            
-            return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata, chapters: chapters)
-            
-        } else {
-            
-            print("\nERROR reading metadata from file: \(file.path)")
-            return nil
-        }
+        let audioInfo: AudioInfo = readAudioInfo(fileCtx)
+        
+        let metadata: [String: String] = readAudioMetadata(fileCtx)
+        
+        let coverArt: NSImage? = readCoverArt(fileCtx)
+        let artMetadata: [String: String]? = fileCtx.imageStream?.metadata
+        
+        let chapters: [Chapter] = fileCtx.format.chapters
+        
+        return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata, chapters: chapters)
     }
     
-    private func readAudioMetadata(_ fileCtx: MetadataFileContext) -> [String: String] {
+    private func readAudioMetadata(_ fileCtx: AudioFileContext) -> [String: String] {
         
         // Combine metadata from the format context and audio stream.
         
@@ -41,26 +33,25 @@ class MetadataReader {
         return metadata
     }
     
-    private func readAudioInfo(_ file: URL, _ fileCtx: MetadataFileContext) -> AudioInfo {
+    private func readAudioInfo(_ fileCtx: AudioFileContext) -> AudioInfo {
         
         let stream = fileCtx.audioStream
         let codec = stream.codec
 
-        let fileType: String = file.pathExtension.uppercased()
+        let fileType: String = fileCtx.file.pathExtension.uppercased()
         let codecName: String = codec.longName
         let duration: Double = fileCtx.format.duration
         let sampleRate: Int = Int(codec.sampleRate)
         let sampleFormat: SampleFormat = codec.sampleFormat
         let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate
         let channelCount: Int = codec.channelCount
-//        let frames: Int64 = Int64(round(duration * Double(sampleRate)))
-        let frames: Int64 = 0
+        let frames: Int64 = Int64(floor(duration * Double(sampleRate)))
 
         return AudioInfo(fileType: fileType, codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
                           channelCount: channelCount, frameCount: frames)
     }
     
-    private func readCoverArt(_ fileCtx: MetadataFileContext) -> NSImage? {
+    private func readCoverArt(_ fileCtx: AudioFileContext) -> NSImage? {
         
         if let imageStream = fileCtx.imageStream, let imageCodec = fileCtx.imageCodec {
             
@@ -72,7 +63,9 @@ class MetadataReader {
                     return NSImage(data: imageData)
                 }
                 
-            } catch {}
+            } catch {
+                print("CoverArt error:", error)
+            }
         }
         
         return nil

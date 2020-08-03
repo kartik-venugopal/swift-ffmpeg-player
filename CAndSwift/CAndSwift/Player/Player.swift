@@ -78,16 +78,10 @@ class Player {
         }
     }
     
-    func play(_ file: URL) {
+    func play(_ fileCtx: AudioFileContext) {
         
         playbackCompleted(false)
     
-        guard let fileCtx = AudioFileContext(file) else {
-
-            print("\nError opening file for playback: \(file.path)")
-            return
-        }
-        
         do {
         
             try initialize(with: fileCtx)
@@ -99,7 +93,7 @@ class Player {
             }
             
         } catch {
-            print("Player setup for file '\(file.path)' failed !")
+            print("Player setup for file '\(fileCtx.file.path)' failed !")
         }
     }
     

@@ -19,7 +19,7 @@ class PlayerViewController: NSViewController {
     @IBOutlet weak var lblVolume: NSTextField!
     
     private var dialog: NSOpenPanel!
-    private var file: URL!
+    private var fileCtx: AudioFileContext!
     private var trackInfo: TrackInfo!
     
     private let imgPlay: NSImage = NSImage(named: "Play")!
@@ -75,31 +75,24 @@ class PlayerViewController: NSViewController {
     
     @IBAction func openFileAction(_ sender: AnyObject) {
         
-        guard dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url else {return}
+        guard dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url, let fileCtx = AudioFileContext(url) else {return}
         
-        self.file = url
+        self.fileCtx = fileCtx
         
-        player.play(url)
-        btnPlayPause.image = imgPause
+        let trackInfo: TrackInfo = self.metadataReader.readTrack(fileCtx)
+        self.trackInfo = trackInfo
         
-        DispatchQueue.global(qos: .userInteractive).async {
-            
-            guard let trackInfo: TrackInfo = self.metadataReader.readTrack(url) else {return}
-                
-            self.trackInfo = trackInfo
-            
-            DispatchQueue.main.async {
-                
-                self.showMetadata(url, trackInfo)
-                self.showAudioInfo(trackInfo.audioInfo)
-                
-                if self.seekPosTimer == nil {
-                    self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
-                }
-                
-                self.updateSeekPosition(self)
-            }
+        self.showMetadata(url, trackInfo)
+        self.showAudioInfo(trackInfo.audioInfo)
+        
+        if self.seekPosTimer == nil {
+            self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
         }
+        
+        self.updateSeekPosition(self)
+        
+        player.play(fileCtx)
+        btnPlayPause.image = imgPause
     }
     
     private func showMetadata(_ file: URL, _ trackInfo: TrackInfo) {
@@ -182,7 +175,7 @@ class PlayerViewController: NSViewController {
     
     @IBAction func playOrPauseAction(_ sender: AnyObject) {
         
-        if self.file != nil {
+        if self.fileCtx != nil {
             
             player.togglePlayPause()
             btnPlayPause.image = player.state == .playing ? imgPause : imgPlay
@@ -237,7 +230,7 @@ class PlayerViewController: NSViewController {
         let seekPos = player.seekPosition
         let duration = trackInfo?.audioInfo.duration ?? 0
         
-        if self.file != nil {
+        if self.fileCtx != nil {
             lblSeekPos.stringValue = "\(formatSecondsToHMS(seekPos))  /  \(formatSecondsToHMS(duration))"
         } else {
             lblSeekPos.stringValue = formatSecondsToHMS(seekPos)
@@ -249,7 +242,7 @@ class PlayerViewController: NSViewController {
     
     private func playbackCompleted() {
         
-        self.file = nil
+        self.fileCtx = nil
         self.trackInfo = nil
         
         btnPlayPause.image = imgPlay
@@ -312,7 +305,7 @@ extension NSImageView {
             return self.layer?.cornerRadius ?? 0
         }
 
-        set(newValue) {
+        set {
 
             if !self.wantsLayer {
 
@@ -327,6 +320,5 @@ extension NSImageView {
 
 extension Notification.Name {
     
-    static let scheduler_playbackCompleted = NSNotification.Name("scheduler.playbackCompleted")
     static let player_playbackCompleted = NSNotification.Name("player.playbackCompleted")
 }

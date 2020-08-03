@@ -11,6 +11,7 @@ class DurationEstimationContext {
     var avContext: AVFormatContext {pointer!.pointee}
     
     var duration: Double = 0
+    var timeBase: AVRational = AVRational()
     var pktInfo: [PacketInfo] = []
     
     init?(_ file: URL) {
@@ -47,6 +48,8 @@ class DurationEstimationContext {
         
         guard audioStreamIndex >= 0, let theTimeBase = timeBase else {return nil}
         
+        self.timeBase = theTimeBase
+        
         var lastPacket: Packet!
         
         do {
@@ -73,7 +76,7 @@ class DurationEstimationContext {
         }
     }
     
-    func packetPosForTime(_ seconds: Double, _ timeBase: AVRational) -> Int64 {
+    func packetPosForTime(_ seconds: Double) -> Int64 {
         
         let tgtPts = Int64(seconds / timeBase.ratio)
         let tgtIndex = searchByPTS(tgtPts)

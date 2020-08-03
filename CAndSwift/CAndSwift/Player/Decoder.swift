@@ -57,29 +57,11 @@ class Decoder {
     
     func seekToTime(_ seconds: Double) throws {
         
-        let duration = format.duration
-        
-        if duration <= 0 {
-            throw DecoderError(-1)
-        }
-        
-        print("\nDecoder-seeking ... seconds: \(seconds) / \(duration)")
+        print("\nDecoder-seeking ... seconds: \(seconds)")
         
         do {
             
-            // TODO: Can't rely on stream.framecount ... must check if it's a raw file like AAC or DTS
-        
-//            if stream.frameCount > 0 {
-//
-//                let targetFrame = Int64(seconds * Double(stream.frameCount) / duration)
-//                try format.seekWithinStream(stream, targetFrame: targetFrame)
-//
-//            } else {
-                
-//                let targetByte = Int64(seconds * Double(format.fileSize) / duration)
-                try format.seekWithinStream(stream, targetSecs: seconds)
-//            }
-            
+            try format.seekWithinStream(stream, seconds)
             self.eof = false
             
         } catch let seekError as SeekError {

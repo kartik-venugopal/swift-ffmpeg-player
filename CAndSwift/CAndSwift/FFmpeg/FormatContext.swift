@@ -5,6 +5,12 @@ class FormatContext {
     let file: URL
     let filePath: String
     
+    var isRawStream: Bool {
+        
+        let fileExt: String = file.pathExtension.lowercased()
+        return ["aac", "dts", "ac3"].contains(fileExt)
+    }
+    
     var pointer: UnsafeMutablePointer<AVFormatContext>?
     var avContext: AVFormatContext {pointer!.pointee}
     
@@ -34,10 +40,7 @@ class FormatContext {
         DurationEstimationContext(file)
     }()
     
-    var duration: Double {
-//        audioStream?.duration ?? estimatedDuration ?? bruteForceDuration ?? 0
-        bruteForceDuration ?? 0
-    }
+    var duration: Double = 0
     
     private lazy var estimatedDuration: Double? = {
         avContext.duration > 0 ? (Double(avContext.duration) / Double(AV_TIME_BASE)) : nil
@@ -128,6 +131,8 @@ class FormatContext {
                 }
             }
         }
+        
+        self.duration = (isRawStream ? bruteForceDuration : audioStream?.duration ?? estimatedDuration) ?? 0
     }
     
     func readPacket(_ stream: Stream) throws -> Packet? {
@@ -136,46 +141,37 @@ class FormatContext {
         return packet.streamIndex == stream.index ? packet : nil
     }
     
-    func seekWithinStream(_ stream: AudioStream, targetFrame: Int64) throws {
+    func seekWithinStream(_ stream: AudioStream, _ seconds: Double) throws {
         
         stream.codec.flushBuffers()
         
-        // Track playback completed. Send EOF code.
-        if targetFrame >= stream.frameCount {
-            throw SeekError(EOF_CODE)
+        var timestamp: Int64 = 0
+        var flags: Int32 = 0
+        
+        if isRawStream {
+            
+            timestamp = durationCtx?.packetPosForTime(seconds) ?? 0
+            if timestamp >= fileSize {throw SeekError(EOF_CODE)}
+            flags = AVSEEK_FLAG_BYTE
+            
+            print("\nTargetByte: \(timestamp) / \(fileSize)")
+            
+        } else {
+            
+            if duration <= 0 {throw SeekError(-1)}
+            
+            timestamp = Int64(seconds * Double(stream.frameCount) / duration)
+            if timestamp >= stream.frameCount {throw SeekError(EOF_CODE)}
+            flags = AVSEEK_FLAG_BACKWARD
+            
+            print("\nTargetFrame: \(timestamp) / \(stream.frameCount)")
         }
         
-        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetFrame, AVSEEK_FLAG_BACKWARD)
+        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, timestamp, flags)
         
         guard seekResult.isNonNegative else {
 
-            print("\nFormatContext.seekWithinStream(frame): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
-            throw SeekError(seekResult)
-        }
-    }
-    
-    func seekWithinStream(_ stream: AudioStream, targetSecs: Double) throws {
-        
-        stream.codec.flushBuffers()
-        
-        print("\nSeeking ... seconds: \(targetSecs) / \(duration)")
-        
-        let targetByte = durationCtx?.packetPosForTime(targetSecs, stream.timeBase) ?? 0
-        print("\nTargetByte: \(targetByte) / \(fileSize)")
-        
-        // TODO: Must check if at least a few frames can be played
-        // (i.e. difference between targetByte and fileSize is sufficiently large)
-        
-        // Track playback completed. Send EOF code.
-        if targetByte >= fileSize {
-            throw SeekError(EOF_CODE)
-        }
-        
-        let seekResult: ResultCode = av_seek_frame(pointer, stream.index, targetByte, AVSEEK_FLAG_BYTE)
-        
-        guard seekResult.isNonNegative else {
-
-            print("\nFormatContext.seekWithinStream(byte): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
+            print("\nFormatContext.seek(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
             throw SeekError(seekResult)
         }
     }
