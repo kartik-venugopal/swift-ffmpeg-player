@@ -4,22 +4,22 @@ import Accelerate
 class Resampler {
     
     static let instance = Resampler()
-    
-    static let maxSamplesPerBuffer: Int32 = 355000 * 10
     private static let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
     var outData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
     private init() {
         
-        // Initialize memory space to hold the output of conversions. This memory space will be reused for all conversions.
-        // It is inefficient to do this repeatedly, once per conversion. So do it once and reuse the space.
         outData = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: 8)
         outData.initialize(to: nil)
-        
-        // Assume a maximum required memory space corresponding to sampleRate=352,800Hz, duration=10sec, channelCount=8.
-        // This should accommodate (be big enough for) all possible conversions.
-        av_samples_alloc(outData, nil, 8, Self.maxSamplesPerBuffer, AV_SAMPLE_FMT_FLTP, 0)
+    }
+    
+    func prepare(channelCount: Int32, sampleCount: Int32) {
+        av_samples_alloc(outData, nil, channelCount, sampleCount, AV_SAMPLE_FMT_FLTP, 0)
+    }
+    
+    func deallocate() {
+        av_freep(&outData[0])
     }
     
     func resample(_ frame: BufferedFrame, copyTo audioBuffer: AVAudioPCMBuffer, withOffset offset: Int) {
@@ -44,7 +44,7 @@ class Resampler {
         
         // Destination
         
-        let outDataPtr: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outData, count: 8)
+        let outDataPtr: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outData, count: frame.channelCount)
         
         _ = frame.rawDataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self) { inDataPtr in
             swr_convert(swr, outDataPtr.baseAddress, sampleCount, inDataPtr.baseAddress!, sampleCount)

@@ -35,12 +35,6 @@ class Player {
     
     var seekPosition: Double {audioEngine.seekPosition}
     
-    init() {
-        
-        // Hack to eagerly initialize a lazy variable (so that the resampler is ready to go when required)
-        _ = Resampler.instance
-    }
-    
     private func initialize(with file: AudioFileContext) throws {
         
         self.playingFile = file
@@ -77,8 +71,9 @@ class Player {
             sampleCountForDeferredPlayback = 7 * sampleRate
         }
         
-        sampleCountForImmediatePlayback.clamp(maxValue: Resampler.maxSamplesPerBuffer)
-        sampleCountForDeferredPlayback.clamp(maxValue: Resampler.maxSamplesPerBuffer)
+        if file.audioCodec.sampleFormat.needsResampling {
+            Resampler.instance.prepare(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
+        }
     }
     
     func play(_ fileCtx: AudioFileContext) {
@@ -145,6 +140,10 @@ class Player {
         haltPlayback()
         audioEngine.playbackCompleted()
         decoder.playbackCompleted()
+        
+        if playingFile != nil, playingFile.audioCodec.sampleFormat.needsResampling {
+            Resampler.instance.deallocate()
+        }
         
         playingFile = nil
 
