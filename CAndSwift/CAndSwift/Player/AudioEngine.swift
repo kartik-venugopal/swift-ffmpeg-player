@@ -3,21 +3,21 @@ import AVFoundation
 
 class AudioEngine {
 
-    private let audioEngine: AVAudioEngine
-    internal let playerNode: AVAudioPlayerNode
-    private let auxMixer: AVAudioMixerNode
+    var audioEngine: AVAudioEngine!
+    var playerNode: AVAudioPlayerNode!
+    var auxMixer: AVAudioMixerNode!
 
     init() {
 
         audioEngine = AVAudioEngine()
         playerNode = AVAudioPlayerNode()
         auxMixer = AVAudioMixerNode()
-        
+
         playerNode.volume = 1
 
         audioEngine.attach(playerNode)
         audioEngine.attach(auxMixer)
-        
+
         audioEngine.connect(playerNode, to: auxMixer, format: nil)
         audioEngine.connect(auxMixer, to: audioEngine.mainMixerNode, format: nil)
 
@@ -88,12 +88,10 @@ class AudioEngine {
     
     var seekPosition: Double {
         
-//        print("\nIsPlaying ? \(playerNode.isPlaying)")
-        
         if let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) {
             cachedSeekPosn = Double(startFrame + playerTime.sampleTime) / playerTime.sampleRate
         }
-
+        
         // Default to last remembered position when nodeTime is nil
         return cachedSeekPosn
     }

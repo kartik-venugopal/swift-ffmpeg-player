@@ -1,7 +1,7 @@
 import Cocoa
 import AVFoundation
 
-class PlayerViewController: NSViewController {
+class PlayerViewController: NSViewController, NSMenuDelegate {
     
     @IBOutlet weak var btnPlayPause: NSButton!
     
@@ -26,6 +26,7 @@ class PlayerViewController: NSViewController {
     private let imgPause: NSImage = NSImage(named: "Pause")!
 
     private let imgDefaultArt: NSImage = NSImage(named: "DefaultArt")!
+    private let imgWarning: NSImage = NSImage(named: "Warning")!
     
     let audioFileExtensions: [String] = ["aac", "adts", "ac3", "aif", "aiff", "aifc", "caf", "flac", "mp3", "m4a", "m4b", "m4r", "snd", "au", "sd2", "wav", "oga", "ogg", "opus", "wma", "dsf", "mpc", "mp2", "ape", "wv", "dts", "mka"]
     
@@ -35,6 +36,9 @@ class PlayerViewController: NSViewController {
     private let metadataReader = MetadataReader()
     
     private var seekInterval: Double = 5
+    
+    private var alert: NSAlert!
+    fileprivate var recentFiles: [URL] = []
     
     override func viewDidLoad() {
         
@@ -65,6 +69,21 @@ class PlayerViewController: NSViewController {
         
         artView.cornerRadius = 5
         
+        // -----------
+        
+        alert = NSAlert()
+        
+        alert.window.title = "Please wait"
+        alert.messageText = "Please wait"
+        alert.informativeText = "The chosen file does not have duration information. Computing duration and building packet table to enable seeking ..."
+        alert.alertStyle = .warning
+        alert.icon = imgWarning
+        
+        let rect: NSRect = NSRect(x: alert.window.frame.origin.x, y: alert.window.frame.origin.y, width: alert.window.frame.width, height: 150)
+        alert.window.setFrame(rect, display: true)
+        
+        alert.addButton(withTitle: "Ok")
+        
         NotificationCenter.default.addObserver(forName: .player_playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
     }
 
@@ -75,24 +94,54 @@ class PlayerViewController: NSViewController {
     
     @IBAction func openFileAction(_ sender: AnyObject) {
         
-        guard dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url, let fileCtx = AudioFileContext(url) else {return}
+        guard dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url else {return}
+        doOpenFile(url)
+    }
+    
+    @IBAction func openFileFromMenuAction(_ sender: NSMenuItem) {
+        doOpenFile(URL(fileURLWithPath: sender.title))
+    }
+    
+    private func doOpenFile(_ url: URL) {
         
-        self.fileCtx = fileCtx
+        recentFiles.removeAll(where: {$0 == url})
+        recentFiles.isEmpty ? recentFiles.append(url) : recentFiles.insert(url, at: 0)
         
-        let trackInfo: TrackInfo = self.metadataReader.readTrack(fileCtx)
-        self.trackInfo = trackInfo
+        playbackCompleted()
         
-        self.showMetadata(url, trackInfo)
-        self.showAudioInfo(trackInfo.audioInfo)
+        let isRawStream: Bool = ["aac", "dts", "ac3"].contains(url.pathExtension.lowercased())
         
-        if self.seekPosTimer == nil {
-            self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
+        DispatchQueue.global(qos: .userInteractive).async {
+            
+            guard let fileCtx = AudioFileContext(url) else {return}
+            self.fileCtx = fileCtx
+            
+            let trackInfo: TrackInfo = self.metadataReader.readTrack(fileCtx)
+            self.trackInfo = trackInfo
+            
+            DispatchQueue.main.async {
+                
+                self.showMetadata(url, trackInfo)
+                self.showAudioInfo(trackInfo.audioInfo)
+                
+                if self.seekPosTimer == nil {
+                    self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
+                }
+                
+                self.updateSeekPosition(self)
+                
+                self.player.play(fileCtx)
+                self.btnPlayPause.image = self.imgPause
+                
+                if isRawStream {
+                    NSApplication.shared.abortModal()
+                }
+            }
         }
         
-        self.updateSeekPosition(self)
-        
-        player.play(fileCtx)
-        btnPlayPause.image = imgPause
+        if isRawStream {
+            alert.runModal()
+        }
     }
     
     private func showMetadata(_ file: URL, _ trackInfo: TrackInfo) {
@@ -225,6 +274,28 @@ class PlayerViewController: NSViewController {
         lblVolume.stringValue = "\(intVolume) %"
     }
     
+    @IBAction func decreaseVolumeAction(_ sender: AnyObject) {
+        
+        let currentVolume = player.volume
+        player.volume = max(0, currentVolume - 0.05)
+        
+        volumeSlider.floatValue = player.volume
+        
+        let intVolume = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(intVolume) %"
+    }
+    
+    @IBAction func increaseVolumeAction(_ sender: AnyObject) {
+        
+        let currentVolume = player.volume
+        player.volume = min(1, currentVolume + 0.05)
+        
+        volumeSlider.floatValue = player.volume
+        
+        let intVolume = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(intVolume) %"
+    }
+    
     @IBAction func updateSeekPosition(_ sender: AnyObject) {
         
         let seekPos = player.seekPosition
@@ -293,6 +364,20 @@ class PlayerViewController: NSViewController {
         }
         
         return readableNumString
+    }
+    
+    func menuWillOpen(_ menu: NSMenu) {
+        
+        menu.removeAllItems()
+        
+        for url in recentFiles {
+            
+            let action = #selector(self.openFileFromMenuAction(_:))
+            
+            let menuItem = NSMenuItem(title: url.path, action: action, keyEquivalent: "")
+            menuItem.target = self
+            menu.insertItem(menuItem, at: menu.items.count)
+        }
     }
 }
 

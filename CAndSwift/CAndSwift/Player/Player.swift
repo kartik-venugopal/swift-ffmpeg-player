@@ -76,6 +76,9 @@ class Player {
             sampleCountForImmediatePlayback = 2 * sampleRate
             sampleCountForDeferredPlayback = 7 * sampleRate
         }
+        
+        sampleCountForImmediatePlayback.clamp(maxValue: Resampler.maxSamplesPerBuffer)
+        sampleCountForDeferredPlayback.clamp(maxValue: Resampler.maxSamplesPerBuffer)
     }
     
     func play(_ fileCtx: AudioFileContext) {
@@ -97,15 +100,17 @@ class Player {
         }
     }
     
-    func seekToTime(_ seconds: Double, _ shouldBeginPlayback: Bool = true) {
+    func seekToTime(_ seconds: Double) {
+        
+        let wasPlaying: Bool = audioEngine.isPlaying
         
         guard playingFile != nil else {return}
         
-        stop()
+        haltPlayback()
         initiateScheduling(from: seconds)
         
         if scheduledBufferCount.value > 0 {
-            shouldBeginPlayback ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
+            wasPlaying ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
         }
     }
     
@@ -116,6 +121,10 @@ class Player {
     }
     
     func stop() {
+        playbackCompleted(false)
+    }
+    
+    private func haltPlayback() {
         
         state = .stopped
         
@@ -133,9 +142,7 @@ class Player {
     
     func playbackCompleted(_ notify: Bool = true) {
         
-        NSLog("Playback completed !!!\n")
-        
-        stop()
+        haltPlayback()
         audioEngine.playbackCompleted()
         
         playingFile = nil

@@ -44,6 +44,7 @@
 		3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E88343724CE13BF00B81A2C /* Resampler.swift */; };
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
 		3EA289F724D763AC00AF4C52 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EA289F624D763AC00AF4C52 /* TODO.txt */; };
+		3EC9F56A24D84789009B0C19 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC9F56924D84789009B0C19 /* MenuController.swift */; };
 		3EEB5A7024C7884D00F94F63 /* SamplesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */; };
 		3EF3B34D24D6F67600CC8C07 /* DurationEstimationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF3B34C24D6F67600CC8C07 /* DurationEstimationContext.swift */; };
 		3EF3B34F24D7387800CC8C07 /* ChannelLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF3B34E24D7387800CC8C07 /* ChannelLayouts.swift */; };
@@ -101,6 +102,7 @@
 		3E88343724CE13BF00B81A2C /* Resampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resampler.swift; sourceTree = "<group>"; };
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
 		3EA289F624D763AC00AF4C52 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = SOURCE_ROOT; };
+		3EC9F56924D84789009B0C19 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		3EEB5A6F24C7884D00F94F63 /* SamplesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesBuffer.swift; sourceTree = "<group>"; };
 		3EF3B34C24D6F67600CC8C07 /* DurationEstimationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationEstimationContext.swift; sourceTree = "<group>"; };
 		3EF3B34E24D7387800CC8C07 /* ChannelLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLayouts.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				3E52510A24C23CC30023F696 /* Info.plist */,
 				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
 				3EA289F624D763AC00AF4C52 /* TODO.txt */,
+				3EC9F56924D84789009B0C19 /* MenuController.swift */,
 			);
 			path = CAndSwift;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */,
 				3E857C7024C9D8C0000379BF /* BufferedFrame.swift in Sources */,
 				3E78F90624CF724800DA4F9B /* TrackInfo.swift in Sources */,
+				3EC9F56A24D84789009B0C19 /* MenuController.swift in Sources */,
 				3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */,
 				3E6ADBD724CCC21E00AB2678 /* AtomicCounter.swift in Sources */,
 				3E0BECC724C3507500FF69D7 /* MetadataReader.swift in Sources */,

@@ -79,6 +79,7 @@ class AudioCodec: Codec {
         
         print("\n---------- Codec Info ----------\n")
         
+        print(String(format: "Codec Name:    %@", longName))
         print(String(format: "Sample Rate:   %7d", sampleRate))
         print(String(format: "Sample Format: %7@", sampleFormat.name))
         print(String(format: "Sample Size:   %7d", sampleFormat.size))

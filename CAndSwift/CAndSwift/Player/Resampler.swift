@@ -5,17 +5,13 @@ class Resampler {
     
     static let instance = Resampler()
     
-    // TODO: In Player, limit the number of buffer samples to this value
     static let maxSamplesPerBuffer: Int32 = 355000 * 10
+    private static let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
     var outData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
-    private let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
-    
     private init() {
         
-        let time = measureTime {
-            
         // Initialize memory space to hold the output of conversions. This memory space will be reused for all conversions.
         // It is inefficient to do this repeatedly, once per conversion. So do it once and reuse the space.
         outData = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: 8)
@@ -24,10 +20,6 @@ class Resampler {
         // Assume a maximum required memory space corresponding to sampleRate=352,800Hz, duration=10sec, channelCount=8.
         // This should accommodate (be big enough for) all possible conversions.
         av_samples_alloc(outData, nil, 8, Self.maxSamplesPerBuffer, AV_SAMPLE_FMT_FLTP, 0)
-        
-        }
-        
-        print("\nTook \(time * 1000) msec to allocate space for Resampler.")
     }
     
     func resample(_ frame: BufferedFrame, copyTo audioBuffer: AVAudioPCMBuffer, withOffset offset: Int) {
@@ -37,7 +29,7 @@ class Resampler {
         var swr: OpaquePointer? = swr_alloc()
         let uswr = UnsafeMutableRawPointer(swr)
         
-        let channelLayout = frame.channelLayout > 0 ? Int64(frame.channelLayout) : defaultChannelLayout
+        let channelLayout = frame.channelLayout > 0 ? Int64(frame.channelLayout) : Self.defaultChannelLayout
         av_opt_set_channel_layout(uswr, "in_channel_layout", channelLayout, 0)
         av_opt_set_channel_layout(uswr, "out_channel_layout", channelLayout, 0)
         

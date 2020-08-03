@@ -154,8 +154,6 @@ class FormatContext {
             if timestamp >= fileSize {throw SeekError(EOF_CODE)}
             flags = AVSEEK_FLAG_BYTE
             
-            print("\nTargetByte: \(timestamp) / \(fileSize)")
-            
         } else {
             
             if duration <= 0 {throw SeekError(-1)}
@@ -163,8 +161,6 @@ class FormatContext {
             timestamp = Int64(seconds * Double(stream.frameCount) / duration)
             if timestamp >= stream.frameCount {throw SeekError(EOF_CODE)}
             flags = AVSEEK_FLAG_BACKWARD
-            
-            print("\nTargetFrame: \(timestamp) / \(stream.frameCount)")
         }
         
         let seekResult: ResultCode = av_seek_frame(pointer, stream.index, timestamp, flags)

@@ -17,7 +17,6 @@ class Decoder {
         self.eof = false
         
         try codec.open()
-        print("\nSuccessfully opened file: \(file.file.path). File is ready for decoding.")
         
         file.audioStream.printInfo()
         file.audioCodec.printInfo()
@@ -34,7 +33,6 @@ class Decoder {
                 let frame = try nextFrame()
                 
                 if buffer.appendFrame(frame: frame) {
-                    
                     _ = frameQueue.dequeue()
                     
                 } else {    // Buffer is full, stop filling it.
@@ -44,11 +42,10 @@ class Decoder {
             } catch let packetReadError as PacketReadError {
                 
                 self.eof = packetReadError.isEOF
-//                if !eof {throw DecoderError(packetReadError.code)}
+                if !eof {print("\nPacket read error:", packetReadError)}
                 
             } catch let decError as DecoderError {
-                
-                print("\nDecError:", decError)
+                print("\nDecoder error:", decError)
             }
         }
         
@@ -56,8 +53,6 @@ class Decoder {
     }
     
     func seekToTime(_ seconds: Double) throws {
-        
-        print("\nDecoder-seeking ... seconds: \(seconds)")
         
         do {
             

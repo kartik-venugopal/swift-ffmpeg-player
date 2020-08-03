@@ -29,7 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //            }
 //        }
 //
-//        print("\n", time * 1000, "msec")
+        //        print("\n", time * 1000, "msec")
     }
     
     func applicationWillTerminate(_ notification: Notification) {
