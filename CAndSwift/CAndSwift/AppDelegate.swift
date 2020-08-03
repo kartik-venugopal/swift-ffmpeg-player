@@ -22,14 +22,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         
-        let file: URL = URL(fileURLWithPath: "/Volumes/MyData/Music/Aural-Test/city.dts")
-
-        let time = measureTime {
-            if let ctx = DurationEstimationContext(file) {
-            }
-        }
-
-        print("\n", time * 1000, "msec")
+//        let file: URL = URL(fileURLWithPath: "/Volumes/MyData/Music/Aural-Test/sea.ac3")
+//
+//        let time = measureTime {
+//            if let ctx = DurationEstimationContext(file) {
+//            }
+//        }
+//
+//        print("\n", time * 1000, "msec")
     }
     
     func applicationWillTerminate(_ notification: Notification) {

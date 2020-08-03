@@ -48,21 +48,17 @@ class DurationEstimationContext {
         guard audioStreamIndex >= 0, let theTimeBase = timeBase else {return nil}
         
         var lastPacket: Packet!
-        var cnt = 0
         
         do {
             
             while true {
                 
                 let packet = try Packet(pointer)
+                
                 if packet.streamIndex == audioStreamIndex {
+                    
                     lastPacket = packet
-                    cnt += 1
-                    
-                    let avp = packet.avPacket
-//                    print("\nPacket \(cnt):", Double(avp.pts) * theTimeBase.ratio, avp.pos, avp.size, avp.duration)
-                    
-                    pktInfo.append(PacketInfo(pos: avp.pos, pts: avp.pts))
+                    pktInfo.append(PacketInfo(pos: packet.pos, pts: packet.pts))
                 }
             }
             
@@ -79,23 +75,44 @@ class DurationEstimationContext {
     
     func packetPosForTime(_ seconds: Double, _ timeBase: AVRational) -> Int64 {
         
-        var minDiff: Int64 = Int64.max
-        var tgtIndex = -1
-        
         let tgtPts = Int64(seconds / timeBase.ratio)
-        
-        for (index, info) in pktInfo.enumerated() {
-            
-            let diff = abs(tgtPts - info.pts)
-            
-            if diff < minDiff {
-                
-                minDiff = diff
-                tgtIndex = index
-            }
-        }
+        let tgtIndex = searchByPTS(tgtPts)
         
         return tgtIndex < 0 ? 0 : pktInfo[tgtIndex].pos
+    }
+    
+    func searchByPTS(_ tgtPts: Int64) -> Int {
+        
+        // Binary search algorithm (assumes packets are chronologically arranged).
+        
+        var first = 0
+        var last = pktInfo.count - 1
+        var center = (first + last) / 2
+        
+        var centerPkt = pktInfo[center]
+        
+        while first <= last {
+            
+            if tgtPts == centerPkt.pts  {
+                
+                // Found a matching packet
+                return center - 1
+                
+            } else if tgtPts < centerPkt.pts {
+                
+                last = center - 1
+                
+            } else if tgtPts > centerPkt.pts {
+                
+                first = center + 1
+            }
+            
+            center = (first + last) / 2
+            centerPkt = pktInfo[center]
+        }
+        
+        // If no matching packet was found for the target PTS, try to determine a previous packet.
+        return tgtPts < centerPkt.pts ? center - 1 : center
     }
 }
 

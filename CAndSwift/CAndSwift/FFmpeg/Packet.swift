@@ -8,6 +8,7 @@ class Packet {
     var size: Int32 {avPacket.size}
     var duration: Int64 {avPacket.duration}
     
+    var pos: Int64 {avPacket.pos}
     var pts: Int64 {avPacket.pts}
     
     init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {

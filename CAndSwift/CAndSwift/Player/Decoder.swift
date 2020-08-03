@@ -44,7 +44,11 @@ class Decoder {
             } catch let packetReadError as PacketReadError {
                 
                 self.eof = packetReadError.isEOF
-                if !eof {throw DecoderError(packetReadError.code)}
+//                if !eof {throw DecoderError(packetReadError.code)}
+                
+            } catch let decError as DecoderError {
+                
+                print("\nDecError:", decError)
             }
         }
         
