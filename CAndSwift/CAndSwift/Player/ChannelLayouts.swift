@@ -5,36 +5,6 @@ import AVFoundation
 ///
 struct ChannelLayouts {
     
-    static let layouts: [Int] = [
-        CH_LAYOUT_MONO,
-        CH_LAYOUT_STEREO,
-        CH_LAYOUT_2POINT1,
-        CH_LAYOUT_2_1,
-        CH_LAYOUT_SURROUND,
-        CH_LAYOUT_3POINT1,
-        CH_LAYOUT_4POINT0,
-        CH_LAYOUT_4POINT1,
-        CH_LAYOUT_2_2,
-        CH_LAYOUT_QUAD,
-        CH_LAYOUT_5POINT0,
-        CH_LAYOUT_5POINT1,
-        CH_LAYOUT_5POINT0_BACK,
-        CH_LAYOUT_5POINT1_BACK,
-        CH_LAYOUT_6POINT0,
-        CH_LAYOUT_6POINT0_FRONT,
-        CH_LAYOUT_HEXAGONAL,
-        CH_LAYOUT_6POINT1,
-        CH_LAYOUT_6POINT1_BACK,
-        CH_LAYOUT_6POINT1_FRONT,
-        CH_LAYOUT_7POINT0,
-        CH_LAYOUT_7POINT0_FRONT,
-        CH_LAYOUT_7POINT1,
-        CH_LAYOUT_7POINT1_WIDE,
-        CH_LAYOUT_7POINT1_WIDE_BACK,
-        CH_LAYOUT_OCTAGONAL,
-        CH_LAYOUT_HEXADECAGONAL,
-        CH_LAYOUT_STEREO_DOWNMIX]
-    
     static let layoutsMap: [Int: AudioChannelLayoutTag] = [
         
         CH_LAYOUT_MONO: kAudioChannelLayoutTag_Mono,
@@ -77,7 +47,7 @@ struct ChannelLayouts {
     
     static func printLayouts() {
         
-        for layout in layouts.map({UInt64($0)}) {
+        for layout in layoutsMap.keys.sorted(by: {$0 < $1}).map({UInt64($0)}) {
             printLayout(layout, av_get_channel_layout_nb_channels(layout))
         }
     }
