@@ -33,6 +33,7 @@ class AudioEngine {
 
         do {
             try audioEngine.start()
+            
         } catch {
             print("\nERROR starting audio engine")
         }
@@ -73,6 +74,7 @@ class AudioEngine {
     var hasBeenStopped: Bool = false
     var isPlaying: Bool {playerNode.isPlaying}
 
+    // TODO: Remove startFrame from here. Let Player remember "startTime" (in seconds)
     var startFrame: AVAudioFramePosition = 0
     var cachedSeekPosn: Double = 0
     
@@ -91,6 +93,7 @@ class AudioEngine {
         cachedSeekPosn = 0
     }
     
+    // TODO: This should only compute position in frames. Let Player convert it to seconds and add start time.
     var seekPosition: Double {
         
         if let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) {

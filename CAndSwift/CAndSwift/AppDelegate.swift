@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  CAndSwift
-//
-//  Created by Kven on 7/18/20.
-//  Copyright © 2020 Kven. All rights reserved.
-//
-
 import Cocoa
 
 @NSApplicationMain
@@ -17,9 +9,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
         
         super.init()
-//        freopen("/Volumes/MyData/Music/CAndSwift.log", "a+", stderr)
+        
+        // Configure logging to a file.
+//        freopen(NSHomeDirectory() + "/Music/ffmpeg-player.log", "a+", stderr)
     }
-    
+
+    ///
+    /// Relays the event of application termination to the PlayerViewController, so that it may take appropriate actions.
+    ///
     func applicationWillTerminate(_ notification: Notification) {
         playerVC.applicationWillTerminate(notification)
     }

@@ -6,11 +6,13 @@ import Cocoa
 
 extension NSImageView {
 
+    ///
+    /// Gives an NSImageView a rounded appearance.
+    /// The cornerRadius value indicates the amount of rounding.
+    ///
     var cornerRadius: CGFloat {
 
-        get {
-            return self.layer?.cornerRadius ?? 0
-        }
+        get {self.layer?.cornerRadius ?? 0}
 
         set {
 

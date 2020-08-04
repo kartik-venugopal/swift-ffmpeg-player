@@ -78,7 +78,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         txtMetadata.font = NSFont.systemFont(ofSize: 14)
         txtAudioInfo.font = NSFont.systemFont(ofSize: 14)
         
-        artView.cornerRadius = 5
+        artView.cornerRadius = 3
 
         // Subscribe to notifications that the player has finished playing a track.
         NotificationCenter.default.addObserver(forName: .player_playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
@@ -101,7 +101,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         
         dialog.resolvesAliases = true;
         
-        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
+        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music")
     }
     
     private func initializeAlert() {
@@ -151,38 +151,50 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         recentFiles.removeAll(where: {$0 == url})
         recentFiles.isEmpty ? recentFiles.append(url) : recentFiles.insert(url, at: 0)
         
+        // Reset the UI prior to playing this newly chosen file.
         playbackCompleted()
         
         let isRawStream: Bool = Constants.rawAudioFileExtensions.contains(url.pathExtension.lowercased())
         
+        // Spawn an asynchronous task on the global queue to initialize the file context, because we don't the
+        // main thread to hang and render the UI unresponsive.
         DispatchQueue.global(qos: .userInteractive).async {
             
             guard let fileCtx = AudioFileContext(url) else {return}
             self.fileCtx = fileCtx
             
+            // First, read the track's metadata.
             let trackInfo: TrackInfo = self.metadataReader.readTrack(fileCtx)
             self.trackInfo = trackInfo
             
+            // Perform UI updates back on the main thread (they cannot be done on any other thread).
             DispatchQueue.main.async {
                 
+                // Display the metadata that was read earlier.
                 self.showMetadata(url, trackInfo)
                 self.showAudioInfo(trackInfo.audioInfo)
                 
+                // Initiate the timer that will update the displayed seek position.
                 if self.seekPosTimer == nil {
                     self.seekPosTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.updateSeekPosition(_:)), userInfo: nil, repeats: true)
                 }
                 
                 self.updateSeekPosition(self)
                 
+                // Initiate playback of the file.
                 self.player.play(fileCtx)
                 self.btnPlayPause.image = self.imgPause
                 
+                // Dismiss the modal dialog if one was shown.
                 if isRawStream {
                     NSApplication.shared.abortModal()
                 }
             }
         }
         
+        // If the file represents a raw audio stream such as DTS, inform the user that the player
+        // needs to perform some processing before it can play the file, and that there will be a
+        // delay.
         if isRawStream {
             showDurationComputationDelayAlert()
         }
