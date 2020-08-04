@@ -94,9 +94,30 @@ class Player {
     }
     
     ///
-    /// Accesses the player's seek position within the currently playing file (specified in seconds).
+    /// Seek position (in seconds) from which playback for the currently playing file started.
     ///
-    var seekPosition: Double {audioEngine.seekPosition}
+    /// # Notes #
+    ///
+    /// 1. If no seeks are performed, this will be 0, denoting the start of the track.
+    ///
+    /// 2. Every time a seek is performed, this variable will be set to the new seek time.
+    ///
+    var playbackStartPosition: Double = 0
+    
+    ///
+    /// Accesses the player's seek position within the currently playing file (in seconds).
+    ///
+    /// ```
+    /// Uses the audio engine's seek position (number of frames played) and
+    /// playbackStartPosition to compute the current seek position.
+    /// ```
+    ///
+    var seekPosition: Double {
+        
+        if playingFile == nil {return 0}
+        
+        return playbackStartPosition + (Double(audioEngine.framePosition) / audioFormat.sampleRate)
+    }
 
     ///
     /// Prepares the player to play a given audio file.
@@ -129,7 +150,7 @@ class Player {
         
         // Inform the audio engine that the audio buffers for this file will be of this format, so that
         // it can prepare itself accordingly.
-        audioEngine.prepare(audioFormat)
+        audioEngine.prepareForFile(with: audioFormat)
         
         // Given the effective sample rate, determine how many samples we should schedule for immediate and deferred playback.
         
@@ -164,6 +185,9 @@ class Player {
         if file.audioCodec.sampleFormat.needsResampling {
             Resampler.instance.prepareForFile(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
         }
+        
+        scheduledBufferCount.value = 0
+        playbackStartPosition = 0
     }
     
     ///
@@ -225,7 +249,13 @@ class Player {
         initiateDecodingAndScheduling(from: seconds)
         
         if scheduledBufferCount.value > 0 {
-            wasPlaying ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
+            
+            if wasPlaying {
+                beginPlayback(from: seconds)
+                
+            } else {
+                playbackStartPosition = seconds
+            }
         }
     }
     
@@ -284,7 +314,7 @@ class Player {
     ///
     func beginPlayback(from seekPosition: Double = 0) {
 
-        audioEngine.seekTo(seekPosition)
+        playbackStartPosition = seekPosition
         audioEngine.play()
         state = .playing
     }
@@ -301,7 +331,6 @@ class Player {
     func playbackCompleted(_ notifyObservers: Bool = true) {
 
         haltPlayback()
-        audioEngine.playbackCompleted()
         decoder.playbackCompleted()
         
         // If the resampler was used, instruct it to deallocate the allocated memory space.
