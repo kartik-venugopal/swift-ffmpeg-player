@@ -15,8 +15,13 @@ class Player {
     /// The current playback state of the player
     var state: PlayerState = .stopped
     
+    ///
     /// The number of audio buffers currently scheduled for playback by the player.
-    /// Used to determine when playback has completed.
+    ///
+    /// Used to determine:
+    /// 1. when playback has completed.
+    /// 2. whether or not a scheduling task was successful and whether or not playback should begin.
+    ///
     var scheduledBufferCount: AtomicCounter<Int> = AtomicCounter<Int>()
     
     /// A context associated with the currently playing file.
@@ -183,7 +188,7 @@ class Player {
             try initialize(with: fileCtx)
             
             // Initiate scheduling of audio buffers on the audio engine's playback queue.
-            initiateScheduling()
+            initiateDecodingAndScheduling()
             
             // Check that at least one audio buffer was successfully scheduled, before beginning playback.
             if scheduledBufferCount.value > 0 {
@@ -217,7 +222,7 @@ class Player {
         let wasPlaying: Bool = audioEngine.isPlaying
         
         haltPlayback()
-        initiateScheduling(from: seconds)
+        initiateDecodingAndScheduling(from: seconds)
         
         if scheduledBufferCount.value > 0 {
             wasPlaying ? beginPlayback(from: seconds) : audioEngine.seekTo(seconds)
@@ -250,7 +255,7 @@ class Player {
     func stop() {
         
         if playingFile != nil {
-            playbackCompleted(false)
+            playbackCompleted()
         }
     }
     
@@ -284,19 +289,29 @@ class Player {
         state = .playing
     }
     
-    func playbackCompleted(_ notify: Bool = true) {
-        
+    ///
+    /// Performs cleanup and (optionally) notifies observers when playback of the currently playing file has completed.
+    ///
+    /// - Parameter notifyObservers: When true, an NSNotification will be published. True is the default value.
+    ///
+    /// # Notes #
+    ///
+    /// The function may also be used for cleanup without notifying observers. e.g. before starting playback of a file.
+    ///
+    func playbackCompleted(_ notifyObservers: Bool = true) {
+
         haltPlayback()
         audioEngine.playbackCompleted()
         decoder.playbackCompleted()
         
+        // If the resampler was used, instruct it to deallocate the allocated memory space.
         if playingFile != nil, playingFile.audioCodec.sampleFormat.needsResampling {
             Resampler.instance.deallocate()
         }
         
         playingFile = nil
 
-        if notify {
+        if notifyObservers {
             NotificationCenter.default.post(name: .player_playbackCompleted, object: self)
         }
     }

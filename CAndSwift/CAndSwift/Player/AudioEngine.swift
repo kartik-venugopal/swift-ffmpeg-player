@@ -45,7 +45,7 @@ class AudioEngine {
         audioEngine.connect(playerNode, to: auxMixer, format: format)
     }
 
-    func scheduleBuffer(_ buffer: AVAudioPCMBuffer, _ completionHandler: AVAudioNodeCompletionHandler? = nil) {
+    func scheduleBuffer(_ buffer: AVAudioPCMBuffer, completionHandler: AVAudioNodeCompletionHandler? = nil) {
         playerNode.scheduleBuffer(buffer, completionHandler: completionHandler)
     }
 

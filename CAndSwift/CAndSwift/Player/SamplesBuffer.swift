@@ -7,6 +7,8 @@ import Accelerate
 ///
 /// Also assists in constructing AVAudioPCMBuffer objects that can be scheduled for playback.
 ///
+
+// TODO: Rename this class to FrameBuffer
 class SamplesBuffer {
     
     var frames: [BufferedFrame] = []

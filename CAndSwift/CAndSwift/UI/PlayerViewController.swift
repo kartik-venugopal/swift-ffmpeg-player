@@ -317,9 +317,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     /// Responds to a click on the stop button, by stopping playback.
     ///
     @IBAction func stopAction(_ sender: AnyObject) {
-        
         player.stop()
-        playbackCompleted()
     }
     
     ///
