@@ -2,7 +2,7 @@
 
 ## What ?
 
-A basic audio player project that demonstrates decoding audio with ffmpeg and playback of that audio with AVAudioEngine ... written in Swift.
+A basic audio player that demonstrates the use of ffmpeg together with AVAudioEngine ... written in Swift.
 
 ![High level component diagram](/basicFFmpegPlayer.png?raw=true)
 
