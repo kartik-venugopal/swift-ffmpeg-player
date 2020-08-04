@@ -24,6 +24,8 @@ class Resampler {
     ///
     private static let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
+    private static let standardSampleFormat: AVSampleFormat = AV_SAMPLE_FMT_FLTP
+    
     ///
     /// Pointers to the memory space allocated for the resampler's output samples. Each pointer points to
     /// space allocated to samples for a single channel.
@@ -109,52 +111,51 @@ class Resampler {
     ///
     func resample(_ frame: BufferedFrame, copyTo audioBuffer: AVAudioPCMBuffer, withOffset offset: Int) {
         
-        let sampleCount: Int32 = frame.sampleCount
-        
         // Allocate the context used to perform the resampling.
-        
-        var resampleCtx: OpaquePointer? = swr_alloc()
-        let resampleCtxPointer = UnsafeMutableRawPointer(resampleCtx)
+        guard let resampleCtx = ResamplingContext() else {
+            
+            print("\nUnable to instantiate resampling context !")
+            return
+        }
         
         // Set the input / output channel layouts as options prior to resampling.
         // NOTE - Our output channel layout will be the same as that of the input, since we don't
         // need to do any upmixing / downmixing here.
         
         let channelLayout = frame.channelLayout > 0 ? Int64(frame.channelLayout) : Self.defaultChannelLayout
-        av_opt_set_channel_layout(resampleCtxPointer, "in_channel_layout", channelLayout, 0)
-        av_opt_set_channel_layout(resampleCtxPointer, "out_channel_layout", channelLayout, 0)
+        resampleCtx.inputChannelLayout = channelLayout
+        resampleCtx.outputChannelLayout = channelLayout
         
         // Set the input / output sample rates as options prior to resampling.
         // NOTE - Our output sample rate will be the same as that of the input, since we don't
         // need to do any upsampling / downsampling here.
         
         let sampleRate = Int64(frame.sampleRate)
-        av_opt_set_int(resampleCtxPointer, "in_sample_rate", sampleRate, 0)
-        av_opt_set_int(resampleCtxPointer, "out_sample_rate", sampleRate, 0)
+        resampleCtx.inputSampleRate = sampleRate
+        resampleCtx.outputSampleRate = sampleRate
         
         // Set the input / output sample formats as options prior to resampling.
         // NOTE - Our input sample format will be the format of the audio file being played,
         // and our output sample format will always be 32-bit floating point non-interleaved (aka planar).
         
-        av_opt_set_sample_fmt(resampleCtxPointer, "in_sample_fmt", frame.sampleFormat.avFormat, 0)
-        av_opt_set_sample_fmt(resampleCtxPointer, "out_sample_fmt", AV_SAMPLE_FMT_FLTP, 0)
-        
-        // Initialize the resampling context.
-        swr_init(resampleCtx)
+        resampleCtx.inputSampleFormat = frame.sampleFormat.avFormat
+        resampleCtx.outputSampleFormat = Self.standardSampleFormat
         
         // Perform the resampling.
         
         let outputDataPointer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outputData, count: frame.channelCount)
         
+        let sampleCount: Int32 = frame.sampleCount
+        
         // Access the input data as pointers from the frame being resampled.
         _ = frame.rawDataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self) {
             (inputDataPointer: UnsafeMutableBufferPointer<UnsafePointer<UInt8>?>) in
             
-            swr_convert(resampleCtx, outputDataPointer.baseAddress, sampleCount, inputDataPointer.baseAddress!, sampleCount)
+            resampleCtx.convert(inputDataPointer: inputDataPointer.baseAddress,
+                                inputSampleCount: sampleCount,
+                                outputDataPointer: outputDataPointer.baseAddress!,
+                                outputSampleCount: sampleCount)
         }
-
-        // Resampling has been completed. Free the context.
-        swr_free(&resampleCtx)
         
         // Finally, copy the output samples to the given audio buffer.
         copyOutputToAudioBuffer(frame, buffer: audioBuffer, withOffset: offset)

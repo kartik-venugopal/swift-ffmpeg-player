@@ -81,6 +81,8 @@ class DurationEstimationContext {
                 self.duration = Double(theLastPacket.pts + theLastPacket.duration) * theTimeBase.ratio
             }
         }
+        
+        // TODO: Clean up format context.
     }
     
     func packetPosForTime(_ seconds: Double) -> Int64 {
