@@ -79,10 +79,10 @@ class Decoder {
     /// because upon reaching EOF, the decoder will drain the codec's internal buffers which may result in a few additional samples that will be
     /// allowed as this is the terminal buffer.
     ///
-    func decode(maxSampleCount: Int32) -> SamplesBuffer {
+    func decode(maxSampleCount: Int32) -> FrameBuffer {
         
         // Create a frame buffer with the specified maximum sample count and the codec's sample format for this file.
-        let buffer: SamplesBuffer = SamplesBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: maxSampleCount)
+        let buffer: FrameBuffer = FrameBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: maxSampleCount)
         
         // Keep decoding as long as EOF is not reached.
         while !eof {

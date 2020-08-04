@@ -116,7 +116,7 @@ extension Player {
         if eof {return}
         
         // Ask the decoder to decode up to the given number of samples.
-        let frameBuffer: SamplesBuffer = decoder.decode(maxSampleCount: maxSampleCount)
+        let frameBuffer: FrameBuffer = decoder.decode(maxSampleCount: maxSampleCount)
         
         // Transfer the decoded samples into an audio buffer that the audio engine can schedule for playback.
         if let audioBuffer: AVAudioPCMBuffer = frameBuffer.constructAudioBuffer(format: audioFormat) {
