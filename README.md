@@ -18,7 +18,9 @@ A basic audio player project that demonstrates decoding audio with ffmpeg and pl
 
 ## Why ?
 
-It should not have to take so much effort to get a quick n dirty ffmpeg-based player up and running in a couple of hours. This is an attempt to make it easier. Take this project as a starting point or quick start guide to getting up and running with ffmpeg audio decoding.
+To help anyone who wants to get started with ffmpeg / AVAudioEngine but is having a hard time finding good documentation, tutorials, or concrete implementations out there. Take this project as a starting point or quick start guide, if nothing else.
+
+I myself am still learning audio programming and ffmpeg, so I am simply passing on some of what I have learned.
 
 **Tip** - To get the most out of this project, I recommend that you follow [targodan's tutorial](https://steemit.com/programming/@targodan/decoding-audio-files-with-ffmpeg) as you play with my demo app.
 
