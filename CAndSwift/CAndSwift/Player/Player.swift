@@ -11,7 +11,6 @@ class Player {
     
     var audioFormat: AVAudioFormat!
     var scheduledBufferCount: AtomicCounter<Int> = AtomicCounter<Int>()
-    var eof: Bool {decoder.eof}
     
     var playingFile: AudioFileContext!
     var codec: AudioCodec! {playingFile.audioCodec}
@@ -76,7 +75,7 @@ class Player {
         }
         
         if file.audioCodec.sampleFormat.needsResampling {
-            Resampler.instance.prepare(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
+            Resampler.instance.prepareForFile(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
         }
     }
     
@@ -157,6 +156,9 @@ class Player {
     }
 }
 
+///
+/// Enumerates all possible states the player can be in.
+///
 enum PlayerState {
     
     // Not playing any track
@@ -165,6 +167,14 @@ enum PlayerState {
     // Playing a track
     case playing
     
-    // Paued while playing a track
+    // Paused while playing a track
     case paused
+}
+
+///
+/// Names for custom notifications published by the player
+///
+extension Notification.Name {
+    
+    static let player_playbackCompleted = NSNotification.Name("player_playbackCompleted")
 }

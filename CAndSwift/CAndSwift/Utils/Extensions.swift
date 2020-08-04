@@ -1,5 +1,9 @@
 import Foundation
 
+///
+/// Extensions that provide helper functions or properties for added convenience.
+///
+
 extension BinaryInteger {
     
     mutating func clamp(minValue: Self, maxValue: Self) {

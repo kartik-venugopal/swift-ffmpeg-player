@@ -53,18 +53,25 @@ class Decoder {
             }
         }
         
-        // TODO: 1 - Drain decoder, 2 - Drain frameQueue, 3 - Figure out how to squeeze them into the buffer if it is full.
+        // Once EOF has been reached, drain both:
+        // - the frame queue (which may have overflow frames left over from the previous decoding loop), AND
+        // - the codec's internal frame buffer
+        //, and append them to our frame buffer.
         
         if eof {
+            
+            var terminalFrames: [BufferedFrame] = frameQueue.dequeueAll()
             
             do {
                 
                 let drainFrames = try codec.drain()
-                print("\nDecoder drain produced \(drainFrames.count) frames, \(frameQueue.size) frames left in queue.")
+                terminalFrames.append(contentsOf: drainFrames)
                 
             } catch {
                 print("\nDecoder drain error:", error)
             }
+            
+            buffer.appendTerminalFrames(frames: terminalFrames)
         }
         
         return buffer

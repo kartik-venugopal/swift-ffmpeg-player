@@ -36,9 +36,22 @@ class SamplesBuffer {
         return false
     }
     
+    func appendTerminalFrames(frames: [BufferedFrame]) {
+        
+        for frame in frames {
+            
+            self.sampleCount += frame.sampleCount
+            self.frames.append(frame)
+        }
+    }
+    
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
         
         guard sampleCount > 0 else {return nil}
+        
+        if sampleFormat.needsResampling {
+            Resampler.instance.prepareForBuffer(sampleCount: self.sampleCount)
+        }
         
         if let audioBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(sampleCount)) {
             

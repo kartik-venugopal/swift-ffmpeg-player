@@ -1,5 +1,9 @@
 import AVFoundation
 
+///
+/// A utlity that writes raw floating-point PCM samples to a file so that the output may be tested for fidelity in a program like Audacity.
+/// This is for testing/debugging purposes only.
+///
 class BufferFileWriter {
     
     static let outfile: UnsafeMutablePointer<FILE> = fopen("/Volumes/MyData/Music/Aural-Test/0bad.raw", "w+")

@@ -1,6 +1,10 @@
 import Foundation
 
-class JSONMapper {
+///
+/// A utility that produces a (potentially multi-level nested) dictionary from an object by introspecting it with a Mirror.
+/// Useful for serialization to disk (eg. as JSON) or for inspecting the values within an object, i.e. a "debug description".
+///
+class IntrospectiveObjectMapper {
     
     static func map(_ obj: Any, _ ignoreProps: [String] = []) -> NSDictionary {
         return mapObject(obj, ignoreProps)

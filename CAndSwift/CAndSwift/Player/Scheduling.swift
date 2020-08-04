@@ -5,6 +5,8 @@ import AVFoundation
 ///
 extension Player {
     
+    var eof: Bool {decoder.eof}
+    
     func initiateScheduling(from seekPosition: Double? = nil) {
         
         do {

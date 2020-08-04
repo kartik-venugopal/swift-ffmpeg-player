@@ -407,8 +407,3 @@ extension NSImageView {
         }
     }
 }
-
-extension Notification.Name {
-    
-    static let player_playbackCompleted = NSNotification.Name("player.playbackCompleted")
-}

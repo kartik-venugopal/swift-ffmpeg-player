@@ -11,6 +11,8 @@ class Resampler {
     private static let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
     var outData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
+    var allocatedChannelCount: Int32 = 0
+    var allocatedSampleCount: Int32 = 0
     
     private init() {
         
@@ -18,8 +20,21 @@ class Resampler {
         outData.initialize(to: nil)
     }
     
-    func prepare(channelCount: Int32, sampleCount: Int32) {
+    func prepareForFile(channelCount: Int32, sampleCount: Int32) {
+        
         av_samples_alloc(outData, nil, channelCount, sampleCount, AV_SAMPLE_FMT_FLTP, 0)
+        
+        self.allocatedChannelCount = channelCount
+        self.allocatedSampleCount = sampleCount
+    }
+    
+    func prepareForBuffer(sampleCount: Int32) {
+        
+        if sampleCount > allocatedSampleCount {
+         
+            av_freep(&outData[0])
+            av_samples_alloc(outData, nil, self.allocatedChannelCount, sampleCount, AV_SAMPLE_FMT_FLTP, 0)
+        }
     }
     
     func deallocate() {

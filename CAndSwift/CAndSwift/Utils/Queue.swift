@@ -1,6 +1,9 @@
 import Foundation
 
-// FIFO
+///
+/// A generic FIFO queue data structure.
+/// NOTE - This data structure is **not** thread-safe.
+///
 class Queue<T> {
     
     private var array: [T] = []
@@ -13,6 +16,13 @@ class Queue<T> {
         return array.count > 0 ? array.remove(at: 0) : nil
     }
     
+    func dequeueAll() -> [T] {
+        
+        let copy = array
+        array.removeAll()
+        return copy
+    }
+    
     func peek() -> T? {array.first}
     
     func clear() {
@@ -21,7 +31,7 @@ class Queue<T> {
     
     var size: Int {array.count}
     
-    var isEmpty: Bool {array.count == 0}
+    var isEmpty: Bool {array.isEmpty}
     
     func toArray() -> [T] {
         

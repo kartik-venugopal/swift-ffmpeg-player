@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// A thread-safe integer counter that safely tracks a value updated concurrently by multiple threads.
+///
 public final class AtomicCounter<T> where T: SignedInteger {
     
     private let lock = DispatchSemaphore(value: 1)
@@ -10,11 +13,13 @@ public final class AtomicCounter<T> where T: SignedInteger {
     }
     
     public var value: T {
+        
         get {
             lock.wait()
             defer { lock.signal() }
             return _value
         }
+        
         set {
             lock.wait()
             defer { lock.signal() }
@@ -23,6 +28,7 @@ public final class AtomicCounter<T> where T: SignedInteger {
     }
     
     public func decrementAndGet() -> T {
+        
         lock.wait()
         defer { lock.signal() }
         _value -= 1
@@ -30,12 +36,14 @@ public final class AtomicCounter<T> where T: SignedInteger {
     }
     
     public func decrement() {
+        
         lock.wait()
         defer { lock.signal() }
         _value -= 1
     }
     
     public func incrementAndGet() -> T {
+        
         lock.wait()
         defer { lock.signal() }
         _value += 1
@@ -43,6 +51,7 @@ public final class AtomicCounter<T> where T: SignedInteger {
     }
     
     public func increment() {
+        
         lock.wait()
         defer { lock.signal() }
         _value += 1
@@ -56,6 +65,9 @@ public final class AtomicCounter<T> where T: SignedInteger {
     }
 }
 
+///
+/// A thread-safe boolean value.
+///
 public final class AtomicBool {
     
     private let lock = DispatchSemaphore(value: 1)
