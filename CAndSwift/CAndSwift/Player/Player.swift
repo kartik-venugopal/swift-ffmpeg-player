@@ -105,7 +105,7 @@ class Player {
     var playbackStartPosition: Double = 0
     
     ///
-    /// Accesses the player's seek position within the currently playing file (in seconds).
+    /// Accesses the player's current seek position within the currently playing file (in seconds).
     ///
     /// ```
     /// Uses the audio engine's seek position (number of frames played) and
