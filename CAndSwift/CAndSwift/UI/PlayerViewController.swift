@@ -8,44 +8,83 @@ import AVFoundation
 ///
 class PlayerViewController: NSViewController, NSMenuDelegate {
     
+    // Player controls that can be manipulated to control playback/volume.
     @IBOutlet weak var btnPlayPause: NSButton!
+    @IBOutlet weak var seekSlider: NSSlider!
+    @IBOutlet weak var volumeSlider: NSSlider!
     
+    // Elements that display info for the currently playing track or player state
     @IBOutlet weak var artView: NSImageView!
     @IBOutlet weak var lblTitle: NSTextField!
-    
     @IBOutlet var txtMetadata: NSTextView!
     @IBOutlet var txtAudioInfo: NSTextView!
-    
-    @IBOutlet weak var seekSlider: NSSlider!
     @IBOutlet weak var lblSeekPos: NSTextField!
-    private var seekPosTimer: Timer!
-    
-    @IBOutlet weak var volumeSlider: NSSlider!
     @IBOutlet weak var lblVolume: NSTextField!
     
+    // Periodically updates the seek position label to show current track seek position.
+    private var seekPosTimer: Timer!
+    
+    // Allows the user to choose an audio file to play.
     private var dialog: NSOpenPanel!
+    
+    // The play/pause button toggles between the following 2 images, depending on player state.
+    private let imgPlay: NSImage = NSImage(named: "Play")!
+    private let imgPause: NSImage = NSImage(named: "Pause")!
+    
+    // Image to be displayed when the current track has no cover art or there is no track currently playing.
+    private let imgDefaultArt: NSImage = NSImage(named: "DefaultArt")!
+    
+    // Icon displayed in warning dialogs.
+    private let imgWarning: NSImage = NSImage(named: "Warning")!
+    
+    // The actual player that controls playback/volume.
+    private let player = Player()
+    
+    // Reader that provides track metadata.
+    private let metadataReader = MetadataReader()
+    
+    // Variables that temporarily hold state for the currently playing audio file/track.
     private var fileCtx: AudioFileContext!
     private var trackInfo: TrackInfo!
     
-    private let imgPlay: NSImage = NSImage(named: "Play")!
-    private let imgPause: NSImage = NSImage(named: "Pause")!
-
-    private let imgDefaultArt: NSImage = NSImage(named: "DefaultArt")!
-    private let imgWarning: NSImage = NSImage(named: "Warning")!
+    // An ordered list of recently played files (used by the "Open Recent" menu).
+    // The array is sorted by chronological order, i.e. most recent files first.
+    private var recentFiles: [URL] = []
     
-    let audioFileExtensions: [String] = ["aac", "adts", "ac3", "aif", "aiff", "aifc", "caf", "flac", "mp3", "m4a", "m4b", "m4r", "snd", "au", "sd2", "wav", "oga", "ogg", "opus", "wma", "dsf", "mpc", "mp2", "ape", "wv", "dts", "mka"]
+    // The time interval (in seconds) to be used when seeking backward/forward.
+    private let seekInterval: Double = 5
     
-    let avFileTypes: [String] = [AVFileType.mp3.rawValue, AVFileType.m4a.rawValue, AVFileType.aiff.rawValue, AVFileType.aifc.rawValue, AVFileType.caf.rawValue, AVFileType.wav.rawValue, AVFileType.ac3.rawValue]
+    // The amount to be used when adjusting (increasing / decreasing) the player's volume.
+    private let volumeAdjustment: Float = 0.05
     
-    private let player = Player()
-    private let metadataReader = MetadataReader()
-    
-    private var seekInterval: Double = 5
-    
+    // A warning (modal) alert that is displayed to the user when an abnormal condition has occurred.
     private var alert: NSAlert!
-    fileprivate var recentFiles: [URL] = []
     
+    ///
+    /// Initializes all UI elements when the owned view loads up.
+    ///
     override func viewDidLoad() {
+
+        initializeFileOpenDialog()
+        initializeAlert()
+        
+        // Remember the player volume from the previous app launch (or use a default value).
+        player.volume = UserDefaults.standard.value(forKey: "player.volume") as? Float ?? 0.5
+        volumeSlider.floatValue = player.volume
+        
+        let volumePercentage = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(volumePercentage) %"
+        
+        txtMetadata.font = NSFont.systemFont(ofSize: 14)
+        txtAudioInfo.font = NSFont.systemFont(ofSize: 14)
+        
+        artView.cornerRadius = 5
+
+        // Subscribe to notifications that the player has finished playing a track.
+        NotificationCenter.default.addObserver(forName: .player_playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
+    }
+    
+    private func initializeFileOpenDialog() {
         
         dialog = NSOpenPanel()
         
@@ -58,63 +97,63 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         dialog.canCreateDirectories    = false
         
         dialog.allowsMultipleSelection = false
-        dialog.allowedFileTypes        = audioFileExtensions + avFileTypes
+        dialog.allowedFileTypes        = Constants.audioFileExtensions + Constants.avFileTypes
         
         dialog.resolvesAliases = true;
         
         dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
-        
-        player.volume = UserDefaults.standard.value(forKey: "playerVolume") as? Float ?? 0.5
-        volumeSlider.floatValue = player.volume
-        let intVolume = Int(round(player.volume * 100))
-        lblVolume.stringValue = "\(intVolume) %"
-        
-        txtMetadata.font = NSFont.systemFont(ofSize: 14)
-        txtAudioInfo.font = NSFont.systemFont(ofSize: 14)
-        
-        artView.cornerRadius = 5
-        
-        // -----------
+    }
+    
+    private func initializeAlert() {
         
         alert = NSAlert()
-        
-        alert.window.title = "Please wait"
-        alert.messageText = "Please wait"
-        alert.informativeText = "The chosen file does not have duration information. Computing duration and building packet table to enable seeking ..."
-        alert.alertStyle = .warning
-        alert.icon = imgWarning
         
         let rect: NSRect = NSRect(x: alert.window.frame.origin.x, y: alert.window.frame.origin.y, width: alert.window.frame.width, height: 150)
         alert.window.setFrame(rect, display: true)
         
         alert.addButton(withTitle: "Ok")
-        
-        NotificationCenter.default.addObserver(forName: .player_playbackCompleted, object: nil, queue: nil, using: {notif in self.playbackCompleted()})
     }
 
-    // Remember player volume on next app launch
+    ///
+    /// Persists settings to be remembered on the next app launch.
+    /// This function is executed as the app is about to terminate.
+    ///
     func applicationWillTerminate(_ notification: Notification) {
-        UserDefaults.standard.set(player.volume, forKey: "playerVolume")
+        
+        // Remember the player's volume.
+        UserDefaults.standard.set(player.volume, forKey: "player.volume")
     }
     
+    ///
+    /// Displays a file dialog to let the user choose an audio file for playback.
+    ///
     @IBAction func openFileAction(_ sender: AnyObject) {
         
         guard dialog.runModal() == NSApplication.ModalResponse.OK, let url = dialog.url else {return}
         doOpenFile(url)
     }
     
+    ///
+    /// Responds to a user click on a menu item in the "Open Recent" menu, by opening the selected file for playback.
+    ///
+    /// - Parameter sender: The menu item that was clicked, and whose title points to a recently played file.
+    ///
     @IBAction func openFileFromMenuAction(_ sender: NSMenuItem) {
         doOpenFile(URL(fileURLWithPath: sender.title))
     }
     
+    ///
+    /// Actually opens a file for playback, and updates the UI with track metadata.
+    ///
     private func doOpenFile(_ url: URL) {
         
+        // Insert the opened file at the beginning of the "recent files" array (most recent item first)
         recentFiles.removeAll(where: {$0 == url})
         recentFiles.isEmpty ? recentFiles.append(url) : recentFiles.insert(url, at: 0)
         
         playbackCompleted()
         
-        let isRawStream: Bool = ["aac", "dts", "ac3"].contains(url.pathExtension.lowercased())
+        let isRawStream: Bool = Constants.rawAudioFileExtensions.contains(url.pathExtension.lowercased())
         
         DispatchQueue.global(qos: .userInteractive).async {
             
@@ -145,10 +184,28 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         }
         
         if isRawStream {
-            alert.runModal()
+            showDurationComputationDelayAlert()
         }
     }
     
+    ///
+    /// Modally displays an alert informing the user that there is a delay in playback because the chosen audio file does not seem to have
+    /// duration information, which now needs to be computed by reading through the file.
+    ///
+    private func showDurationComputationDelayAlert() {
+        
+        alert.window.title = "Please wait"
+        alert.messageText = "Please wait"
+        alert.informativeText = "The chosen file does not have duration information. Computing duration and building packet table to enable seeking ..."
+        alert.alertStyle = .warning
+        alert.icon = imgWarning
+        
+        alert.runModal()
+    }
+    
+    ///
+    /// Displays metadata for the currently playing track, e.g. artist / album / genre, cover art, etc.
+    ///
     private func showMetadata(_ file: URL, _ trackInfo: TrackInfo) {
         
         artView.image = trackInfo.art ?? imgDefaultArt
@@ -193,6 +250,9 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         }
     }
     
+    ///
+    /// Displays technical audio data for the currently playing track, e.g. codec, sample rate, bit rate, bit depth, etc.
+    ///
     private func showAudioInfo(_ audioInfo: AudioInfo) {
         
         txtAudioInfo.string = ""
@@ -201,9 +261,9 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         
         txtAudioInfo.string += "Codec:\n\(audioInfo.codec)\n\n"
         
-        txtAudioInfo.string += "Duration:\n\(formatSecondsToHMS(audioInfo.duration, true))\n\n"
+        txtAudioInfo.string += "Duration:\n\(NumericStringFormatter.formatSecondsToHMS(audioInfo.duration, true))\n\n"
         
-        txtAudioInfo.string += "Sample Rate:\n\(readableLongInteger(Int64(audioInfo.sampleRate))) Hz\n\n"
+        txtAudioInfo.string += "Sample Rate:\n\(NumericStringFormatter.readableLongInteger(Int64(audioInfo.sampleRate))) Hz\n\n"
         
         txtAudioInfo.string += "Sample Format:\n\(audioInfo.sampleFormat.description)\n\n"
         
@@ -224,100 +284,159 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
             txtAudioInfo.string += "Channels:\n\(audioInfo.channelCount)\n\n"
         }
         
-        txtAudioInfo.string += "Frames:\n\(readableLongInteger(audioInfo.frameCount))\n\n"
+        txtAudioInfo.string += "Frames:\n\(NumericStringFormatter.readableLongInteger(audioInfo.frameCount))\n\n"
     }
     
+    ///
+    /// Responds to a click on the play / pause button, by toggling play / pause player state.
+    ///
     @IBAction func playOrPauseAction(_ sender: AnyObject) {
         
         if self.fileCtx != nil {
             
             player.togglePlayPause()
+            
+            // Update button image to match the new player state
             btnPlayPause.image = player.state == .playing ? imgPause : imgPlay
         }
     }
     
+    ///
+    /// Responds to a click on the stop button, by stopping playback.
+    ///
     @IBAction func stopAction(_ sender: AnyObject) {
         
         player.stop()
         playbackCompleted()
     }
     
+    ///
+    /// Responds to movement of the seek slider by asking the player to seek within the audio file.
+    ///
     @IBAction func seekAction(_ sender: AnyObject) {
         
         if let trackInfo = self.trackInfo {
             
+            // The seek slider's value (between 0 and 100) corresponds to
+            // a percentage of the track's duration.
+            
             let seekPercentage = seekSlider.doubleValue
             let duration = trackInfo.audioInfo.duration
+            
             let newPosition = seekPercentage * duration / 100.0
             
             doSeekToTime(newPosition)
         }
     }
     
+    ///
+    /// Responds to a click on the seek forward button, by asking the player to seek forward a few seconds within the audio file.
+    ///
     @IBAction func seekForwardAction(_ sender: AnyObject) {
         doSeekToTime(player.seekPosition + seekInterval)
     }
     
+    ///
+    /// Responds to a click on the seek backward button, by asking the player to seek backward a few seconds within the audio file.
+    ///
     @IBAction func seekBackwardAction(_ sender: AnyObject) {
         doSeekToTime(player.seekPosition - seekInterval)
     }
     
+    ///
+    /// Actually performs a seek.
+    ///
+    /// - Parameter time: The desired new seek position within the audio file, specified in seconds.
+    ///
     private func doSeekToTime(_ time: Double) {
         
         if self.trackInfo != nil {
             
+            // Ensure that the seek time is not negative.
             player.seekToTime(max(0, time))
+            
+            // Immediately after a seek, update the seek position label and slider fields to reflect the updated seek position.
             updateSeekPosition(self)
         }
     }
     
+    ///
+    /// Responds to movement of the volume slider by asking the player to adjust its volume.
+    ///
     @IBAction func volumeAction(_ sender: AnyObject) {
         
         player.volume = volumeSlider.floatValue
         
-        let intVolume = Int(round(player.volume * 100))
-        lblVolume.stringValue = "\(intVolume) %"
+        // Convert the player's updated volume (in the range 0...1) to a percentage,
+        // before displaying it.
+        let volumePercentage = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(volumePercentage) %"
     }
     
+    ///
+    /// Responds to the menu item "Decrease Volume" by decreasing the player's volume by a small amount.
+    ///
     @IBAction func decreaseVolumeAction(_ sender: AnyObject) {
         
         let currentVolume = player.volume
-        player.volume = max(0, currentVolume - 0.05)
+        
+        // When computing a new volume, make sure that the adjustment does not result in a negative value.
+        // i.e. the volume cannot be less than 0. If it is already 0, it should stay at 0.
+        player.volume = max(0, currentVolume - volumeAdjustment)
         
         volumeSlider.floatValue = player.volume
         
-        let intVolume = Int(round(player.volume * 100))
-        lblVolume.stringValue = "\(intVolume) %"
+        // Convert the player's updated volume (in the range 0...1) to a percentage,
+        // before displaying it.
+        let volumePercentage = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(volumePercentage) %"
     }
     
+    ///
+    /// Responds to the menu item "Increase Volume" by increasing the player's volume by a small amount.
+    ///
     @IBAction func increaseVolumeAction(_ sender: AnyObject) {
         
         let currentVolume = player.volume
-        player.volume = min(1, currentVolume + 0.05)
+        
+        // When computing a new volume, make sure that the adjustment does not result in a value > 1 (the maximum player volume).
+        // i.e. the volume cannot be more than 1. If it is already 1, it should stay at 1.
+        player.volume = min(1, currentVolume + volumeAdjustment)
         
         volumeSlider.floatValue = player.volume
         
-        let intVolume = Int(round(player.volume * 100))
-        lblVolume.stringValue = "\(intVolume) %"
+        // Convert the player's updated volume (in the range 0...1) to a percentage,
+        // before displaying it.
+        let volumePercentage = Int(round(player.volume * 100))
+        lblVolume.stringValue = "\(volumePercentage) %"
     }
     
+    ///
+    /// Updates the seek position label and slider to reflect the player's current seek position.
+    /// This function is called periodically to continuously and automatically show the current seek position.
+    ///
     @IBAction func updateSeekPosition(_ sender: AnyObject) {
         
         let seekPos = player.seekPosition
         let duration = trackInfo?.audioInfo.duration ?? 0
         
         if self.fileCtx != nil {
-            lblSeekPos.stringValue = "\(formatSecondsToHMS(seekPos))  /  \(formatSecondsToHMS(duration))"
-        } else {
-            lblSeekPos.stringValue = formatSecondsToHMS(seekPos)
+            lblSeekPos.stringValue = "\(NumericStringFormatter.formatSecondsToHMS(seekPos))  /  \(NumericStringFormatter.formatSecondsToHMS(duration))"
+            
+        } else {    // No track currently playing
+            lblSeekPos.stringValue = "0:00"
         }
         
         let percentage = duration == 0 ? 0 : seekPos * 100 / duration
         seekSlider.doubleValue = percentage
     }
     
+    ///
+    /// Resets the UI after playback of a track has completed.
+    ///
     private func playbackCompleted() {
         
+        // De-reference the temporary variables holding current track info, so that they may be de-initialized.
         self.fileCtx = nil
         self.trackInfo = nil
         
@@ -329,48 +448,14 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         lblTitle.stringValue = ""
         seekSlider.doubleValue = 0
         
+        // Stop the timer as it is no longer required (till another track begins playing).
         seekPosTimer?.invalidate()
         seekPosTimer = nil
     }
     
-    private func formatSecondsToHMS(_ timeSecondsDouble: Double, _ includeMsec: Bool = false) -> String {
-        
-        let timeSeconds = Int(round(timeSecondsDouble))
-        
-        let secs = timeSeconds % 60
-        let mins = (timeSeconds / 60) % 60
-        let hrs = timeSeconds / 3600
-        
-        if includeMsec {
-            
-            let msec = Int(round((timeSecondsDouble - floor(timeSecondsDouble)) * 1000))
-            return hrs > 0 ? String(format: "%d : %02d : %02d.%03d", hrs, mins, secs, msec) : String(format: "%d : %02d.%03d", mins, secs, msec)
-            
-        } else {
-            return hrs > 0 ? String(format: "%d : %02d : %02d", hrs, mins, secs) : String(format: "%d : %02d", mins, secs)
-        }
-    }
-    
-    private func readableLongInteger(_ num: Int64) -> String {
-        
-        let numString = String(num)
-        var readableNumString: String = ""
-        
-        // Last index of numString
-        let numDigits: Int = numString.count - 1
-        
-        var c = 0
-        for eachCharacter in numString {
-            readableNumString.append(eachCharacter)
-            if (c < numDigits && (numDigits - c) % 3 == 0) {
-                readableNumString.append(",")
-            }
-            c += 1
-        }
-        
-        return readableNumString
-    }
-    
+    ///
+    /// Dynamically constructs the "Open Recent" menu based on which files were recently opened by the player during this app launch.
+    ///
     func menuWillOpen(_ menu: NSMenu) {
         
         menu.removeAllItems()
@@ -381,29 +466,9 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
             
             let menuItem = NSMenuItem(title: url.path, action: action, keyEquivalent: "")
             menuItem.target = self
+            
+            // Insert the item at the end of the menu (most recent item first).
             menu.insertItem(menuItem, at: menu.items.count)
-        }
-    }
-}
-
-extension NSImageView {
-
-    // Experimental code. Not currently in use.
-    var cornerRadius: CGFloat {
-
-        get {
-            return self.layer?.cornerRadius ?? 0
-        }
-
-        set {
-
-            if !self.wantsLayer {
-
-                self.wantsLayer = true
-                self.layer?.masksToBounds = true;
-            }
-
-            self.layer?.cornerRadius = newValue;
         }
     }
 }

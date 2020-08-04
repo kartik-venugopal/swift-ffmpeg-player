@@ -13,9 +13,7 @@ class FormatContext {
     let filePath: String
     
     var isRawStream: Bool {
-        
-        let fileExt: String = file.pathExtension.lowercased()
-        return ["aac", "dts", "ac3"].contains(fileExt)
+        Constants.rawAudioFileExtensions.contains(file.pathExtension.lowercased())
     }
     
     var pointer: UnsafeMutablePointer<AVFormatContext>?

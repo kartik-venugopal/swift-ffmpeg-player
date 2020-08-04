@@ -53,7 +53,10 @@ class MetadataReader {
         let sampleRate: Int = Int(codec.sampleRate)
         let sampleFormat: SampleFormat = codec.sampleFormat
         let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate
+        
+        // TODO: Instead of a simple channel count, display a more meaningful description (e.g. "5.1 - LR LF LC BL BR)"
         let channelCount: Int = codec.channelCount
+        
         let frames: Int64 = Int64(floor(duration * Double(sampleRate)))
 
         return AudioInfo(fileType: fileType, codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,

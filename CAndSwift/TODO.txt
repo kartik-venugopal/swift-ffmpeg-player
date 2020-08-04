@@ -1,3 +1,1 @@
-
-- move eof flag to FileContext/FormatContext
-
+- (Maybe) use an OperationQueue to concurrently decode multiple packets at once (send/receive), and reassemble the frames in order by pts timestamps.
