@@ -65,13 +65,12 @@ class MetadataReader {
     
     private func readCoverArt(_ fileCtx: AudioFileContext) -> NSImage? {
         
-        if let imageStream = fileCtx.imageStream, let imageCodec = fileCtx.imageCodec {
+        if let imageStream = fileCtx.imageStream {
             
             do {
-                
-                try imageCodec.open()
             
-                if let imageDataPacket = try fileCtx.format.readPacket(imageStream), let imageData = imageDataPacket.data {
+                if let imageDataPacket = try fileCtx.format.readPacket(imageStream),
+                    let imageData = imageDataPacket.data {
                     
                     return NSImage(data: imageData)
                 }

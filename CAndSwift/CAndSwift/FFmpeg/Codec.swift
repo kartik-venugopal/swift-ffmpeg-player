@@ -155,6 +155,6 @@ class AudioCodec: Codec {
 }
 
 ///
-/// A Codec that reads image data (i.e. cover art) from a video stream packet.
+/// A Codec that reads image data (i.e. cover art).
 ///
 class ImageCodec: Codec {}

@@ -41,8 +41,8 @@ class FormatContext {
     
     var bitRate: Int64 {avContext.bit_rate}
     
-    private lazy var durationCtx: DurationEstimationContext? = {
-        DurationEstimationContext(file)
+    private lazy var durationCtx: PacketTable? = {
+        PacketTable(file)
     }()
     
     var duration: Double = 0

@@ -13,7 +13,7 @@ import Foundation
 /// computation should be used as the last resort when all other methods
 /// of estimating the duration have failed.
 ///
-class DurationEstimationContext {
+class PacketTable {
     
     let file: URL
     
@@ -30,13 +30,17 @@ class DurationEstimationContext {
         self.pointer = avformat_alloc_context()
         
         var resultCode: ResultCode = avformat_open_input(&pointer, file.path, nil, nil)
-        guard resultCode.isNonNegative, pointer?.pointee != nil else {
-            return nil
+        guard resultCode.isNonNegative, pointer?.pointee != nil else {return nil}
+        
+        defer {
+            avformat_close_input(&pointer)
         }
         
         resultCode = avformat_find_stream_info(pointer, nil)
-        guard resultCode.isNonNegative else {
-            return nil
+        guard resultCode.isNonNegative else {return nil}
+        
+        defer {
+            avformat_free_context(pointer)
         }
         
         var audioStreamIndex: Int = -1
@@ -81,8 +85,6 @@ class DurationEstimationContext {
                 self.duration = Double(theLastPacket.pts + theLastPacket.duration) * theTimeBase.ratio
             }
         }
-        
-        // TODO: Clean up format context.
     }
     
     func packetPosForTime(_ seconds: Double) -> Int64 {
