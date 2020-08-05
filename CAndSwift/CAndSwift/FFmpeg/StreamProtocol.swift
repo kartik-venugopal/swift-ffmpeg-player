@@ -1,6 +1,9 @@
 import Foundation
 
-protocol Stream {
+///
+/// A contract for all AVStream wrapper classes.
+///
+protocol StreamProtocol {
     
     ///
     /// A pointer to the encapsulated AVStream object.
@@ -21,21 +24,6 @@ protocol Stream {
     /// The index of this stream within its container.
     ///
     var index: Int32 {get}
-    
-    ///
-    /// A pointer to the underlying AVCodec associated with this stream.
-    ///
-    var codecPointer: UnsafeMutablePointer<AVCodec> {get}
-    
-    ///
-    /// The underlying AVCodec associated with this stream.
-    ///
-    var avCodec: AVCodec {get}
-    
-    ///
-    /// A pointer to the context for the underlying AVCodec associated with this stream.
-    ///
-    var codecContextPointer: UnsafeMutablePointer<AVCodecContext> {get}
     
     ///
     /// All metadata key / value pairs available for this stream.

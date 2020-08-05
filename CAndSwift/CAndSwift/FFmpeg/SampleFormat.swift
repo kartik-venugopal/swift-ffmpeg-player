@@ -1,35 +1,80 @@
 import Foundation
 
 ///
-/// Wrapper around an AVSampleFormat struct.
+/// Wrapper around an AVSampleFormat.
 ///
 /// Reads and provides useful information about the format of audio samples,
 /// e.g. whether or not samples of this format need to be resampled for playback.
 ///
 struct SampleFormat {
     
+    ///
+    /// The AVSampleFormat that this object describes.
+    ///
     let avFormat: AVSampleFormat
     
+    ///
+    /// The name of this format. (e.g. s16 or fltp)
+    ///
     let name: String
+    
+    ///
+    /// The size, in bytes, of each sample of this format. (e.g s16 samples consist of 2 bytes each)
+    ///
     let size: Int
     
+    ///
+    /// Whether or not this represents a planar (or non-interleaved) format.
+    ///
+    /// # Note #
+    ///
+    /// A planar format is one that requires samples for each channel to be contained in a separate buffer.
+    ///
+    /// This flag is the inverse of **isInterleaved.
+    ///
     let isPlanar: Bool
+    
+    ///
+    /// Whether or not this represents an interleaved (or packed) format
+    ///
+    /// # Note #
+    ///
+    /// A packed or interleaved format will contain data for all channels "packed" into a single buffer.
+    ///
+    /// This flag is the inverse of **isPlanar.
+    ///
     var isInterleaved: Bool {!isPlanar}
     
+    ///
+    /// Whether or not samples of this format are integers (as opposed to floating point).
+    ///
     var isIntegral: Bool {
         
         [AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
          AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P].contains(avFormat)
     }
     
+    ///
+    /// Whether or not samples of this format require resampling in order to
+    /// be able to fed into AVAudioEngine for playback.
+    ///
     var needsResampling: Bool {
+        
+        // TODO: Investigate further, if this is really true.
+        // Apparently, AVAudioEngine can only play 32-bit floating point samples.
         avFormat != AV_SAMPLE_FMT_FLTP
     }
     
+    ///
+    /// Instantiates a SampleFormat from an AVSampleFormat.
+    ///
+    /// - Parameter avFormat: The AVSampleFormat to be wrapped by this object.
+    ///
     init(avFormat: AVSampleFormat) {
         
         self.avFormat = avFormat
         
+        // Determine a name for this format, if possible.
         if let fmtNamePointer = av_get_sample_fmt_name(avFormat) {
             self.name = String(cString: fmtNamePointer)
         } else {
@@ -40,6 +85,9 @@ struct SampleFormat {
         self.isPlanar = av_sample_fmt_is_planar(avFormat) == 1
     }
     
+    ///
+    /// A human-readable description of this format.
+    ///
     var description: String {
         
         switch avFormat {

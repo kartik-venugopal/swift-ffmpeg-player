@@ -89,7 +89,7 @@ class PacketTable {
                     lastPacket = packet
                     
                     // Store byte position and timestamp info for this packet.
-                    packetTable.append(PacketTableEntry(bytePosition: packet.pos, pts: packet.pts))
+                    packetTable.append(PacketTableEntry(bytePosition: packet.bytePosition, pts: packet.pts))
                 }
             }
             
@@ -229,7 +229,7 @@ class PacketTable {
 struct PacketTableEntry {
    
     ///
-    /// Offset position of the packet, in bytes, from the start of the file.
+    /// Offset position of the packet, in bytes, from the start of the stream.
     ///
     let bytePosition: Int64
     

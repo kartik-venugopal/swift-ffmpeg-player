@@ -1,12 +1,12 @@
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVStream struct that represents a single stream,
+/// Encapsulates an ffmpeg AVStream struct that represents a single audio stream,
 /// and provides convenient Swift-style access to its functions and member variables.
 ///
 /// Instantiates and provides the codec corresponding to the stream, and a codec context.
 ///
-class AudioStream: Stream {
+class AudioStream: StreamProtocol {
     
     ///
     /// A pointer to the encapsulated AVStream object.
@@ -31,22 +31,9 @@ class AudioStream: Stream {
     ///
     /// The codec associated with this stream.
     ///
-    var codec: AudioCodec
-    
-    ///
-    /// A pointer to the underlying AVCodec associated with this stream.
-    ///
-    var codecPointer: UnsafeMutablePointer<AVCodec>
-    
-    ///
-    /// The underlying AVCodec associated with this stream.
-    ///
-    var avCodec: AVCodec {codecPointer.pointee}
-    
-    ///
-    /// A pointer to the context for the underlying AVCodec associated with this stream.
-    ///
-    var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
+    lazy var codec: AudioCodec = {
+        return AudioCodec(paramsPointer: avStream.codecpar)
+    }()
     
     ///
     /// The duration of this stream, in seconds, if available. Nil if not available.
@@ -91,27 +78,14 @@ class AudioStream: Stream {
         
         self.pointer = pointer
         self.index = pointer.pointee.index
-        
-        // TODO: Maybe move the below code to Codec ??? Or lazily compute it.
-        
-        // Find the associated codec.
-        // TODO: Assert non-nil
-        self.codecPointer = avcodec_find_decoder(pointer.pointee.codecpar.pointee.codec_id)
-        
-        // Allocate a context for the codec.
-        self.codecContextPointer = avcodec_alloc_context3(codecPointer)
-        // TODO: Assert that the pointee is non-nil.
-        
-        // Copy the codec's parameters to the codec context.
-        avcodec_parameters_to_context(codecContextPointer, pointer.pointee.codecpar)
-        
-        // Only instantiate the codec if this stream is neither audio or video.
-        // NOTE - AudioStream and ImageStream will instantiate their own codecs.
-        self.codec = AudioCodec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
-        
         self.duration = avStream.duration > 0 ? Double(avStream.duration) * avStream.time_base.ratio : nil
     }
     
+    ///
+    /// Print some stream info to the console.
+    /// May be used to verify that the stream was properly read / initialized.
+    /// Useful for debugging purposes.
+    ///
     func printInfo() {
         
         print("\n---------- Audio Stream Info ----------\n")

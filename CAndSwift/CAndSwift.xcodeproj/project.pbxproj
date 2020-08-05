@@ -36,7 +36,7 @@
 		3E58752C24D058A6002774FB /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752B24D058A6002774FB /* Queue.swift */; };
 		3E58752E24D06CD1002774FB /* UtilsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752D24D06CD1002774FB /* UtilsExtensions.swift */; };
 		3E60DB6A24CB649C00749A59 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E60DB6924CB649C00749A59 /* ffmpeg.c */; };
-		3E67F36A24C823330023C2D3 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36924C823330023C2D3 /* Stream.swift */; };
+		3E67F36A24C823330023C2D3 /* StreamProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36924C823330023C2D3 /* StreamProtocol.swift */; };
 		3E67F36C24C823530023C2D3 /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36B24C823530023C2D3 /* Codec.swift */; };
 		3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36D24C8237A0023C2D3 /* Packet.swift */; };
 		3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36F24C823AA0023C2D3 /* Errors.swift */; };
@@ -51,6 +51,7 @@
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
 		3EA289F724D763AC00AF4C52 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EA289F624D763AC00AF4C52 /* TODO.txt */; };
 		3EA6E59F24D9DEDD00DEF16E /* ResamplingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA6E59E24D9DEDD00DEF16E /* ResamplingContext.swift */; };
+		3EB6F55124DB1194007562DE /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB6F55024DB1194007562DE /* AudioCodec.swift */; };
 		3EEB5A7024C7884D00F94F63 /* FrameBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEB5A6F24C7884D00F94F63 /* FrameBuffer.swift */; };
 		3EF3B34D24D6F67600CC8C07 /* PacketTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF3B34C24D6F67600CC8C07 /* PacketTable.swift */; };
 		3EF3B34F24D7387800CC8C07 /* ChannelLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF3B34E24D7387800CC8C07 /* ChannelLayouts.swift */; };
@@ -100,7 +101,7 @@
 		3E58752B24D058A6002774FB /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		3E58752D24D06CD1002774FB /* UtilsExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilsExtensions.swift; sourceTree = "<group>"; };
 		3E60DB6924CB649C00749A59 /* ffmpeg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
-		3E67F36924C823330023C2D3 /* Stream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
+		3E67F36924C823330023C2D3 /* StreamProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamProtocol.swift; sourceTree = "<group>"; };
 		3E67F36B24C823530023C2D3 /* Codec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codec.swift; sourceTree = "<group>"; };
 		3E67F36D24C8237A0023C2D3 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		3E67F36F24C823AA0023C2D3 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -115,6 +116,7 @@
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
 		3EA289F624D763AC00AF4C52 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = SOURCE_ROOT; };
 		3EA6E59E24D9DEDD00DEF16E /* ResamplingContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResamplingContext.swift; sourceTree = "<group>"; };
+		3EB6F55024DB1194007562DE /* AudioCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodec.swift; sourceTree = "<group>"; };
 		3EEB5A6F24C7884D00F94F63 /* FrameBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameBuffer.swift; sourceTree = "<group>"; };
 		3EF3B34C24D6F67600CC8C07 /* PacketTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTable.swift; sourceTree = "<group>"; };
 		3EF3B34E24D7387800CC8C07 /* ChannelLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLayouts.swift; sourceTree = "<group>"; };
@@ -210,10 +212,11 @@
 				3E9CD3B024C7A8CB00499954 /* FormatContext.swift */,
 				3EF3B34C24D6F67600CC8C07 /* PacketTable.swift */,
 				3EA6E59E24D9DEDD00DEF16E /* ResamplingContext.swift */,
-				3E67F36924C823330023C2D3 /* Stream.swift */,
+				3E67F36924C823330023C2D3 /* StreamProtocol.swift */,
 				3E35BBDD24DAEDF300ABBD0E /* AudioStream.swift */,
 				3E35BBDF24DAF0FD00ABBD0E /* ImageStream.swift */,
 				3E67F36B24C823530023C2D3 /* Codec.swift */,
+				3EB6F55024DB1194007562DE /* AudioCodec.swift */,
 				3E67F36D24C8237A0023C2D3 /* Packet.swift */,
 				3E78F90324CF2ECA00DA4F9B /* Frame.swift */,
 				3E857C7124C9E3C9000379BF /* SampleFormat.swift */,
@@ -362,8 +365,9 @@
 				3E857C7224C9E3C9000379BF /* SampleFormat.swift in Sources */,
 				3E58752824D03BED002774FB /* Scheduling.swift in Sources */,
 				3E0BECCD24C386B700FF69D7 /* AudioEngine.swift in Sources */,
+				3EB6F55124DB1194007562DE /* AudioCodec.swift in Sources */,
 				3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */,
-				3E67F36A24C823330023C2D3 /* Stream.swift in Sources */,
+				3E67F36A24C823330023C2D3 /* StreamProtocol.swift in Sources */,
 				3EF3B34F24D7387800CC8C07 /* ChannelLayouts.swift in Sources */,
 				3E6ADBD524CC1B9400AB2678 /* ConcurrentMap.swift in Sources */,
 				3E293BEF24C45885003749F2 /* Player.swift in Sources */,

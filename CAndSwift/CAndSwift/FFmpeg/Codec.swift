@@ -1,31 +1,82 @@
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVCodec, AVCodecContext, and AVCodecParameters struct, and provides convenient
-/// Swift-style access to their functions and member variables.
+/// Encapsulates an ffmpeg AVCodec, AVCodecContext, and AVCodecParameters struct,
+/// and provides convenient Swift-style access to their functions and member variables.
 ///
 class Codec {
     
+    ///
+    /// A pointer to the encapsulated AVCodec object.
+    ///
     var pointer: UnsafeMutablePointer<AVCodec>
+    
+    ///
+    /// The encapsulated AVCodec object.
+    ///
     var avCodec: AVCodec {pointer.pointee}
     
+    ///
+    /// A pointer to a context for the encapsulated AVCodec object.
+    ///
     var contextPointer: UnsafeMutablePointer<AVCodecContext>?
+    
+    ///
+    /// A context for the encapsulated AVCodec object.
+    ///
     var context: AVCodecContext {contextPointer!.pointee}
     
+    ///
+    /// A pointer to parameters for the encapsulated AVCodec object.
+    ///
     var paramsPointer: UnsafeMutablePointer<AVCodecParameters>
+    
+    ///
+    /// Parameters for the encapsulated AVCodec object.
+    ///
     var params: AVCodecParameters {paramsPointer.pointee}
     
+    ///
+    /// The unique identifier of the encapsulated AVCodec object.
+    ///
     var id: UInt32 {avCodec.id.rawValue}
+    
+    ///
+    /// The name of the encapsulated AVCodec object.
+    ///
     var name: String {String(cString: avCodec.name)}
+    
+    ///
+    /// The long name of the encapsulated AVCodec object.
+    ///
     var longName: String {String(cString: avCodec.long_name)}
     
-    init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>, paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    ///
+    /// Instantiates a Codec object, given a pointer to its parameters.
+    ///
+    /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
+    ///
+    init(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
-        self.pointer = pointer
-        self.contextPointer = contextPointer
+        // TODO: Nil checks (don't force unwrap).
+        
         self.paramsPointer = paramsPointer
+        
+        // Find the codec by ID.
+        self.pointer = avcodec_find_decoder(paramsPointer.pointee.codec_id)!
+        
+        // Allocate a context for the codec.
+        self.contextPointer = avcodec_alloc_context3(pointer)
+        
+        // Copy the codec's parameters to the codec context.
+        avcodec_parameters_to_context(contextPointer, paramsPointer)
     }
     
+    ///
+    /// Opens the codec for decoding.
+    ///
+    /// - throws: **DecoderInitializationError** if the codec cannot be opened.
+    ///
     func open() throws {
         
         let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
@@ -36,125 +87,32 @@ class Codec {
         }
     }
     
+    /// Indicates whether or not this object has already been destroyed.
     private var destroyed: Bool = false
     
+    ///
+    /// Performs cleanup (deallocation of allocated memory space) when
+    /// this object is about to be deinitialized or is no longer needed.
+    ///
     func destroy() {
 
+        // This check ensures that the deallocation happens
+        // only once. Otherwise, a fatal error will be
+        // thrown.
         if destroyed {return}
-
-        avcodec_close(contextPointer)
+        
+        if avcodec_is_open(contextPointer).isPositive {
+            avcodec_close(contextPointer)
+        }
+        
         avcodec_free_context(&contextPointer)
 
         destroyed = true
     }
 
+    /// When this object is deinitialized, make sure that its allocated memory space is deallocated.
     deinit {
         destroy()
-    }
-}
-
-///
-/// A Codec that decodes (encoded) audio data packets into raw (PCM) frames.
-///
-class AudioCodec: Codec {
-    
-    var bitRate: Int64 {params.bit_rate}
-    var sampleRate: Int32 {params.sample_rate}
-    var sampleFormat: SampleFormat = SampleFormat(avFormat: AVSampleFormat(0))
-    var channelCount: Int {Int(params.channels)}
-    var channelLayout: Int64 = 0
-    
-    override init(pointer: UnsafeMutablePointer<AVCodec>, contextPointer: UnsafeMutablePointer<AVCodecContext>, paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
-        
-        super.init(pointer: pointer, contextPointer: contextPointer, paramsPointer: paramsPointer)
-        
-        self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
-        
-        // Correct channel layout if necessary
-        self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
-    }
-    
-    func printInfo() {
-        
-        print("\n---------- Codec Info ----------\n")
-        
-        print(String(format: "Codec Name:    %@", longName))
-        print(String(format: "Sample Rate:   %7d", sampleRate))
-        print(String(format: "Sample Format: %7@", sampleFormat.name))
-        print(String(format: "Sample Size:   %7d", sampleFormat.size))
-        print(String(format: "Channels:      %7d", channelCount))
-        print(String(format: "Planar ?:      %7@", String(sampleFormat.isPlanar)))
-        
-        print("---------------------------------\n")
-    }
-    
-    // TODO: Factor out common code in decode() and drain() into a helper method.
-    
-    func decode(_ packet: Packet) throws -> [BufferedFrame] {
-        
-        // Send the packet to the decoder
-        var resultCode: Int32 = packet.sendTo(self)
-        packet.destroy()
-
-        if resultCode.isNegative {
-            
-            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode) \(resultCode.errorDescription))")
-            throw DecoderError(resultCode)
-        }
-        
-        // Receive (potentially) multiple frames
-
-        let frame = Frame(sampleFormat: self.sampleFormat)
-        var bufferedFrames: [BufferedFrame] = []
-        
-        resultCode = frame.receiveFrom(self)
-        
-        // Keep receiving frames while no errors are encountered
-        while resultCode.isZero, frame.hasSamples {
-            
-            bufferedFrames.append(BufferedFrame(frame))
-            resultCode = frame.receiveFrom(self)
-        }
-        
-        frame.destroy()
-        
-        return bufferedFrames
-    }
-    
-    func flushBuffers() {
-        avcodec_flush_buffers(contextPointer)
-    }
-    
-    func drain() throws -> [BufferedFrame] {
-        
-        // TODO: Do we need to do this whole thing in a while loop ???
-        
-        // Send the "flush packet" to the decoder
-        var resultCode: Int32 = avcodec_send_packet(contextPointer, nil)
-        
-        if resultCode.isNonZero {
-            
-            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode) \(resultCode.errorDescription))")
-            throw DecoderError(resultCode)
-        }
-        
-        // Receive (potentially) multiple frames
-        
-        let frame = Frame(sampleFormat: self.sampleFormat)
-        var bufferedFrames: [BufferedFrame] = []
-        
-        resultCode = frame.receiveFrom(self)
-        
-        // Keep receiving frames while no errors are encountered
-        while resultCode.isZero, frame.hasSamples {
-            
-            bufferedFrames.append(BufferedFrame(frame))
-            resultCode = frame.receiveFrom(self)
-        }
-        
-        frame.destroy()
-        
-        return bufferedFrames
     }
 }
 

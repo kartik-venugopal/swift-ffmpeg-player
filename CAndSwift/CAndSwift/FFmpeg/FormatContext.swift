@@ -33,7 +33,7 @@ class FormatContext {
     ///
     /// An array of all audio / video streams demuxed by this context.
     ///
-    var streams: [Stream]
+    var streams: [StreamProtocol]
     
     ///
     /// The number of streams present in the **streams** array.
@@ -46,7 +46,7 @@ class FormatContext {
     let audioStream: AudioStream
     
     ///
-    /// The first / best video stream in this file.
+    /// The first / best video stream in this file. May be nil.
     ///
     /// # Notes #
     ///
@@ -288,7 +288,7 @@ class FormatContext {
     ///
     /// - throws: **PacketReadError**, if an error occurred while attempting to read a packet.
     ///
-    func readPacket(_ stream: Stream) throws -> Packet? {
+    func readPacket(_ stream: StreamProtocol) throws -> Packet? {
         
         let packet = try Packet(pointer)
         return packet.streamIndex == stream.index ? packet : nil
@@ -382,6 +382,7 @@ class FormatContext {
         destroyed = true
     }
 
+    /// When this object is deinitialized, make sure that its allocated memory space is deallocated.
     deinit {
         destroy()
     }

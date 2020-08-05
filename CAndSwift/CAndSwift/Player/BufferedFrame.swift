@@ -39,7 +39,7 @@ class BufferedFrame: Hashable {
     let sampleCount: Int32
     
     ///
-    /// The sampling rate for the samples contained in this frame.
+    /// The sampling rate for the samples contained in this frame, i.e. samples per second (or Hz).
     ///
     let sampleRate: Int32
     

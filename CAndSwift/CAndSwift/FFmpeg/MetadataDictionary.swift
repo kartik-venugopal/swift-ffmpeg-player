@@ -10,7 +10,7 @@ class MetadataDictionary {
     ///
     let dictionary: [String: String]
     
-    init(pointer: OpaquePointer) {
+    init(pointer: OpaquePointer!) {
         
         var metadata: [String: String] = [:]
         var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
