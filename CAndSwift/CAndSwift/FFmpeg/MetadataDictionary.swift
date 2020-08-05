@@ -10,6 +10,16 @@ class MetadataDictionary {
     ///
     let dictionary: [String: String]
     
+    ///
+    /// Reads key / value pairs from a pointer to an AVDictionary and stores them in a Swift String-typed Dictionary.
+    ///
+    /// - Parameter pointer: Pointer to the source AVDictionary from which key / value pairs are to be read.
+    ///
+    /// # Note #
+    ///
+    /// After this initializer has finished executing, all the metadata that was read will be available in the **dictionary**
+    /// property of this object.
+    ///
     init(pointer: OpaquePointer!) {
         
         var metadata: [String: String] = [:]

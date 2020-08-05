@@ -13,7 +13,9 @@ class NumericStringFormatter {
     /// - Parameter includeMsec: A (optional) boolean flag indicating whether or not the formatted string should include the milliseconds
     ///                             component of the specified time duration. False if not specified.
     ///
-    static func formatSecondsToHMS(_ timeSeconds: Double, _ includeMsec: Bool = false) -> String {
+    /// - returns: A string representation of the given time duration, formatted as described above.
+    ///
+    static func formatSecondsToHMS(_ timeSeconds: Double, includeMsec: Bool = false) -> String {
         
         let intTimeSeconds = Int(round(timeSeconds))
         
@@ -38,6 +40,8 @@ class NumericStringFormatter {
     /// Example - A value of 4096 will be formatted to "4,096".
     ///
     /// - Parameter number: An integer value. The value to be formatted.
+    ///
+    /// - returns: A string representation of the given number, formatted as described above.
     ///
     static func readableLongInteger(_ number: Int64) -> String {
         

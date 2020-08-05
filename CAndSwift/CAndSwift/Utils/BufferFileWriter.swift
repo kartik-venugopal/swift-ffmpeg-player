@@ -9,6 +9,10 @@ class BufferFileWriter {
     static let outfile: UnsafeMutablePointer<FILE> = fopen("/Volumes/MyData/Music/Aural-Test/0bad.raw", "w+")
     static var ctr: Int = 0
     
+    ///
+    /// Writes all Float sample data from a single audio buffer to an output file that
+    /// can be read as "Raw Data" by a program like Audacity.
+    ///
     static func writeBuffer(_ buffer: AVAudioPCMBuffer) {
         
         let numSamples = Int(buffer.frameLength)
@@ -30,7 +34,10 @@ class BufferFileWriter {
         
         print("\nWrote \(numSamples) samples. So far = \(ctr)")
     }
-    
+
+    ///
+    /// Closes the output file.
+    ///
     static func closeFile() {
         fclose(outfile)
     }

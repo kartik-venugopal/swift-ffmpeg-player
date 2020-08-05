@@ -273,7 +273,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         
         txtAudioInfo.string += "Codec:\n\(audioInfo.codec)\n\n"
         
-        txtAudioInfo.string += "Duration:\n\(NumericStringFormatter.formatSecondsToHMS(audioInfo.duration, true))\n\n"
+        txtAudioInfo.string += "Duration:\n\(NumericStringFormatter.formatSecondsToHMS(audioInfo.duration, includeMsec: true))\n\n"
         
         txtAudioInfo.string += "Sample Rate:\n\(NumericStringFormatter.readableLongInteger(Int64(audioInfo.sampleRate))) Hz\n\n"
         

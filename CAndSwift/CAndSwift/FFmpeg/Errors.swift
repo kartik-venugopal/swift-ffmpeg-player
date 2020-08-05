@@ -19,6 +19,8 @@ extension ResultCode {
         }
     }
     
+    // MARK: Helper functions to assess the result of the operation that produced this result code.
+    
     var isNonNegative: Bool {self >= 0}
     var isNonPositive: Bool {self <= 0}
     
@@ -34,11 +36,16 @@ extension ResultCode {
 ///
 class CodedError: Error {
     
+    /// An integer code indicating what went wrong.
     let code: ResultCode
     
+    /// Whether or not this error indicates end of file (EOF).
     var isEOF: Bool {code == EOF_CODE}
+    
+    /// A readable description of this error.
     var description: String {code.errorDescription}
     
+    /// Instantiates a CodedError with a given result code.
     init(_ code: ResultCode) {
         self.code = code
     }
