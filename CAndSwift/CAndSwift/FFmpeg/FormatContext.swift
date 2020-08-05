@@ -23,12 +23,12 @@ class FormatContext {
     ///
     /// The encapsulated AVFormatContext object.
     ///
-    var avContext: AVFormatContext {pointer!.pointee}
+    var avContext: AVFormatContext {pointer.pointee}
     
     ///
     /// A pointer to the encapsulated AVFormatContext object.
     ///
-    var pointer: UnsafeMutablePointer<AVFormatContext>?
+    var pointer: UnsafeMutablePointer<AVFormatContext>!
     
     ///
     /// An array of all audio / video streams demuxed by this context.

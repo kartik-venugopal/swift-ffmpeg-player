@@ -32,6 +32,10 @@ class Packet {
             throw PacketReadError(readResult)
         }
     }
+    
+    init(avPacket: AVPacket) {
+        self.avPacket = avPacket
+    }
 
     func sendTo(_ codec: Codec) -> ResultCode {
         return avcodec_send_packet(codec.contextPointer, &avPacket)

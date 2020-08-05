@@ -1,27 +1,62 @@
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVStream struct, and provides convenient Swift-style access to its functions and member variables.
+/// Encapsulates an ffmpeg AVStream struct that represents a single stream,
+/// and provides convenient Swift-style access to its functions and member variables.
 ///
-/// - Instantiates and provides the codec corresponding to the stream.
-/// - Performs seeking to arbitrary positions within the audio stream.
+/// Instantiates and provides the codec corresponding to the stream, and a codec context.
 ///
 class Stream {
     
+    ///
+    /// A pointer to the encapsulated AVStream object.
+    ///
     var pointer: UnsafeMutablePointer<AVStream>
+    
+    ///
+    /// The encapsulated AVStream object.
+    ///
     var avStream: AVStream {pointer.pointee}
     
+    ///
+    /// The media type of data contained within this stream (e.g. audio, video, etc)
+    ///
     let mediaType: AVMediaType
+    
+    ///
+    /// The index of this stream within its container.
+    ///
     let index: Int32
     
-    var codecPointer: UnsafeMutablePointer<AVCodec>
-    var avCodec: AVCodec {codecPointer.pointee}
-    var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
-    
-    fileprivate var _codec: Codec!
+    ///
+    /// The codec associated with this stream.
+    ///
     var codec: Codec {_codec}
     
-    var metadata: [String: String] {
+    ///
+    /// The object backing the property **codec**.
+    ///
+    fileprivate var _codec: Codec!
+    
+    ///
+    /// A pointer to the underlying AVCodec associated with this stream.
+    ///
+    fileprivate var codecPointer: UnsafeMutablePointer<AVCodec>
+    
+    ///
+    /// The underlying AVCodec associated with this stream.
+    ///
+    fileprivate var avCodec: AVCodec {codecPointer.pointee}
+    
+    ///
+    /// A pointer to the context for the underlying AVCodec associated with this stream.
+    ///
+    fileprivate var codecContextPointer: UnsafeMutablePointer<AVCodecContext>
+    
+    ///
+    /// All metadata key / value pairs available for this stream.
+    ///
+    lazy var metadata: [String: String] = {
         
         var metadata: [String: String] = [:]
         var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
@@ -33,8 +68,15 @@ class Stream {
         }
         
         return metadata
-    }
+    }()
     
+    ///
+    /// Instantiates this stream object and its associated codec and codec context.
+    ///
+    /// - Parameter pointer: Pointer to the underlying AVStream.
+    ///
+    /// - Parameter mediaType: The media type of this stream (e.g. audio / video, etc)
+    ///
     init(_ pointer: UnsafeMutablePointer<AVStream>, _ mediaType: AVMediaType) {
         
         self.pointer = pointer
@@ -42,9 +84,21 @@ class Stream {
         self.mediaType = mediaType
         self.index = pointer.pointee.index
         
+        // TODO: Maybe move the below code to Codec ??? Or lazily compute it.
+        
+        // Find the associated codec.
+        // TODO: Assert non-nil
         self.codecPointer = avcodec_find_decoder(pointer.pointee.codecpar.pointee.codec_id)
+        
+        // Allocate a context for the codec.
         self.codecContextPointer = avcodec_alloc_context3(codecPointer)
+        // TODO: Assert that the pointee is non-nil.
+        
+        // Copy the codec's parameters to the codec context.
         avcodec_parameters_to_context(codecContextPointer, pointer.pointee.codecpar)
+        
+        // Only instantiate the codec if this stream is neither audio or video.
+        // NOTE - AudioStream and ImageStream will instantiate their own codecs.
         
         if mediaType != AVMEDIA_TYPE_AUDIO && mediaType != AVMEDIA_TYPE_VIDEO {
             _codec = Codec(pointer: codecPointer, contextPointer: codecContextPointer, paramsPointer: pointer.pointee.codecpar)
@@ -100,6 +154,8 @@ class AudioStream: Stream {
 class ImageStream: Stream {
     
     override var codec: ImageCodec {_codec as! ImageCodec}
+    
+    var attachedPic: AVPacket {avStream.attached_pic}
     
     init(_ pointer: UnsafeMutablePointer<AVStream>) {
         
