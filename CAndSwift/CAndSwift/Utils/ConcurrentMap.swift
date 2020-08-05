@@ -3,6 +3,8 @@ import Foundation
 ///
 /// A thread-safe map (dictionary) that safely performs concurrent reads and writes.
 ///
+/// TODO: Rewrite this class using a DispatchSemaphore.
+///
 class ConcurrentMap<T: Hashable, U: Any> {
     
     private let syncQueue: DispatchQueue

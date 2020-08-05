@@ -2,7 +2,10 @@ import Foundation
 
 ///
 /// A generic FIFO queue data structure.
-/// NOTE - This data structure is **not** thread-safe.
+///
+/// # Note #
+///
+/// This data structure is **not** thread-safe.
 ///
 class Queue<T> {
     
@@ -32,10 +35,4 @@ class Queue<T> {
     var size: Int {array.count}
     
     var isEmpty: Bool {array.isEmpty}
-    
-    func toArray() -> [T] {
-        
-        let copy = array
-        return copy
-    }
 }

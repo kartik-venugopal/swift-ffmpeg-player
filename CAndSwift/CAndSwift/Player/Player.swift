@@ -72,7 +72,9 @@ class Player {
     ///
     /// 1. Uses the global dispatch queue.
     ///
-    /// 2. Scheduling tasks for *immediate* playback will **not** be enqueued on this queue. They will be run immediately on the main thread.
+    /// 2. This is a *serial* queue, meaning that only one operation can execute at any given time. This is very important, because we don't want a race condition when scheduling buffers.
+    ///
+    /// 3. Scheduling tasks for *immediate* playback will **not** be enqueued on this queue. They will be run immediately on the main thread.
     ///
     let schedulingOpQueue: OperationQueue = {
         
