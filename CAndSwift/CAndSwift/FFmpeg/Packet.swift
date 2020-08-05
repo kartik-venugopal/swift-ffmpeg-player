@@ -82,7 +82,15 @@ class Packet {
     /// - Parameter avPacket: A pre-existing AVPacket that has already been read.
     ///
     init(avPacket: AVPacket) {
+        
         self.avPacket = avPacket
+        
+        // Since this packet was not allocated by this object, we
+        // cannot deallocate it here. It is the caller's responsibility
+        // to ensure that avPacket is destroyed.
+        //
+        // So, set the destroyed flag, to prevent deallocation.
+        destroyed = true
     }
 
     ///

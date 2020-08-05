@@ -94,22 +94,14 @@ class MetadataReader {
         
         // If no image (video) stream is present within the file, there is no cover art.
         guard let imageStream = fileCtx.imageStream else {return nil}
-            
-        do {
-
-            // Found an image stream, now try to read a single packet from it.
-            
-            if let imageDataPacket = try fileCtx.format.readPacket(imageStream),
-                let imageData = imageDataPacket.data {
-            
-                // Wrap the raw packet data in an NSImage and return it.
-                return NSImage(data: imageData)
-            }
-            
-        } catch {
-            print("Error reading cover art:", error)
+        
+        // Check if the attached pic in the image stream
+        // has any data.
+        if let imageData = imageStream.attachedPic.data {
+            return NSImage(data: imageData)
         }
         
+        // No attached pic data.
         return nil
     }
 }
