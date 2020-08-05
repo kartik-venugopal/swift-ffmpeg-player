@@ -88,6 +88,8 @@ class AudioCodec: Codec {
         print("---------------------------------\n")
     }
     
+    // TODO: Factor out common code in decode() and drain() into a helper method.
+    
     func decode(_ packet: Packet) throws -> [BufferedFrame] {
         
         // Send the packet to the decoder
@@ -124,6 +126,8 @@ class AudioCodec: Codec {
     }
     
     func drain() throws -> [BufferedFrame] {
+        
+        // TODO: Do we need to do this whole thing in a while loop ???
         
         // Send the "flush packet" to the decoder
         var resultCode: Int32 = avcodec_send_packet(contextPointer, nil)

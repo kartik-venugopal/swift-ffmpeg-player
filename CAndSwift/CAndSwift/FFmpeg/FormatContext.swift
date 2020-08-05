@@ -318,7 +318,7 @@ class FormatContext {
             // For raw audio files, we must use the packet table to determine
             // the byte position of our target packet, given the seek position
             // in seconds.
-            timestamp = packetTable?.packetPosForTime(seconds) ?? 0
+            timestamp = packetTable?.closestPacketBytePosition(for: seconds) ?? 0
             
             // Validate the byte position (cannot be greater than the file size).
             if timestamp >= fileSize {throw SeekError(EOF_CODE)}

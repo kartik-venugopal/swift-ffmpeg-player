@@ -101,7 +101,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         
         dialog.resolvesAliases = true;
         
-        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music")
+        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
     }
     
     private func initializeAlert() {
