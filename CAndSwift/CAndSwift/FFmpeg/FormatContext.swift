@@ -159,7 +159,7 @@ class FormatContext {
     /// All metadata key / value pairs available in this file's header.
     ///
     lazy var metadata: [String: String] = {
-        readMetadata(pointer: avContext.metadata)
+        MetadataDictionary(pointer: avContext.metadata).dictionary
     }()
     
     ///
@@ -187,9 +187,10 @@ class FormatContext {
                 
                 // If the chapter's metadata does not have a "title" tag, create a default title
                 // that contains the index of the chapter, e.g. "Chapter 2".
-                let title = readMetadata(pointer: chapter.metadata)["title"] ?? "Chapter \(index + 1)"
+                let metadata = MetadataDictionary(pointer: chapter.metadata).dictionary
+                let title = metadata["title"] ?? "Chapter \(index + 1)"
                 
-                chapters.append(Chapter(startTime: startTime, endTime: endTime, title: title))
+                chapters.append(Chapter(startTime: startTime, endTime: endTime, metadata: metadata, title: title))
             }
         }
         
@@ -333,10 +334,10 @@ class FormatContext {
             
             // We need to determine a target frame, given the seek position in seconds,
             // duration, and frame count.
-            timestamp = Int64(seconds * Double(stream.frameCount) / duration)
+            timestamp = Int64(seconds * Double(stream.timeBaseDuration) / duration)
             
             // Validate the target frame (cannot exceed the total frame count)
-            if timestamp >= stream.frameCount {throw SeekError(EOF_CODE)}
+            if timestamp >= stream.timeBaseDuration {throw SeekError(EOF_CODE)}
             
             // We need to seek by frame.
             //
@@ -356,28 +357,6 @@ class FormatContext {
             print("\nFormatContext.seek(): Unable to seek within stream \(stream.index). Error: \(seekResult) (\(seekResult.errorDescription)))")
             throw SeekError(seekResult)
         }
-    }
-    
-    ///
-    /// Reads all available metadata pointed to by the given pointer.
-    ///
-    /// - Parameter pointer: A pointer to the desired metadata.
-    ///
-    /// - returns: A dictionary containing String key / value pairs, one for
-    ///            each metadata tag that was read.
-    ///
-    private func readMetadata(pointer: OpaquePointer!) -> [String: String] {
-        
-        var metadata: [String: String] = [:]
-        var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
-        
-        while let tag = av_dict_get(pointer, "", tagPtr, AV_DICT_IGNORE_SUFFIX) {
-            
-            metadata[String(cString: tag.pointee.key)] = String(cString: tag.pointee.value)
-            tagPtr = tag
-        }
-        
-        return metadata
     }
     
     /// Indicates whether or not this object has already been destroyed.

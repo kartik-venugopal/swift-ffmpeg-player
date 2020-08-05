@@ -181,6 +181,9 @@ struct Chapter {
     /// Time when the represented chapter ends, in seconds.
     var endTime: Double
     
+    /// All metadata key / value pairs for this chapter marking (e.g. title, artist, etc)
+    var metadata: [String: String]
+    
     /// Title metadata for the represented chapter.
     var title: String
 }
