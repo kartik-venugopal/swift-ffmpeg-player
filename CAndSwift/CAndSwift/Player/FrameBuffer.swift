@@ -138,16 +138,16 @@ class FrameBuffer {
                     
                     // Copy over the frame's samples to the audio buffer (no resampling required).
                     
-                    let frameFloats: [UnsafePointer<Float>] = frame.playableFloatPointers
+                    let frameFloats: [UnsafePointer<Float>] = frame.planarFloatPointers
                     
                     // Iterate through all the channels.
                     for channelIndex in 0..<frameFloats.count {
                         
-                        guard let channel = audioBufferChannels?[channelIndex] else {break}
+                        guard let audioBufferChannel = audioBufferChannels?[channelIndex] else {break}
                         let frameFloatsForChannel = frameFloats[channelIndex]
                     
                         // Use Accelerate to perform the copy, starting at an offset equal to the number of samples copied over so far.
-                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, channel.advanced(by: sampleCountSoFar), 1)
+                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, audioBufferChannel.advanced(by: sampleCountSoFar), 1)
                     }
                 }
                 
@@ -166,7 +166,7 @@ class FrameBuffer {
     
     ///
     /// Performs cleanup (deallocation of allocated memory space) when
-    /// this object is about to be deinitialized.
+    /// this object is about to be deinitialized or is no longer needed.
     ///
     func destroy() {
         
@@ -181,6 +181,7 @@ class FrameBuffer {
         destroyed = true
     }
     
+    /// When this object is deinitialized, make sure that its allocated memory space is deallocated.
     deinit {
         destroy()
     }

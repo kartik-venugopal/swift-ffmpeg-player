@@ -32,16 +32,8 @@ class PacketTable {
         var resultCode: ResultCode = avformat_open_input(&pointer, file.path, nil, nil)
         guard resultCode.isNonNegative, pointer?.pointee != nil else {return nil}
         
-        defer {
-            avformat_close_input(&pointer)
-        }
-        
         resultCode = avformat_find_stream_info(pointer, nil)
         guard resultCode.isNonNegative else {return nil}
-        
-        defer {
-            avformat_free_context(pointer)
-        }
         
         var audioStreamIndex: Int = -1
         var timeBase: AVRational?
@@ -85,6 +77,9 @@ class PacketTable {
                 self.duration = Double(theLastPacket.pts + theLastPacket.duration) * theTimeBase.ratio
             }
         }
+        
+        avformat_close_input(&pointer)
+        avformat_free_context(pointer)
     }
     
     func packetPosForTime(_ seconds: Double) -> Int64 {

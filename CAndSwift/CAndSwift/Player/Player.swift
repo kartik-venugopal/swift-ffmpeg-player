@@ -144,9 +144,15 @@ class Player {
         // of the computational cost of decoding and resampling the given file, as opposed to just the
         // sample rate.
         let effectiveSampleRate: Int32 = sampleRate * channelCount
+        
+        guard let channelLayout = ChannelLayouts.mapLayout(ffmpegLayout: Int(codec.channelLayout)) else {
+            
+            print("\nFailed to initialize Player: Invalid ffmpeg channel layout: \(codec.channelLayout)")
+            throw PlayerInitializationError()
+        }
 
         // Determine the audio format for all audio buffers that will be scheduled for playback.
-        audioFormat = AVAudioFormat(standardFormatWithSampleRate: Double(sampleRate), channelLayout: ChannelLayouts.mapLayout(ffmpegLayout: Int(codec.channelLayout)))
+        audioFormat = AVAudioFormat(standardFormatWithSampleRate: Double(sampleRate), channelLayout: channelLayout)
         
         // Inform the audio engine that the audio buffers for this file will be of this format, so that
         // it can prepare itself accordingly.

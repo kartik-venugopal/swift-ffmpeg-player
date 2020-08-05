@@ -1,1 +1,6 @@
+TODO:
+
+Test DTS audio streams in an MKA container
+Test WavPack (WV)
+
 - (Maybe) use an OperationQueue to concurrently decode multiple packets at once (send/receive), and reassemble the frames in order by pts timestamps.

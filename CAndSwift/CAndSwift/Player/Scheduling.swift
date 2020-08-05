@@ -159,9 +159,6 @@ extension Player {
             
             // Upon scheduling the buffer, increment the counter.
             scheduledBufferCount.increment()
-            
-            // Destroy (deallocate memory for) the frame buffer, as it is no longer needed.
-            frameBuffer.destroy()
         }
     }
     
