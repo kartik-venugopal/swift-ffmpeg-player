@@ -10,11 +10,17 @@ import Cocoa
 /// - Technical audio data (codec, sample rate, bit rate, bit depth, etc).
 ///
 class MetadataReader {
-    
+   
+    ///
+    /// Given a file context, reads and returns all available track metadata.
+    ///
+    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    ///
+    /// - returns: All available track metadata for the file pointed to by **fileCtx**.
+    ///
     func readTrack(_ fileCtx: AudioFileContext) -> TrackInfo {
         
         let audioInfo: AudioInfo = readAudioInfo(fileCtx)
-        
         let metadata: [String: String] = readAudioMetadata(fileCtx)
         
         let coverArt: NSImage? = readCoverArt(fileCtx)
@@ -25,6 +31,13 @@ class MetadataReader {
         return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata, chapters: chapters)
     }
     
+    ///
+    /// Given a file context, reads and returns all available stream and container metadata, e.g. ID3 / iTunes tags.
+    ///
+    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    ///
+    /// - returns: All available stream / container metadata for the file pointed to by **fileCtx**.
+    ///
     private func readAudioMetadata(_ fileCtx: AudioFileContext) -> [String: String] {
         
         // Combine metadata from the format context and audio stream.
@@ -42,6 +55,13 @@ class MetadataReader {
         return metadata
     }
     
+    ///
+    /// Given a file context, reads and returns technical audio data for its audio stream. e.g. codec name, sample rate, bit rate, etc.
+    ///
+    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    ///
+    /// - returns: All available technical audio stream data.
+    ///
     private func readAudioInfo(_ fileCtx: AudioFileContext) -> AudioInfo {
         
         let stream = fileCtx.audioStream
@@ -63,21 +83,31 @@ class MetadataReader {
                           channelCount: channelCount, frameCount: frames)
     }
     
+    ///
+    /// Given a file context, reads and returns cover art for the file, if present.
+    ///
+    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    ///
+    /// - returns: An NSImage containing the cover art for the file, if present. Nil otherwise.
+    ///
     private func readCoverArt(_ fileCtx: AudioFileContext) -> NSImage? {
         
-        if let imageStream = fileCtx.imageStream {
+        // If no image (video) stream is present within the file, there is no cover art.
+        guard let imageStream = fileCtx.imageStream else {return nil}
             
-            do {
+        do {
+
+            // Found an image stream, now try to read a single packet from it.
             
-                if let imageDataPacket = try fileCtx.format.readPacket(imageStream),
-                    let imageData = imageDataPacket.data {
-                    
-                    return NSImage(data: imageData)
-                }
-                
-            } catch {
-                print("CoverArt error:", error)
+            if let imageDataPacket = try fileCtx.format.readPacket(imageStream),
+                let imageData = imageDataPacket.data {
+            
+                // Wrap the raw packet data in an NSImage and return it.
+                return NSImage(data: imageData)
             }
+            
+        } catch {
+            print("Error reading cover art:", error)
         }
         
         return nil
