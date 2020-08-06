@@ -9,27 +9,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
         
         super.init()
-        
-        // Configure logging to a file.
-//        freopen(NSHomeDirectory() + "/Music/ffmpeg-player.log", "a+", stderr)
+//        configureLoggingToAFile()
     }
     
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        
-//        let arr = ConcurrentArray<Int>()
-////        var arr = [UInt8]()
-//        
-//        for _ in 0..<100 {
-//            
-//            DispatchQueue.global(qos: .userInteractive).async {
-//                arr.append(Int.random(in: 0...1000))
-//            }
-//        }
-//        
-//        usleep(200000)
-//        
-//        arr.sort(by: {$0 > $1})
-//        print(arr.count, arr.array.prefix(100))
+    private func configureLoggingToAFile() {
+        freopen(NSHomeDirectory() + "/Music/ffmpeg-player.log", "a+", stderr)
     }
 
     ///
