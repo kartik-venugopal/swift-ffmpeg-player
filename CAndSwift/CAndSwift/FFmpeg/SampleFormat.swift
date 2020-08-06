@@ -30,7 +30,7 @@ struct SampleFormat {
     ///
     /// A planar format is one that requires samples for each channel to be contained in a separate buffer.
     ///
-    /// This flag is the inverse of **isInterleaved.
+    /// This flag is the inverse of **isInterleaved**.
     ///
     let isPlanar: Bool
     
@@ -41,29 +41,20 @@ struct SampleFormat {
     ///
     /// A packed or interleaved format will contain data for all channels "packed" into a single buffer.
     ///
-    /// This flag is the inverse of **isPlanar.
+    /// This flag is the inverse of **isPlanar**.
     ///
-    var isInterleaved: Bool {!isPlanar}
+    let isInterleaved: Bool
     
     ///
     /// Whether or not samples of this format are integers (as opposed to floating point).
     ///
-    var isIntegral: Bool {
-        
-        [AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
-         AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P].contains(avFormat)
-    }
+    let isIntegral: Bool
     
     ///
     /// Whether or not samples of this format require resampling in order to
     /// be able to fed into AVAudioEngine for playback.
     ///
-    var needsResampling: Bool {
-        
-        // TODO: Investigate further, if this is really true.
-        // Apparently, AVAudioEngine can only play 32-bit floating point samples.
-        avFormat != AV_SAMPLE_FMT_FLTP
-    }
+    let needsResampling: Bool
     
     ///
     /// Instantiates a SampleFormat from an AVSampleFormat.
@@ -75,14 +66,25 @@ struct SampleFormat {
         self.avFormat = avFormat
         
         // Determine a name for this format, if possible.
-        if let fmtNamePointer = av_get_sample_fmt_name(avFormat) {
-            self.name = String(cString: fmtNamePointer)
+        if let formatNamePointer = av_get_sample_fmt_name(avFormat) {
+            self.name = String(cString: formatNamePointer)
+            
         } else {
             self.name = "<Unknown sample format>"
         }
         
         self.size = Int(av_get_bytes_per_sample(avFormat))
+        
         self.isPlanar = av_sample_fmt_is_planar(avFormat) == 1
+        
+        self.isInterleaved = !isPlanar
+        
+        self.isIntegral = [AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
+        AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P].contains(avFormat)
+        
+        // Apparently, AVAudioEngine can only play 32-bit floating point samples.
+        // TODO: Investigate further, if this is really true.
+        self.needsResampling = avFormat != AV_SAMPLE_FMT_FLTP
     }
     
     ///

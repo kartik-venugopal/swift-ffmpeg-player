@@ -80,6 +80,9 @@ class DecoderInitializationError: CodedError {}
 ///
 class PlayerInitializationError: Error {}
 
+///
+/// Helper function to check if the given result code indicates end of file (EOF).
+///
 func isEOF(code: ResultCode) -> Bool {
     code == EOF_CODE
 }

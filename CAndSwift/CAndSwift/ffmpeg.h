@@ -42,6 +42,6 @@ long CH_LAYOUT_OCTAGONAL;
 long CH_LAYOUT_HEXADECAGONAL;
 long CH_LAYOUT_STEREO_DOWNMIX;
 
-int EOF_CODE;
+int ERROR_EOF;
 
 #endif /* ffmpeg_h */
