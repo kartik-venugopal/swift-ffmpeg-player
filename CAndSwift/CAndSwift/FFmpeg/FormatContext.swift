@@ -41,12 +41,12 @@ class FormatContext {
     var streamCount: Int {streams.count}
     
     ///
-    /// The first / best audio stream in this file.
+    /// The first / best audio stream in this file, if one is present. May be nil.
     ///
-    let audioStream: AudioStream
+    let audioStream: AudioStream?
     
     ///
-    /// The first / best video stream in this file. May be nil.
+    /// The first / best video stream in this file, if one is present. May be nil.
     ///
     /// # Notes #
     ///
@@ -254,18 +254,14 @@ class FormatContext {
         }
         
         // Among all the discovered streams, find the first / best audio stream and/or video stream.
-        
         // TODO: Should we use av_find_best_stream() here instead of picking the first audio stream ???
         
-        // We must have an audio stream, or this context is invalid.
-        guard let theAudioStream = streams.compactMap({$0 as? AudioStream}).first else {return nil}
-        
-        self.audioStream = theAudioStream
+        self.audioStream = streams.compactMap({$0 as? AudioStream}).first
         self.imageStream = streams.compactMap({$0 as? ImageStream}).first
         
         // Compute the duration of the audio stream, trying various methods. See documentation of **duration**
         // for a detailed description.
-        self.duration = (isRawAudioFile ? bruteForceDuration : audioStream.duration ?? estimatedDuration) ?? 0
+        self.duration = (isRawAudioFile ? bruteForceDuration : audioStream?.duration ?? estimatedDuration) ?? 0
     }
     
     ///

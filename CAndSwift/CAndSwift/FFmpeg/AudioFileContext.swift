@@ -21,6 +21,11 @@ class AudioFileContext {
     ///
     /// The first / best audio stream in the file.
     ///
+    /// # Note #
+    ///
+    /// This property provides the convenience of accessing the audio stream within **format**.
+    /// The same AudioStream may be obtained by calling **format.audioStream**.
+    ///
     let audioStream: AudioStream
     
     ///
@@ -44,20 +49,28 @@ class AudioFileContext {
     /// - No audio stream is found in the file.
     /// - No suitable codec is found for the audio stream.
     ///
+    /// # Note #
+    ///
+    /// If this initializer succeeds (does not return nil), it indicates that the file being read:
+    ///
+    /// 1. Is a valid media file.
+    /// 2. Has at least one audio stream.
+    /// 3. Is able to decode that audio stream.
+    ///
     init?(_ file: URL) {
         
         self.file = file
+    
+        // 1 - Attempt to instantiate a FormatContext to mux the file into streams.
+        // 2 - Then, attempt to obtain audio and image streams from the FormatContext.
+        // 3 - Finally, get the codec associated with the audio stream (for decoding).
         
-        // Attempt to instantiate a FormatContext to mux the file into streams.
-        // If that fails, we cannot proceed with reading / decoding this file, so return nil.
+        // If any of the above steps fail, we cannot proceed with reading / decoding this file, so return nil.
         
-        guard let theFormatContext = FormatContext(file) else {return nil}
+        guard let theFormatContext = FormatContext(file), let theAudioStream = theFormatContext.audioStream, let theAudioCodec = theAudioStream.codec else {return nil}
 
         self.format = theFormatContext
-        
-        self.audioStream = theFormatContext.audioStream
-        
-        guard let theAudioCodec = self.audioStream.codec else {return nil}
+        self.audioStream = theAudioStream
         self.audioCodec = theAudioCodec
         
         self.imageStream = theFormatContext.imageStream
