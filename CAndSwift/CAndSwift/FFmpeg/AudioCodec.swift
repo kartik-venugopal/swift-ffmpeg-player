@@ -149,9 +149,9 @@ class AudioCodec: Codec {
         print(String(format: "Codec Name:    %@", longName))
         print(String(format: "Sample Rate:   %7d", sampleRate))
         print(String(format: "Sample Format: %7@", sampleFormat.name))
+        print(String(format: "Planar Samples ?: %7@", String(sampleFormat.isPlanar)))
         print(String(format: "Sample Size:   %7d", sampleFormat.size))
         print(String(format: "Channels:      %7d", channelCount))
-        print(String(format: "Planar ?:      %7@", String(sampleFormat.isPlanar)))
         
         print("---------------------------------\n")
     }
