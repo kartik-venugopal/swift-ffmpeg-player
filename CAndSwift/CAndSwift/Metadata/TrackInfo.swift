@@ -193,8 +193,8 @@ struct AudioInfo {
     /// Bit rate of the audio stream, in bits per second.
     var bitRate: Int64
     
-    /// Number of channels present in the audio stream.
-    var channelCount: Int
+    /// The layout of channels in the audio stream (e.g. "Stereo" or "5.1 Surround")
+    var channelLayout: String
     
     /// Total number of frames present in this audio stream.
     var frameCount: Int64

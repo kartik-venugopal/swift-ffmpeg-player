@@ -9,13 +9,15 @@ extension ResultCode {
 
     var errorDescription: String {
         
-        if self == 0 {
+        if self.isZero {
             return "No error"
             
         } else {
             
-            let errString = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
-            return av_strerror(self, errString, 100) == 0 ? String(cString: errString) : "Unknown error"
+            let errorStringPointer = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
+            defer {errorStringPointer.deallocate()}
+            
+            return av_strerror(self, errorStringPointer, 100).isZero ? String(cString: errorStringPointer) : "Unknown error"
         }
     }
     

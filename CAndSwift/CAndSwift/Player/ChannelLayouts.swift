@@ -130,6 +130,25 @@ struct ChannelLayouts {
         return nil
     }
     
+    ///
+    /// Provides a human-readable string for a given channel layout.
+    ///
+    /// - Parameter channelLayout: The identifier for an ffmpeg channel layout.
+    ///
+    /// - Parameter channelCount:  The number of channels in **channelLayout**.
+    ///
+    /// - returns:                 A human-readable string describing the given channel layout.
+    ///
+    static func readableString(for channelLayout: Int64, channelCount: Int32) -> String {
+        
+        let layoutStringPointer = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
+        av_get_channel_layout_string(layoutStringPointer, 100, channelCount, UInt64(channelLayout))
+        
+        defer {layoutStringPointer.deallocate()}
+        
+        return String(cString: layoutStringPointer).replacingOccurrences(of: "(", with: " (")
+    }
+    
     // MARK: Debugging functions ------------------------------------------------------
     
     static func printLayouts() {

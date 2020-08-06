@@ -147,6 +147,8 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     ///
     private func doOpenFile(_ url: URL) {
         
+        player.stop()
+        
         // Insert the opened file at the beginning of the "recent files" array (most recent item first)
         recentFiles.removeAll(where: {$0 == url})
         recentFiles.isEmpty ? recentFiles.append(url) : recentFiles.insert(url, at: 0)
@@ -279,22 +281,9 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         
         txtAudioInfo.string += "Sample Format:\n\(audioInfo.sampleFormat.description)\n\n"
         
-        txtAudioInfo.string += "Bit Rate:\n\(audioInfo.bitRate / 1000) kbps\n\n"
+        txtAudioInfo.string += "Bit Rate:\n\(NumericStringFormatter.readableLongInteger(audioInfo.bitRate / 1000)) kbps\n\n"
         
-        switch audioInfo.channelCount {
-        
-        case 1:
-            
-            txtAudioInfo.string += "Channels:\nMono (1 ch)\n\n"
-            
-        case 2:
-            
-            txtAudioInfo.string += "Channels:\nStereo (2 ch)\n\n"
-            
-        default:
-            
-            txtAudioInfo.string += "Channels:\n\(audioInfo.channelCount)\n\n"
-        }
+        txtAudioInfo.string += "Channel Layout:\n\(audioInfo.channelLayout)\n\n"
         
         txtAudioInfo.string += "Frames:\n\(NumericStringFormatter.readableLongInteger(audioInfo.frameCount))\n\n"
     }
