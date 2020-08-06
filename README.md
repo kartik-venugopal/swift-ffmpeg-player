@@ -10,12 +10,12 @@ A basic audio player that demonstrates the use of ffmpeg together with AVAudioEn
 
 * Demuxing an audio file into streams - audio and image (cover art).
 * Reading packets from an audio stream, and using a codec to decode the packets into PCM samples.
-* Computing duration by building a packet table, when the stream contains no duration information.
+* Extracting metadata (artist/album, cover art, etc).
 * Converting between different PCM sample formats (resampling).
 * Constructing audio buffers with the PCM samples, and scheduling them for playback.
 * Upmixing/downmixing from mono/surround audio to stereo.
 * Seeking within a stream - by frame or byte position.
-* Extracting metadata (artist/album, cover art, etc).
+* Building a packet table when no duration or bit rate info is available, to compute duration and enable seeking.
 
 ## Why ?
 
