@@ -40,7 +40,7 @@ class CodedError: Error {
     let code: ResultCode
     
     /// Whether or not this error indicates end of file (EOF).
-    var isEOF: Bool {code == EOF_CODE}
+    var isEOF: Bool {code == ERROR_EOF}
     
     /// A readable description of this error.
     var description: String {code.errorDescription}
@@ -55,14 +55,14 @@ class CodedError: Error {
 /// Represents an error encountered by a codec while decoding audio packets.
 ///
 class DecoderError: CodedError {
-    static let eof: DecoderError = DecoderError(EOF_CODE)
+    static let eof: DecoderError = DecoderError(ERROR_EOF)
 }
 
 ///
 /// Represents an error encountered while reading audio packets from a stream.
 ///
 class PacketReadError: CodedError {
-    static let eof: PacketReadError = PacketReadError(EOF_CODE)
+    static let eof: PacketReadError = PacketReadError(ERROR_EOF)
 }
 
 ///
@@ -84,5 +84,5 @@ class PlayerInitializationError: Error {}
 /// Helper function to check if the given result code indicates end of file (EOF).
 ///
 func isEOF(code: ResultCode) -> Bool {
-    code == EOF_CODE
+    code == ERROR_EOF
 }

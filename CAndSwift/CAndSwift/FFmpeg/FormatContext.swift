@@ -167,34 +167,17 @@ class FormatContext {
     ///
     lazy var chapters: [Chapter] = {
         
-        var chapters: [Chapter] = []
         let numChapters = Int(avContext.nb_chapters)
         
-        if let avChapters = avContext.chapters {
-            
-            // Sort the chapters by start time in ascending order.
-            
-            let theChapters: [AVChapter] = (0..<numChapters).compactMap {avChapters.advanced(by: $0).pointee?.pointee}
-                .sorted(by: {c1, c2 in c1.start < c2.start})
-            
-            for (index, chapter) in theChapters.enumerated() {
-                
-                // Ratio used to convert from the chapter's time base units to seconds.
-                let conversionFactor: Double = Double(chapter.time_base.num) / Double(chapter.time_base.den)
-                
-                let startTime = Double(chapter.start) * conversionFactor
-                let endTime = Double(chapter.end) * conversionFactor
-                
-                // If the chapter's metadata does not have a "title" tag, create a default title
-                // that contains the index of the chapter, e.g. "Chapter 2".
-                let metadata = MetadataDictionary(pointer: chapter.metadata).dictionary
-                let title = metadata["title"] ?? "Chapter \(index + 1)"
-                
-                chapters.append(Chapter(startTime: startTime, endTime: endTime, metadata: metadata, title: title))
-            }
-        }
+        // There may not be any chapters.
+        guard numChapters > 0, let avChapters = avContext.chapters else {return []}
         
-        return chapters
+        // Sort the chapters by start time in ascending order.
+        let theChapters: [AVChapter] = (0..<numChapters).compactMap {avChapters.advanced(by: $0).pointee?.pointee}
+            .sorted(by: {c1, c2 in c1.start < c2.start})
+        
+        // Wrap the AVChapter objects in Chapter objects.
+        return theChapters.enumerated().map {Chapter(chapter: $0.element, index: $0.offset)}
     }()
     
     ///
@@ -219,6 +202,12 @@ class FormatContext {
         
         // Allocate memory for this format context.
         self.pointer = avformat_alloc_context()
+        
+        guard self.pointer != nil else {
+            
+            print("\nFormatContext.init(): Unable to allocate memory for format context for file '\(filePath)'.")
+            return nil
+        }
         
         // Try to open the audio file so that it can be read.
         var resultCode: ResultCode = avformat_open_input(&pointer, file.path, nil, nil)
@@ -322,7 +311,7 @@ class FormatContext {
             timestamp = packetTable?.closestPacketBytePosition(for: seconds) ?? 0
             
             // Validate the byte position (cannot be greater than the file size).
-            if timestamp >= fileSize {throw SeekError(EOF_CODE)}
+            if timestamp >= fileSize {throw SeekError(ERROR_EOF)}
             
             // We need to seek by byte position.
             flags = AVSEEK_FLAG_BYTE
@@ -337,7 +326,7 @@ class FormatContext {
             timestamp = Int64(seconds * Double(stream.timeBaseDuration) / duration)
             
             // Validate the target frame (cannot exceed the total frame count)
-            if timestamp >= stream.timeBaseDuration {throw SeekError(EOF_CODE)}
+            if timestamp >= stream.timeBaseDuration {throw SeekError(ERROR_EOF)}
             
             // We need to seek by frame.
             //
