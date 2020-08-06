@@ -61,7 +61,17 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     private let volumeAdjustment: Float = 0.05
     
     // A warning (modal) alert that is displayed to the user when an abnormal condition has occurred.
-    private var alert: NSAlert!
+    private lazy var alert: NSAlert = {
+        
+        let alert = NSAlert()
+        
+        let rect: NSRect = NSRect(x: alert.window.frame.origin.x, y: alert.window.frame.origin.y, width: alert.window.frame.width, height: 150)
+        alert.window.setFrame(rect, display: true)
+        
+        alert.addButton(withTitle: "Ok")
+        
+        return alert
+    }()
     
     ///
     /// Initializes all UI elements when the owned view loads up.
@@ -69,7 +79,6 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     override func viewDidLoad() {
 
         initializeFileOpenDialog()
-        initializeAlert()
         
         // Remember the player volume from the previous app launch (or use a default value).
         player.volume = UserDefaults.standard.value(forKey: "player.volume") as? Float ?? 0.5
@@ -107,16 +116,6 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
     }
     
-    private func initializeAlert() {
-        
-        alert = NSAlert()
-        
-        let rect: NSRect = NSRect(x: alert.window.frame.origin.x, y: alert.window.frame.origin.y, width: alert.window.frame.width, height: 150)
-        alert.window.setFrame(rect, display: true)
-        
-        alert.addButton(withTitle: "Ok")
-    }
-
     ///
     /// Persists settings to be remembered on the next app launch.
     /// This function is executed as the app is about to terminate.
@@ -165,7 +164,15 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         // main thread to hang and render the UI unresponsive.
         DispatchQueue.global(qos: .userInteractive).async {
             
-            guard let fileCtx = AudioFileContext(url) else {return}
+            guard let fileCtx = AudioFileContext(url) else {
+
+                DispatchQueue.main.async {
+                    self.showInvalidFileError(url)
+                }
+                
+                return
+            }
+            
             self.fileCtx = fileCtx
             
             // First, read the track's metadata.
@@ -224,13 +231,13 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     /// Modally displays an alert informing the user that there is a delay in playback because the chosen audio file does not seem to have
     /// duration information, which now needs to be computed by reading through the file.
     ///
-    private func showInvalidFileError() {
+    private func showInvalidFileError(_ file: URL) {
         
         alert.window.title = "Failed to open file"
-        alert.messageText = "Failed to open file: \(self.fileCtx.file.lastPathComponent)"
+        alert.messageText = "Failed to open file: \(file.lastPathComponent)"
         alert.informativeText = "The chosen file does not seem to be a valid audio file.\nPlease inspect it and try again, or choose a different file to open."
-        alert.alertStyle = .critical
-        alert.icon = imgWarning
+        alert.alertStyle = .warning
+        alert.icon = imgError
         
         alert.runModal()
     }
