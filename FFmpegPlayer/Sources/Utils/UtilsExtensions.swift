@@ -1,0 +1,45 @@
+import Foundation
+
+///
+/// Extensions that provide helper functions or properties for added convenience.
+///
+
+extension BinaryInteger {
+    
+    mutating func clamp(minValue: Self, maxValue: Self) {
+        
+        if self < minValue {
+            self = minValue
+            
+        } else if self > maxValue {
+            self = maxValue
+        }
+    }
+    
+    mutating func clamp(minValue: Self) {
+        
+        if self < minValue {
+            self = minValue
+        }
+    }
+    
+    mutating func clamp(maxValue: Self) {
+        
+        if self > maxValue {
+            self = maxValue
+        }
+    }
+}
+
+///
+/// Measures the execution time of a code block, in seconds.
+/// Useful for estimating performance of a function or code block.
+///
+/// - Parameter task: The code block whose execution time is to be measured.
+///
+func measureExecutionTime(_ task: () -> Void) -> Double {
+    
+    let startTime = CFAbsoluteTimeGetCurrent()
+    task()
+    return CFAbsoluteTimeGetCurrent() - startTime
+}

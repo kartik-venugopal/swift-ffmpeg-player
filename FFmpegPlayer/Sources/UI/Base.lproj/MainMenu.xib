@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="FFmpegPlayer" customModuleProvider="target">
+            <connections>
+                <outlet property="playerVC" destination="08S-L9-i7J" id="ges-MN-nRT"/>
+                <outlet property="window" destination="0eq-qQ-Agi" id="Jvp-tS-ed1"/>
+            </connections>
+        </customObject>
+        <customObject id="08S-L9-i7J" customClass="PlayerViewController" customModule="FFmpegPlayer">
+            <connections>
+                <outlet property="artView" destination="8pD-US-69t" id="9UK-SO-eQP"/>
+                <outlet property="btnPlayPause" destination="24S-8N-hcR" id="Os0-PL-IGB"/>
+                <outlet property="lblSeekPos" destination="Uhe-jX-Cb0" id="Ymy-O9-wgS"/>
+                <outlet property="lblTitle" destination="3tU-dk-7MU" id="Lyc-6U-KXx"/>
+                <outlet property="lblVolume" destination="HNI-I4-JKm" id="KKq-iS-fjD"/>
+                <outlet property="seekSlider" destination="8Ps-5O-VmA" id="bmQ-Hm-Wz4"/>
+                <outlet property="txtAudioInfo" destination="7n6-JL-lbx" id="2WZ-gF-mGm"/>
+                <outlet property="txtMetadata" destination="6Dr-6W-VyT" id="CPG-W3-HUw"/>
+                <outlet property="view" destination="lAt-Sd-UBv" id="G8J-Su-Ah0"/>
+                <outlet property="volumeSlider" destination="7Mh-4J-AdY" id="ciT-wa-FTS"/>
+            </connections>
+        </customObject>
+        <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+        <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
+            <items>
+                <menuItem title="FFmpegPlayer" id="1Xt-HY-uBw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="FFmpegPlayer" systemMenu="apple" id="uQy-DD-JDr">
+                        <items>
+                            <menuItem title="About FFmpegPlayer" id="5kV-Vb-QxS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
+                            <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW"/>
+                            <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
+                            <menuItem title="Services" id="NMo-om-nkz">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
+                            <menuItem title="Hide FFmpegPlayer" keyEquivalent="h" id="Olw-nP-bQN">
+                                <connections>
+                                    <action selector="hide:" target="-1" id="PnN-Uc-m68"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Hide Others" keyEquivalent="h" id="Vdr-fp-XzO">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="hideOtherApplications:" target="-1" id="VT4-aY-XCT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show All" id="Kd2-mp-pUS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="unhideAllApplications:" target="-1" id="Dhg-Le-xox"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+                            <menuItem title="Quit FFmpegPlayer" keyEquivalent="q" id="4sb-4s-VLi">
+                                <connections>
+                                    <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Controls" id="zSp-I0-iQl">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Controls" id="k0y-vt-HAJ">
+                        <items>
+                            <menuItem title="Open…" keyEquivalent="o" id="AVT-5Q-8AE">
+                                <connections>
+                                    <action selector="openFileAction:" target="08S-L9-i7J" id="JtH-Uk-VpX"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Open Recent ..." id="8B2-kO-J4m">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" id="d1S-Ad-gZ8">
+                                    <connections>
+                                        <outlet property="delegate" destination="08S-L9-i7J" id="bRZ-q2-RNm"/>
+                                    </connections>
+                                </menu>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="0Lu-CP-Bqm"/>
+                            <menuItem title="Play / Pause" keyEquivalent="p" id="KtZ-qB-1e0">
+                                <connections>
+                                    <action selector="playOrPauseAction:" target="08S-L9-i7J" id="uaU-6k-Geo"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Stop" keyEquivalent="." id="Y0W-l5-z6U">
+                                <connections>
+                                    <action selector="stopAction:" target="08S-L9-i7J" id="06l-aC-aVh"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Seek Backward" keyEquivalent="" id="ZYx-Qx-VH7">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="seekBackwardAction:" target="08S-L9-i7J" id="ytR-hW-bqH"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Seek Forward" keyEquivalent="" id="mHm-WR-B3b">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="seekForwardAction:" target="08S-L9-i7J" id="Inf-Wr-dbf"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="AiT-l9-Q4F"/>
+                            <menuItem title="Decrease Volume" keyEquivalent="" id="qas-O6-Sx9">
+                                <connections>
+                                    <action selector="decreaseVolumeAction:" target="08S-L9-i7J" id="CSD-tm-xf7"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Increase Volume" keyEquivalent="" id="3tp-CW-93N">
+                                <connections>
+                                    <action selector="increaseVolumeAction:" target="08S-L9-i7J" id="KEd-n0-Ity"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="140" y="154"/>
+        </menu>
+        <window title="FFmpeg Player" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="0eq-qQ-Agi" userLabel="FFmpeg Player">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="335" y="390" width="922" height="491"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <view key="contentView" id="lAt-Sd-UBv">
+                <rect key="frame" x="0.0" y="0.0" width="922" height="491"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3tU-dk-7MU" userLabel="Track Title Label">
+                        <rect key="frame" x="18" y="447" width="888" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <shadow key="shadow" blurRadius="4">
+                            <size key="offset" width="-4" height="4"/>
+                            <color key="color" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </shadow>
+                        <textFieldCell key="cell" alignment="center" id="tDr-kB-FSh">
+                            <font key="font" metaFont="system" size="18"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8pD-US-69t" userLabel="Cover Art">
+                        <rect key="frame" x="25" y="140" width="250" height="250"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="DefaultArt" id="hK4-qb-KSo"/>
+                        <color key="contentTintColor" white="0.084066901410000006" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </imageView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ocf-zV-94g" userLabel="Metadata Caption Label">
+                        <rect key="frame" x="305" y="397" width="125" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Metadata" id="Jcy-0D-7ut">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JlW-JH-ceC" userLabel="Metadata Text View">
+                        <rect key="frame" x="305" y="140" width="312" height="250"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Hbq-By-etd">
+                            <rect key="frame" x="0.0" y="0.0" width="297" height="250"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="6Dr-6W-VyT">
+                                    <rect key="frame" x="0.0" y="0.0" width="297" height="250"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="297" height="250"/>
+                                    <size key="maxSize" width="321" height="10000000"/>
+                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" red="0.1176470588" green="0.1176470588" blue="0.1176470588" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="pQ9-tM-5Sj">
+                            <rect key="frame" x="-100" y="-100" width="225" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="IKF-Ic-Ize">
+                            <rect key="frame" x="297" y="0.0" width="15" height="250"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h6k-1J-TXJ" userLabel="Audio info Caption Label">
+                        <rect key="frame" x="645" y="397" width="125" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Audio info" id="kTK-M8-nlY">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aXh-Ho-XlS" userLabel="Audio info Text View">
+                        <rect key="frame" x="644" y="140" width="260" height="250"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Fj6-sW-4bz">
+                            <rect key="frame" x="0.0" y="0.0" width="245" height="250"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="7n6-JL-lbx">
+                                    <rect key="frame" x="0.0" y="0.0" width="245" height="250"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="245" height="250"/>
+                                    <size key="maxSize" width="320" height="10000000"/>
+                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="q8e-gw-7PI">
+                            <rect key="frame" x="-100" y="-100" width="225" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="VHt-ck-dfl">
+                            <rect key="frame" x="245" y="0.0" width="15" height="250"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Ps-5O-VmA" userLabel="Seek Slider">
+                        <rect key="frame" x="23" y="100" width="881" height="19"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="0Sz-dp-byE" customClass="SeekSliderCell" customModule="SwiftFFmpegPlayer" customModuleProvider="target"/>
+                        <connections>
+                            <action selector="seekAction:" target="08S-L9-i7J" id="7FT-Ru-Xtj"/>
+                        </connections>
+                    </slider>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uhe-jX-Cb0" userLabel="Seek Position Label">
+                        <rect key="frame" x="23" y="51" width="246" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="0:00" id="EAW-jN-hIN">
+                            <font key="font" metaFont="system" size="17"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3mE-lj-XUS" userLabel="Seek Backward Button">
+                        <rect key="frame" x="359" y="49" width="44" height="44"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekBackward" imagePosition="only" alignment="center" continuous="YES" imageScaling="proportionallyUpOrDown" inset="2" id="Sxn-ut-Dk0">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="seekBackwardAction:" target="08S-L9-i7J" id="qsg-sY-MX3"/>
+                        </connections>
+                    </button>
+                    <button toolTip="Play / Pause" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24S-8N-hcR" userLabel="Play / Pause Button">
+                        <rect key="frame" x="424" y="54" width="36" height="36"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Play" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="vqC-Fl-kF4">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="playOrPauseAction:" target="08S-L9-i7J" id="Nga-as-Dff"/>
+                        </connections>
+                    </button>
+                    <button toolTip="Stop" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ieL-7m-BWu" userLabel="Stop Button">
+                        <rect key="frame" x="470" y="58" width="28" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Stop" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="VDx-4g-a0N">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="stopAction:" target="08S-L9-i7J" id="KAW-py-IZZ"/>
+                        </connections>
+                    </button>
+                    <button toolTip="Seek Forward" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YBy-l6-PBM" userLabel="Seek Forward Button">
+                        <rect key="frame" x="519" y="49" width="44" height="44"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekForward" imagePosition="only" alignment="center" continuous="YES" imageScaling="proportionallyUpOrDown" inset="2" id="uzU-6U-01R">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="seekForwardAction:" target="08S-L9-i7J" id="Ifj-0Q-SDb"/>
+                        </connections>
+                    </button>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pt8-4t-NqV" userLabel="Volume Icon">
+                        <rect key="frame" x="718" y="61" width="20" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Volume" id="hej-Io-m1M"/>
+                    </imageView>
+                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Mh-4J-AdY" userLabel="Volume Slider">
+                        <rect key="frame" x="742" y="61" width="120" height="19"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="SkH-Ki-dmj" customClass="VolumeSliderCell" customModule="SwiftFFmpegPlayer" customModuleProvider="target"/>
+                        <connections>
+                            <action selector="volumeAction:" target="08S-L9-i7J" id="O0d-ZM-JuH"/>
+                        </connections>
+                    </slider>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HNI-I4-JKm" userLabel="Volume Value Label">
+                        <rect key="frame" x="861" y="57" width="43" height="23"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="50%" id="vxr-34-aUs">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cGI-M3-NZ2" userLabel="Open File Button">
+                        <rect key="frame" x="25" y="8" width="877" height="29"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" title="Open File" bezelStyle="shadowlessSquare" image="OpenFile" imagePosition="right" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="WNb-7k-pw5">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="openFileAction:" target="08S-L9-i7J" id="3SO-h5-qR4"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="364" y="-54.5"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="DefaultArt" width="276" height="280"/>
+        <image name="OpenFile" width="41" height="41"/>
+        <image name="Play" width="36" height="36"/>
+        <image name="SeekBackward" width="225" height="225"/>
+        <image name="SeekForward" width="225" height="225"/>
+        <image name="Stop" width="34" height="34"/>
+        <image name="Volume" width="50" height="40"/>
+    </resources>
+</document>
