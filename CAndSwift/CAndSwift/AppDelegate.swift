@@ -23,12 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         playerVC.applicationWillTerminate(notification)
     }
     
+    ///
+    /// Returning true here will cause the app to terminate when the main window is closed instead of continuing to run.
+    ///
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {true}
-}
-
-func measureTime(_ task: () -> Void) -> Double {
-    
-    let startTime = CFAbsoluteTimeGetCurrent()
-    task()
-    return CFAbsoluteTimeGetCurrent() - startTime
 }
