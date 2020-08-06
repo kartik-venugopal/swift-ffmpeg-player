@@ -4,11 +4,11 @@
 
 A basic audio player that demonstrates the use of ffmpeg together with AVAudioEngine ... written in Swift.
 
-![Screenshot](/CAndSwift/screenshot.png?raw=true)
+![Screenshot](/FFmpegPlayer/Resources/screenshot.png?raw=true)
 
 ### In a few more words, ...
 
-![High level component diagram](/basicFFmpegPlayer.png?raw=true)
+![High level component diagram](/FFmpegPlayer/Resources/basicFFmpegPlayer.png?raw=true)
 
 * Demuxing an audio file into streams - audio and image (cover art).
 * Reading packets from an audio stream, and using a codec to decode the packets into PCM samples.
