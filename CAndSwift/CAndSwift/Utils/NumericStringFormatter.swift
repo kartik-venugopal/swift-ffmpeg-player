@@ -17,7 +17,7 @@ class NumericStringFormatter {
     ///
     static func formatSecondsToHMS(_ timeSeconds: Double, includeMsec: Bool = false) -> String {
         
-        let intTimeSeconds = Int(round(timeSeconds))
+        let intTimeSeconds = includeMsec ? Int(timeSeconds) : Int(round(timeSeconds))
         
         let secs = intTimeSeconds % 60
         let mins = (intTimeSeconds / 60) % 60

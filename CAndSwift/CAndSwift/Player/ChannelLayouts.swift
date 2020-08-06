@@ -146,7 +146,7 @@ struct ChannelLayouts {
         
         defer {layoutStringPointer.deallocate()}
         
-        return String(cString: layoutStringPointer).replacingOccurrences(of: "(", with: " (")
+        return String(cString: layoutStringPointer).replacingOccurrences(of: "(", with: " (").capitalized
     }
     
     // MARK: Debugging functions ------------------------------------------------------
