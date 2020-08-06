@@ -80,3 +80,6 @@ class DecoderInitializationError: CodedError {}
 ///
 class PlayerInitializationError: Error {}
 
+func isEOF(code: ResultCode) -> Bool {
+    code == EOF_CODE
+}

@@ -13,7 +13,7 @@ import Accelerate
 class Resampler {
     
     ///
-    /// Singleton instance of this class that is shared by different objects.
+    /// Singleton instance of this class that is shared by different client objects.
     ///
     static let instance = Resampler()
     
@@ -33,15 +33,22 @@ class Resampler {
     var outputData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
     ///
-    /// The channel count for the output samples.
+    /// Keeps track of the number of channels of output data for which memory space has been allocated.
     ///
     var allocatedChannelCount: Int32 = 0
     
     ///
-    /// The number of output samples (per channel).
+    /// Keeps track of the number of samples (per channel) of output data for which memory space has been allocated.
     ///
     var allocatedSampleCount: Int32 = 0
     
+    ///
+    /// The initializer is made private so as to prevent clients from creating their own instances.
+    /// Only one instance (i.e. a singleton) of this class should be created and made available
+    /// as a static member.
+    ///
+    /// See **instance**.
+    ///
     private init() {
         
         // Allocate space for up to 8 channels of sample data.
@@ -50,66 +57,70 @@ class Resampler {
     }
     
     ///
-    /// Prepares the resampler to resample PCM samples for a file.
+    /// Allocates enough memory space for a resampling conversion that produces output
+    /// having a given channel count and sample count.
     ///
-    /// This function should be called exactly once prior to the start of playback of the file.
+    /// - Parameter channelCount:   The number of channels to allocate space for (i.e. the number of output buffers).
     ///
-    func prepareForFile(channelCount: Int32, sampleCount: Int32) {
+    /// - Parameter sampleCount:   The number of output samples to allocate space for (i.e. the size of each output buffer).
+    ///
+    /// # Note #
+    ///
+    /// This function will only perform an allocation if the currently allocated space, if any, is
+    /// not enough to accommodate output samples of the given channel and sample counts.
+    /// If there is already enough space allocated, nothing will be done.
+    ///
+    func allocateFor(channelCount: Int32, sampleCount: Int32) {
         
-        av_samples_alloc(outputData, nil, channelCount, sampleCount, AV_SAMPLE_FMT_FLTP, 0)
-        
-        self.allocatedChannelCount = channelCount
-        self.allocatedSampleCount = sampleCount
-    }
-    
-    ///
-    /// Prepares the resampler to resample PCM samples for a single frame buffer.
-    ///
-    /// This function should be called exactly once prior to the construction of an audio buffer from a frame buffer's samples.
-    ///
-    /// - Parameter sampleCount:    The number of samples in the frame buffer for which this function was called.
-    ///                             This will determine how much space needs to be allocated to hold the output samples for this buffer.
-    ///
-    ///  # Notes #
-    ///
-    /// Ideally, when **prepareForFile()** is invoked, and space is allocated, calling this function should not result in repeated re-allocation of space.
-    /// In other words, the space allocated by **prepareForFile()** should be enough for all frame buffers for the current audio file. Only in rare cases
-    /// will a frame buffer exceed the space requirement estimated by **prepareForFile()**.
-    ///
-    func prepareForBuffer(sampleCount: Int32) {
-        
-        // If the space required by the frame buffer's samples is greater than the already allocated space for output samples,
-        // free the existing space and re-allocate space sufficient for this buffer's samples.
-        if sampleCount > allocatedSampleCount {
-         
-            av_freep(&outputData[0])
-            av_samples_alloc(outputData, nil, self.allocatedChannelCount, sampleCount, AV_SAMPLE_FMT_FLTP, 0)
+        // Check if we already have enough allocated space for the given
+        // channel count and sample count.
+        if channelCount > allocatedChannelCount || sampleCount > allocatedSampleCount {
+            
+            // Not enough space already allocated. Need to re-allocate space.
+            
+            // First, deallocate any previously allocated space, if required.
+            deallocate()
+            
+            // Allocate space.
+            av_samples_alloc(outputData, nil, channelCount, sampleCount, AV_SAMPLE_FMT_FLTP, 0)
+            
+            // Update these variables to keep track of allocated space.
+            self.allocatedChannelCount = channelCount
+            self.allocatedSampleCount = sampleCount
         }
     }
     
     ///
     /// Deallocates any space previously allocated to hold the resampler's output samples.
     ///
-    /// ```
-    /// This function will typically be called exactly once, when playback of a file has ended.
-    /// ```
-    ///
     func deallocate() {
-        av_freep(&outputData[0])
+        
+        if allocatedChannelCount > 0 && allocatedSampleCount > 0 {
+            
+            av_freep(&outputData[0])
+            
+            self.allocatedChannelCount = 0
+            self.allocatedSampleCount = 0
+        }
     }
     
     ///
     /// Resamples input samples from a frame buffer into the standard required sample format: 32-bit floating point non-interleaved (aka planar),
     /// and copies the output samples into the given audio buffer, starting at a given offset.
     ///
-    /// - Parameter frame: A buffered frame whose samples need to be resampled.
+    /// - Parameter frame:          A buffered frame whose samples need to be resampled.
     ///
-    /// - Parameter audioBuffer: An audio buffer to which the output samples need to be copied.
+    /// - Parameter audioBuffer:    An audio buffer to which the output samples need to be copied once the resampling conversion is completed.
     ///
-    /// - Parameter offset: An offset used as the starting location in the audio buffer from which output samples will be copied.
-    ///                     This should equal the number of samples previously copied into the audio buffer (from other frames).
+    /// - Parameter offset:         An offset used as the starting location in the audio buffer from which output samples will be copied.
+    ///                             This should equal the number of samples previously copied into the audio buffer (from other frames).
     ///
-    func resample(_ frame: BufferedFrame, copyTo audioBuffer: AVAudioPCMBuffer, withOffset offset: Int) {
+    /// # Note #
+    ///
+    /// It is good from a safety perspective, to copy the output samples to the audio buffer right here rather than to give out a pointer to the memory
+    /// space allocated from within this object so that a client object may perform the copy. This prevents any potentially unsafe use of the pointer.
+    ///
+    func resample(_ frame: BufferedFrame, andCopyOutputTo audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
         
         // Allocate the context used to perform the resampling.
         guard let resampleCtx = ResamplingContext() else {
@@ -158,36 +169,41 @@ class Resampler {
         }
         
         // Finally, copy the output samples to the given audio buffer.
-        copyOutputToAudioBuffer(frame, buffer: audioBuffer, withOffset: offset)
+        copyOutputFor(frame: frame, to: audioBuffer, startingAt: offset)
     }
     
     ///
-    /// Copies resampling output samples into the given audio buffer, starting at a given offset.
+    /// Copies resampling output samples for a given frame into the given audio buffer, starting at a given offset.
     ///
-    /// - Parameter frame: The buffered frame whose samples have been resampled.
+    /// - Parameter frame:       The buffered frame whose samples have been resampled.
     ///
     /// - Parameter audioBuffer: An audio buffer to which the output samples need to be copied.
     ///
-    /// - Parameter offset: An offset used as the starting location in the audio buffer from which output samples will be copied.
-    ///                     This should equal the number of samples previously copied into the audio buffer (from other frames).
+    /// - Parameter offset:      A starting offset for each channel's data buffer in the audio buffer.
+    ///                          This is required because the audio buffer may hold data from other
+    ///                          frames copied to it previously. So, the offset will equal the sum of the
+    ///                          the sample counts of all frames previously copied to the audio buffer.
     ///
-    private func copyOutputToAudioBuffer(_ frame: BufferedFrame, buffer: AVAudioPCMBuffer, withOffset offset: Int) {
+    private func copyOutputFor(frame: BufferedFrame, to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
         
-        let channels = buffer.floatChannelData
+        // Get a pointer to the audio buffer's internal data buffer.
+        guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
+        
         let intSampleCount: Int = Int(frame.sampleCount)
         
         // Iterate through all the channels.
         for channelIndex in 0..<frame.channelCount {
             
             // Obtain pointers to the input and output data.
-            guard let bytesForChannel = outputData[channelIndex], let channel = channels?[channelIndex] else {break}
+            guard let bytesForChannel = outputData[channelIndex] else {break}
+            let audioBufferChannel = audioBufferChannels[channelIndex]
             
             // Temporarily bind the output sample buffers as floating point numbers, and perform the copy.
             bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount) {
                 (outputDataPointer: UnsafeMutablePointer<Float>) in
                 
-                // Use the Accelerate framework to perform the copy optimally.
-                cblas_scopy(frame.sampleCount, outputDataPointer, 1, channel.advanced(by: offset), 1)
+                // Use Accelerate to perform the copy optimally, starting at the given offset.
+                cblas_scopy(frame.sampleCount, outputDataPointer, 1, audioBufferChannel.advanced(by: offset), 1)
             }
         }
     }

@@ -137,6 +137,8 @@ class AudioCodec: Codec {
         while resultCode.isZero, frame.hasSamples {
             
             bufferedFrames.append(BufferedFrame(frame))
+            frame.unreference()
+            
             resultCode = frame.receiveFrom(self)
         }
         

@@ -92,7 +92,7 @@ class FrameBuffer {
     }
     
     ///
-    /// Constructs an audio buffer from the samples in this buffer's frames.
+    /// Constructs a **playable** audio buffer from the samples in this buffer's frames.
     /// The returned audio buffer can be scheduled for playback by the audio engine.
     ///
     /// - Parameter format: The format of the audio buffer that is to be constructed.
@@ -109,49 +109,36 @@ class FrameBuffer {
         
         guard sampleCount > 0 else {return nil}
         
-        // Command the resampler to allocate enough space to accommodate the
-        // output of resampling this buffer's samples.
+        // If required by the sample format, command the resampler to
+        // allocate enough space to accommodate the output of resampling
+        // this buffer's samples.
         if sampleFormat.needsResampling {
-            Resampler.instance.prepareForBuffer(sampleCount: self.sampleCount)
+            Resampler.instance.allocateFor(channelCount: Int32(frames[0].channelCount), sampleCount: sampleCount)
         }
         
         if let audioBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(sampleCount)) {
             
-            // The audio buffer will be filled to capacity
+            // The audio buffer will always be filled to capacity.
             audioBuffer.frameLength = audioBuffer.frameCapacity
 
-            // Get a pointer to the audio buffer's internal data buffer.
-            let audioBufferChannels = audioBuffer.floatChannelData
-            
-            // Keep track of how many samples have been copied over so far.
-            // This will be used as an offset when performing the copy.
+            // Keeps track of how many samples have been copied over so far.
+            // This will be used as an offset when performing each copy operation.
             var sampleCountSoFar: Int = 0
             
             for frame in frames {
                 
-                // Resample the frame's samples if required.
                 if sampleFormat.needsResampling {
-                    
-                    Resampler.instance.resample(frame, copyTo: audioBuffer, withOffset: sampleCountSoFar)
+
+                    // Resample the frame's samples and copy them to the audio buffer.
+                    Resampler.instance.resample(frame, andCopyOutputTo: audioBuffer, startingAt: sampleCountSoFar)
                     
                 } else {
                     
-                    // Copy over the frame's samples to the audio buffer (no resampling required).
-                    
-                    let frameFloats: [UnsafePointer<Float>] = frame.planarFloatPointers
-                    
-                    // Iterate through all the channels.
-                    for channelIndex in 0..<frameFloats.count {
-                        
-                        guard let audioBufferChannel = audioBufferChannels?[channelIndex] else {break}
-                        let frameFloatsForChannel = frameFloats[channelIndex]
-                    
-                        // Use Accelerate to perform the copy, starting at an offset equal to the number of samples copied over so far.
-                        cblas_scopy(frame.sampleCount, frameFloatsForChannel, 1, audioBufferChannel.advanced(by: sampleCountSoFar), 1)
-                    }
+                    // Copy over the frame's samples, as is, to the audio buffer (no resampling required).
+                    frame.copySamples(to: audioBuffer, startingAt: sampleCountSoFar)
                 }
                 
-                // Update the counter.
+                // Update the sample counter.
                 sampleCountSoFar += Int(frame.sampleCount)
             }
             

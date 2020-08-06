@@ -16,20 +16,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         
-        let arr = ConcurrentArray<Int>()
-//        var arr = [UInt8]()
-        
-        for _ in 0..<100 {
-            
-            DispatchQueue.global(qos: .userInteractive).async {
-                arr.append(Int.random(in: 0...1000))
-            }
-        }
-        
-        usleep(200000)
-        
-        arr.sort(by: {$0 > $1})
-        print(arr.count, arr.array.prefix(100))
+//        let arr = ConcurrentArray<Int>()
+////        var arr = [UInt8]()
+//        
+//        for _ in 0..<100 {
+//            
+//            DispatchQueue.global(qos: .userInteractive).async {
+//                arr.append(Int.random(in: 0...1000))
+//            }
+//        }
+//        
+//        usleep(200000)
+//        
+//        arr.sort(by: {$0 > $1})
+//        print(arr.count, arr.array.prefix(100))
     }
 
     ///

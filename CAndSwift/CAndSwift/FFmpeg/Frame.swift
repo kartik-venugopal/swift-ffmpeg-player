@@ -88,6 +88,13 @@ class Frame {
         return avcodec_receive_frame(codec.contextPointer, &avFrame)
     }
     
+    ///
+    /// Unreference all data buffers referenced by the underlying AVFrame.
+    ///
+    func unreference() {
+        av_frame_unref(&avFrame)
+    }
+    
     /// Indicates whether or not this object has already been destroyed.
     private var destroyed: Bool = false
     

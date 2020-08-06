@@ -9,17 +9,6 @@ import Foundation
 /// - Conversion of sample rate (upsampling / downsampling)
 /// - Conversion of sample format
 ///
-/// # Notes #
-///
-/// - Instantiates a resampling context (SwrContext).
-/// - Sets resampling options.
-/// - Performs the actual resampling.
-///
-/// # Important #
-///
-/// This object does *not* allocate space for input / output samples. It is the caller's responsibility to do so
-/// before invoking **convert()**.
-///
 class ResamplingContext {
 
     ///
@@ -123,6 +112,11 @@ class ResamplingContext {
     
     ///
     /// Performs the resampling conversion.
+    ///
+    /// # Important #
+    ///
+    /// This function does *not* allocate space for output samples. It is the caller's responsibility to do so
+    /// before invoking **convert()**.
     ///
     /// - Parameter inputDataPointer: Pointer to the input data (as bytes).
     ///

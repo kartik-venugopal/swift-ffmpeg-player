@@ -71,7 +71,11 @@ class Packet {
         // If the read fails, log a message and throw an error.
         guard readResult >= 0 else {
             
-            print("\nPacket.init(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
+            // No need to log a message for EOF as it is considered harmless.
+            if !isEOF(code: readResult) {
+                print("\nPacket.init(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
+            }
+            
             throw PacketReadError(readResult)
         }
     }
@@ -85,7 +89,7 @@ class Packet {
         
         self.avPacket = avPacket
         
-        // Since this packet was not allocated by this object, we
+        // Since this avPacket was not allocated by this object, we
         // cannot deallocate it here. It is the caller's responsibility
         // to ensure that avPacket is destroyed.
         //

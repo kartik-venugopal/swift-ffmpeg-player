@@ -40,7 +40,6 @@
 		3E67F36C24C823530023C2D3 /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36B24C823530023C2D3 /* Codec.swift */; };
 		3E67F36E24C8237A0023C2D3 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36D24C8237A0023C2D3 /* Packet.swift */; };
 		3E67F37024C823AA0023C2D3 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E67F36F24C823AA0023C2D3 /* Errors.swift */; };
-		3E6ADBD524CC1B9400AB2678 /* ConcurrentMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */; };
 		3E6ADBD724CCC21E00AB2678 /* AtomicCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */; };
 		3E78F90424CF2ECA00DA4F9B /* Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E78F90324CF2ECA00DA4F9B /* Frame.swift */; };
 		3E78F90624CF724800DA4F9B /* TrackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E78F90524CF724800DA4F9B /* TrackInfo.swift */; };
@@ -106,7 +105,6 @@
 		3E67F36B24C823530023C2D3 /* Codec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codec.swift; sourceTree = "<group>"; };
 		3E67F36D24C8237A0023C2D3 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		3E67F36F24C823AA0023C2D3 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentMap.swift; sourceTree = "<group>"; };
 		3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicCounter.swift; sourceTree = "<group>"; };
 		3E78F90324CF2ECA00DA4F9B /* Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frame.swift; sourceTree = "<group>"; };
 		3E78F90524CF724800DA4F9B /* TrackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackInfo.swift; sourceTree = "<group>"; };
@@ -248,12 +246,11 @@
 			children = (
 				3E086C2C24D94AFA00157F37 /* NumericStringFormatter.swift */,
 				3E857C6D24C983D2000379BF /* BufferFileWriter.swift */,
-				3E6ADBD424CC1B9400AB2678 /* ConcurrentMap.swift */,
+				3EAE719E24DB29AC0079F347 /* ConcurrentArray.swift */,
 				3E6ADBD624CCC21E00AB2678 /* AtomicCounter.swift */,
 				3E0BECC824C3533800FF69D7 /* Mapper.swift */,
 				3E58752B24D058A6002774FB /* Queue.swift */,
 				3E58752D24D06CD1002774FB /* UtilsExtensions.swift */,
-				3EAE719E24DB29AC0079F347 /* ConcurrentArray.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -373,7 +370,6 @@
 				3E857C6E24C983D2000379BF /* BufferFileWriter.swift in Sources */,
 				3E67F36A24C823330023C2D3 /* StreamProtocol.swift in Sources */,
 				3EF3B34F24D7387800CC8C07 /* ChannelLayouts.swift in Sources */,
-				3E6ADBD524CC1B9400AB2678 /* ConcurrentMap.swift in Sources */,
 				3E293BEF24C45885003749F2 /* Player.swift in Sources */,
 				3E35BBDE24DAEDF300ABBD0E /* AudioStream.swift in Sources */,
 				3E086C2F24D9520F00157F37 /* UIExtensions.swift in Sources */,

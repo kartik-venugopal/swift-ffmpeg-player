@@ -191,7 +191,7 @@ class Player {
         // if required.
         
         if file.audioCodec.sampleFormat.needsResampling {
-            Resampler.instance.prepareForFile(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
+            Resampler.instance.allocateFor(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
         }
         
         scheduledBufferCount.value = 0

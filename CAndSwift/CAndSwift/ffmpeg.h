@@ -43,6 +43,5 @@ long CH_LAYOUT_HEXADECAGONAL;
 long CH_LAYOUT_STEREO_DOWNMIX;
 
 int EOF_CODE;
-int is_eof(int code);
 
 #endif /* ffmpeg_h */

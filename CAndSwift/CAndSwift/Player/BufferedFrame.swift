@@ -1,4 +1,5 @@
-import Foundation
+import AVFoundation
+import Accelerate
 
 ///
 /// A temporary container for the raw audio data from a single buffered frame.
@@ -106,33 +107,48 @@ class BufferedFrame: Hashable {
     }
     
     ///
-    /// Produces an array of pointers that are the result of interpreting the original raw sample bytes as planar floating-point samples.
+    /// Copies this frame's samples to a given audio buffer starting at the given offset.
+    ///
+    /// - Parameter audioBuffer: The audio buffer to which this frame's samples are to be copied over.
+    ///
+    /// - Parameter offset:      A starting offset for each channel's data buffer in the audio buffer.
+    ///                          This is required because the audio buffer may hold data from other
+    ///                          frames copied to it previously. So, the offset will equal the sum of the
+    ///                          the sample counts of all frames previously copied to the audio buffer.
     ///
     /// # Important #
     ///
-    /// This property should only be used when the format of the samples contained in this frame is: planar floating-point.
+    /// This function assumes that the format of the samples contained in this frame is: 32-bit floating-point planar,
+    /// i.e. the samples do *not* require resampling.
     ///
-    /// Otherwise, the Floats referenced by these pointers will be invalid as PCM audio samples.
+    /// # Note #
     ///
-    var planarFloatPointers: [UnsafePointer<Float>] {
+    /// It is good from a safety perspective, to copy the frame's samples to the audio buffer right here rather than to give out a pointer to the memory
+    /// space allocated from within this object so that a client object may perform the copy. This prevents any potentially unsafe use of the pointer.
+    ///
+    func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
+
+        // Get pointers to 1 - this frame's raw data buffers, and 2 - the audio buffer's internal Float data buffers.
+        guard let rawDataPointer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?> = rawDataPointers.baseAddress,
+            let audioBufferChannels = audioBuffer.floatChannelData else {return}
         
-        guard let rawDataPointer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?> = rawDataPointers.baseAddress else {return []}
-        
-        var floatPointers: [UnsafePointer<Float>] = []
         let intSampleCount: Int = Int(sampleCount)
         
         for channelIndex in 0..<channelCount {
             
+            // Get the pointers to the source and destination buffers for the copy operation.
             guard let bytesForChannel = rawDataPointer[channelIndex] else {break}
+            let audioBufferChannel = audioBufferChannels[channelIndex]
             
-            floatPointers.append(bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount)
-            {(pointer: UnsafeMutablePointer<Float>) in
+            // Re-bind this frame's bytes to Float for the copy operation.
+            _ = bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount) {
                 
-                // Convert the UnsafeMutablePointer<Float> into an UnsafePointer<Float>.
-                UnsafePointer(pointer)})
+                (floatsForChannel: UnsafeMutablePointer<Float>) in
+                
+                // Use Accelerate to perform the copy optimally, starting at the given offset.
+                cblas_scopy(sampleCount, floatsForChannel, 1, audioBufferChannel.advanced(by: offset), 1)
+            }
         }
-        
-        return floatPointers
     }
     
     /// Indicates whether or not this object has already been destroyed.
