@@ -5,7 +5,7 @@ import Foundation
 ///
 public final class AtomicCounter<T> where T: SignedInteger {
     
-    private let lock = DispatchSemaphore(value: 1)
+    private let semaphore = DispatchSemaphore(value: 1)
     private var _value: T
     
     public init(value initialValue: T = 0) {
@@ -15,52 +15,52 @@ public final class AtomicCounter<T> where T: SignedInteger {
     public var value: T {
         
         get {
-            lock.wait()
-            defer { lock.signal() }
+            semaphore.wait()
+            defer { semaphore.signal() }
             return _value
         }
         
         set {
-            lock.wait()
-            defer { lock.signal() }
+            semaphore.wait()
+            defer { semaphore.signal() }
             _value = newValue
         }
     }
     
     public func decrementAndGet() -> T {
         
-        lock.wait()
-        defer { lock.signal() }
+        semaphore.wait()
+        defer { semaphore.signal() }
         _value -= 1
         return _value
     }
     
     public func decrement() {
         
-        lock.wait()
-        defer { lock.signal() }
+        semaphore.wait()
+        defer { semaphore.signal() }
         _value -= 1
     }
     
     public func incrementAndGet() -> T {
         
-        lock.wait()
-        defer { lock.signal() }
+        semaphore.wait()
+        defer { semaphore.signal() }
         _value += 1
         return _value
     }
     
     public func increment() {
         
-        lock.wait()
-        defer { lock.signal() }
+        semaphore.wait()
+        defer { semaphore.signal() }
         _value += 1
     }
     
     public func add(_ addend: T) {
         
-        lock.wait()
-        defer { lock.signal() }
+        semaphore.wait()
+        defer { semaphore.signal() }
         _value += addend
     }
 }
