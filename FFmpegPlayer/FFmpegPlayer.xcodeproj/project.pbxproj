@@ -57,6 +57,8 @@
 		3E540E6124DC410B002B3E78 /* libavfilter in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5824DC410B002B3E78 /* libavfilter */; };
 		3E540E6224DC410B002B3E78 /* libswscale in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5924DC410B002B3E78 /* libswscale */; };
 		3E540E6624DC4157002B3E78 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E6424DC4157002B3E78 /* ffmpeg.c */; };
+		3E6402D824DC4941004736D9 /* screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E6402D624DC4941004736D9 /* screenshot.png */; };
+		3E6402D924DC4941004736D9 /* basicFFmpegPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E6402D724DC4941004736D9 /* basicFFmpegPlayer.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -115,6 +117,8 @@
 		3E540E6324DC4156002B3E78 /* FFmpegPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFmpegPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E540E6424DC4157002B3E78 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E540E6524DC4157002B3E78 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
+		3E6402D624DC4941004736D9 /* screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot.png; sourceTree = "<group>"; };
+		3E6402D724DC4941004736D9 /* basicFFmpegPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = basicFFmpegPlayer.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +173,8 @@
 			isa = PBXGroup;
 			children = (
 				3E540DE124DC3F29002B3E78 /* Assets.xcassets */,
+				3E6402D724DC4941004736D9 /* basicFFmpegPlayer.png */,
+				3E6402D624DC4941004736D9 /* screenshot.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -331,10 +337,12 @@
 				3E540E5A24DC410B002B3E78 /* libavresample in Resources */,
 				3E540E5B24DC410B002B3E78 /* libavdevice in Resources */,
 				3E540E6024DC410B002B3E78 /* libavutil in Resources */,
+				3E6402D924DC4941004736D9 /* basicFFmpegPlayer.png in Resources */,
 				3E540E6124DC410B002B3E78 /* libavfilter in Resources */,
 				3E540E5D24DC410B002B3E78 /* libavcodec in Resources */,
 				3E540E5E24DC410B002B3E78 /* libswresample in Resources */,
 				3E540E6224DC410B002B3E78 /* libswscale in Resources */,
+				3E6402D824DC4941004736D9 /* screenshot.png in Resources */,
 				3E540E5F24DC410B002B3E78 /* libpostproc in Resources */,
 				3E540DE224DC3F29002B3E78 /* Assets.xcassets in Resources */,
 				3E540E5C24DC410B002B3E78 /* libavformat in Resources */,
