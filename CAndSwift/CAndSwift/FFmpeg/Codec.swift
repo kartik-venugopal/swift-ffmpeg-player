@@ -9,7 +9,7 @@ class Codec {
     ///
     /// A pointer to the encapsulated AVCodec object.
     ///
-    var pointer: UnsafeMutablePointer<AVCodec>
+    var pointer: UnsafeMutablePointer<AVCodec>!
     
     ///
     /// The encapsulated AVCodec object.
@@ -19,7 +19,7 @@ class Codec {
     ///
     /// A pointer to a context for the encapsulated AVCodec object.
     ///
-    var contextPointer: UnsafeMutablePointer<AVCodecContext>?
+    var contextPointer: UnsafeMutablePointer<AVCodecContext>!
     
     ///
     /// A context for the encapsulated AVCodec object.
@@ -56,20 +56,39 @@ class Codec {
     ///
     /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
     ///
-    init(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    init?(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
         // TODO: Nil checks (don't force unwrap).
         
         self.paramsPointer = paramsPointer
         
         // Find the codec by ID.
-        self.pointer = avcodec_find_decoder(paramsPointer.pointee.codec_id)!
+        let codecID = paramsPointer.pointee.codec_id
+        self.pointer = avcodec_find_decoder(codecID)
+        
+        guard self.pointer != nil else {
+            
+            print("\nCodec.init(): Unable to find codec with ID: \(codecID)")
+            return nil
+        }
         
         // Allocate a context for the codec.
         self.contextPointer = avcodec_alloc_context3(pointer)
         
+        guard self.contextPointer != nil else {
+            
+            print("\nCodec.init(): Unable to allocate context for codec with ID: \(codecID)")
+            return nil
+        }
+        
         // Copy the codec's parameters to the codec context.
-        avcodec_parameters_to_context(contextPointer, paramsPointer)
+        let codecCopyResult: ResultCode = avcodec_parameters_to_context(contextPointer, paramsPointer)
+        
+        guard codecCopyResult.isNonNegative else {
+            
+            print("\nCodec.init(): Unable to copy codec parameters to codec context, for codec with ID: \(codecID). Error: \(codecCopyResult) (\(codecCopyResult.errorDescription)")
+            return nil
+        }
     }
     
     ///

@@ -31,7 +31,7 @@ class ImageStream: StreamProtocol {
     ///
     /// The codec associated with this stream.
     ///
-    lazy var codec: ImageCodec = {
+    lazy var codec: ImageCodec? = {
         ImageCodec(paramsPointer: avStream.codecpar)
     }()
     

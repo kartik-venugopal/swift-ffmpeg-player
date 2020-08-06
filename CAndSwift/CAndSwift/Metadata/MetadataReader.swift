@@ -64,8 +64,7 @@ class MetadataReader {
     ///
     private func readAudioInfo(_ fileCtx: AudioFileContext) -> AudioInfo {
         
-        let stream = fileCtx.audioStream
-        let codec = stream.codec
+        let codec = fileCtx.audioCodec
 
         let fileType: String = fileCtx.file.pathExtension.uppercased()
         let codecName: String = codec.longName

@@ -34,7 +34,7 @@ class AudioFileContext {
     let imageStream: ImageStream?
     
     ///
-    /// Attempts to construct a AudioFileContext instance for the given file.
+    /// Attempts to construct an AudioFileContext instance for the given file.
     ///
     /// - Parameter file: The audio file to be read / decoded by this context.
     ///
@@ -42,6 +42,7 @@ class AudioFileContext {
     ///
     /// - An error occurs while opening the file or reading (demuxing) its streams.
     /// - No audio stream is found in the file.
+    /// - No suitable codec is found for the audio stream.
     ///
     init?(_ file: URL) {
         
@@ -55,7 +56,9 @@ class AudioFileContext {
         self.format = theFormatContext
         
         self.audioStream = theFormatContext.audioStream
-        self.audioCodec = audioStream.codec
+        
+        guard let theAudioCodec = self.audioStream.codec else {return nil}
+        self.audioCodec = theAudioCodec
         
         self.imageStream = theFormatContext.imageStream
     }

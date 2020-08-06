@@ -35,7 +35,7 @@ class AudioCodec: Codec {
     ///
     /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
     ///
-    override init(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    override init?(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
         super.init(paramsPointer: paramsPointer)
         

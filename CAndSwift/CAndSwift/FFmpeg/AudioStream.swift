@@ -31,7 +31,7 @@ class AudioStream: StreamProtocol {
     ///
     /// The codec associated with this stream.
     ///
-    lazy var codec: AudioCodec = {
+    lazy var codec: AudioCodec? = {
         return AudioCodec(paramsPointer: avStream.codecpar)
     }()
     
