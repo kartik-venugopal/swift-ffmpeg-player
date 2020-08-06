@@ -35,7 +35,10 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     private let imgDefaultArt: NSImage = NSImage(named: "DefaultArt")!
     
     // Icon displayed in warning dialogs.
-    private let imgWarning: NSImage = NSImage(named: "Warning")!
+    private lazy var imgWarning: NSImage = NSImage(named: "Warning")!
+    
+    // Icon displayed in error dialogs.
+    private lazy var imgError: NSImage = NSImage(named: "Error")!
     
     // The actual player that controls playback/volume.
     private let player = Player()
@@ -212,6 +215,21 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         alert.messageText = "Please wait"
         alert.informativeText = "The chosen file does not have duration information. Computing duration and building packet table to enable seeking ..."
         alert.alertStyle = .warning
+        alert.icon = imgWarning
+        
+        alert.runModal()
+    }
+    
+    ///
+    /// Modally displays an alert informing the user that there is a delay in playback because the chosen audio file does not seem to have
+    /// duration information, which now needs to be computed by reading through the file.
+    ///
+    private func showInvalidFileError() {
+        
+        alert.window.title = "Failed to open file"
+        alert.messageText = "Failed to open file: \(self.fileCtx.file.lastPathComponent)"
+        alert.informativeText = "The chosen file does not seem to be a valid audio file.\nPlease inspect it and try again, or choose a different file to open."
+        alert.alertStyle = .critical
         alert.icon = imgWarning
         
         alert.runModal()

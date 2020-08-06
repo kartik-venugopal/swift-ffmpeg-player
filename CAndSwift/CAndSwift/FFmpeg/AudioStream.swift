@@ -31,9 +31,7 @@ class AudioStream: StreamProtocol {
     ///
     /// The codec associated with this stream.
     ///
-    lazy var codec: AudioCodec? = {
-        return AudioCodec(paramsPointer: avStream.codecpar)
-    }()
+    lazy var codec: AudioCodec? = AudioCodec(paramsPointer: avStream.codecpar)
     
     ///
     /// The duration of this stream, in seconds, if available. Nil if not available.
@@ -63,9 +61,7 @@ class AudioStream: StreamProtocol {
     ///
     /// All metadata key / value pairs available for this stream.
     ///
-    lazy var metadata: [String: String] = {
-        MetadataDictionary(pointer: avStream.metadata).dictionary
-    }()
+    lazy var metadata: [String: String] = MetadataDictionary(pointer: avStream.metadata).dictionary
     
     ///
     /// Instantiates this stream object and its associated codec and codec context.

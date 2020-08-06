@@ -33,12 +33,12 @@ class FormatContext {
     ///
     /// An array of all audio / video streams demuxed by this context.
     ///
-    var streams: [StreamProtocol]
+    let streams: [StreamProtocol]
     
     ///
     /// The number of streams present in the **streams** array.
     ///
-    var streamCount: Int {streams.count}
+    let streamCount: Int
     
     ///
     /// The first / best audio stream in this file, if one is present. May be nil.
@@ -68,9 +68,7 @@ class FormatContext {
     /// extension.
     /// ```
     ///
-    var isRawAudioFile: Bool {
-        Constants.rawAudioFileExtensions.contains(file.pathExtension.lowercased())
-    }
+    let isRawAudioFile: Bool
     
     ///
     /// Duration of the audio stream in this file, in seconds.
@@ -96,9 +94,7 @@ class FormatContext {
     /// A duration estimated from **avContext**, if it has valid duration information. Nil otherwise.
     /// Specified in seconds.
     ///
-    private lazy var estimatedDuration: Double? = {
-        avContext.duration > 0 ? (Double(avContext.duration) / Double(AV_TIME_BASE)) : nil
-    }()
+    private lazy var estimatedDuration: Double? = avContext.duration > 0 ? (Double(avContext.duration) / Double(AV_TIME_BASE)) : nil
     
     ///
     /// A duration computed with brute force, by building a packet table.
@@ -108,9 +104,7 @@ class FormatContext {
     ///
     /// This is an expensive and potentially lengthy computation.
     ///
-    private lazy var bruteForceDuration: Double? = {
-        packetTable?.duration
-    }()
+    private lazy var bruteForceDuration: Double? = packetTable?.duration
     
     ///
     /// A packet table that contains position and timestamp information
@@ -128,15 +122,13 @@ class FormatContext {
     ///
     /// This is an expensive and potentially lengthy computation.
     ///
-    private lazy var packetTable: PacketTable? = {
-        PacketTable(file)
-    }()
+    private lazy var packetTable: PacketTable? = PacketTable(file)
     
     ///
     /// Bit rate of the audio stream, 0 if not available.
     /// May be computed if not directly known.
     ///
-    var bitRate: Int64 {avContext.bit_rate}
+    let bitRate: Int64
     
     ///
     /// Size of this file, in bytes.
@@ -158,9 +150,7 @@ class FormatContext {
     ///
     /// All metadata key / value pairs available in this file's header.
     ///
-    lazy var metadata: [String: String] = {
-        MetadataDictionary(pointer: avContext.metadata).dictionary
-    }()
+    lazy var metadata: [String: String] = MetadataDictionary(pointer: avContext.metadata).dictionary
     
     ///
     /// All chapter markings available in this file's header.
@@ -183,7 +173,7 @@ class FormatContext {
     ///
     /// The number of chapters present in the **chapters** array.
     ///
-    lazy var chapterCount: Int = {chapters.count}()
+    lazy var chapterCount: Int = chapters.count
     
     ///
     /// Attempts to construct a FormatContext instance for the given file.
@@ -199,6 +189,8 @@ class FormatContext {
         
         self.file = file
         self.filePath = file.path
+        
+        // MARK: Open the file ----------------------------------------------------------------------------------
         
         // Allocate memory for this format context.
         self.pointer = avformat_alloc_context()
@@ -219,6 +211,8 @@ class FormatContext {
             return nil
         }
         
+        // MARK: Read the streams ----------------------------------------------------------------------------------
+        
         // Try to read information about the streams contained in this file.
         resultCode = avformat_find_stream_info(pointer, nil)
         
@@ -229,15 +223,15 @@ class FormatContext {
             return nil
         }
         
-        self.streams = []
+        var streams: [StreamProtocol] = []
         
         // Iterate through all the streams, and store all the ones we care about (i.e. audio / video) in the streams array.
         
-        if let streams = pointer?.pointee.streams {
+        if let avStreams = pointer?.pointee.streams {
         
-            let avStreamPointers: [UnsafeMutablePointer<AVStream>] = (0..<pointer!.pointee.nb_streams).compactMap {streams.advanced(by: Int($0)).pointee}
+            let avStreamPointers: [UnsafeMutablePointer<AVStream>] = (0..<pointer.pointee.nb_streams).compactMap {avStreams.advanced(by: Int($0)).pointee}
             
-            self.streams = avStreamPointers.compactMap {streamPointer in
+            streams = avStreamPointers.compactMap {streamPointer in
                 
                 switch streamPointer.pointee.codecpar.pointee.codec_type {
                     
@@ -253,6 +247,9 @@ class FormatContext {
             }
         }
         
+        self.streams = streams
+        self.streamCount = streams.count
+        
         // Among all the discovered streams, find the first / best audio stream and/or video stream.
         // TODO: Should we use av_find_best_stream() here instead of picking the first audio stream ???
         
@@ -261,6 +258,9 @@ class FormatContext {
         
         // Compute the duration of the audio stream, trying various methods. See documentation of **duration**
         // for a detailed description.
+        self.isRawAudioFile = Constants.rawAudioFileExtensions.contains(file.pathExtension.lowercased())
+        self.bitRate = pointer.pointee.bit_rate
+        
         self.duration = (isRawAudioFile ? bruteForceDuration : audioStream?.duration ?? estimatedDuration) ?? 0
     }
     
