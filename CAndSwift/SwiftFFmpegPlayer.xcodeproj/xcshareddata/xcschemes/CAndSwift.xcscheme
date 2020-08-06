@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3E5250FF24C23CC30023F696"
-               BuildableName = "CAndSwift.app"
-               BlueprintName = "CAndSwift"
-               ReferencedContainer = "container:CAndSwift.xcodeproj">
+               BuildableName = "SwiftFFmpegPlayer.app"
+               BlueprintName = "SwiftFFmpegPlayer"
+               ReferencedContainer = "container:SwiftFFmpegPlayer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3E5250FF24C23CC30023F696"
-            BuildableName = "CAndSwift.app"
-            BlueprintName = "CAndSwift"
-            ReferencedContainer = "container:CAndSwift.xcodeproj">
+            BuildableName = "SwiftFFmpegPlayer.app"
+            BlueprintName = "SwiftFFmpegPlayer"
+            ReferencedContainer = "container:SwiftFFmpegPlayer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,9 +64,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3E5250FF24C23CC30023F696"
-            BuildableName = "CAndSwift.app"
-            BlueprintName = "CAndSwift"
-            ReferencedContainer = "container:CAndSwift.xcodeproj">
+            BuildableName = "SwiftFFmpegPlayer.app"
+            BlueprintName = "SwiftFFmpegPlayer"
+            ReferencedContainer = "container:SwiftFFmpegPlayer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

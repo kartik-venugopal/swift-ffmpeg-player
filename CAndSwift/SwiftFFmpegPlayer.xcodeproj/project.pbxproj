@@ -30,8 +30,8 @@
 		3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DF96124C895D4008988FF /* PlayerViewController.swift */; };
 		3E4E318524DC36B300CDA424 /* screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E4E318324DC36B300CDA424 /* screenshot.png */; };
 		3E4E318624DC36B300CDA424 /* basicFFmpegPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E4E318424DC36B300CDA424 /* basicFFmpegPlayer.png */; };
+		3E4E318824DC382E00CDA424 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E4E318724DC382D00CDA424 /* Assets.xcassets */; };
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
-		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
 		3E58752824D03BED002774FB /* PlayerScheduling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752724D03BED002774FB /* PlayerScheduling.swift */; };
 		3E58752A24D05059002774FB /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E58752924D05059002774FB /* Decoder.swift */; };
@@ -93,13 +93,13 @@
 		3E4DF96124C895D4008988FF /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		3E4E318324DC36B300CDA424 /* screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = screenshot.png; path = Resources/screenshot.png; sourceTree = SOURCE_ROOT; };
 		3E4E318424DC36B300CDA424 /* basicFFmpegPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = basicFFmpegPlayer.png; path = Resources/basicFFmpegPlayer.png; sourceTree = SOURCE_ROOT; };
-		3E52510024C23CC30023F696 /* CAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E4E318724DC382D00CDA424 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = SwiftFFmpegPlayer/Resources/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		3E52510024C23CC30023F696 /* SwiftFFmpegPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftFFmpegPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E52510324C23CC30023F696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3E52510524C23CC30023F696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3E52510824C23CC30023F696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		3E52510A24C23CC30023F696 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3E52510B24C23CC30023F696 /* CAndSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CAndSwift.entitlements; sourceTree = "<group>"; };
-		3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CAndSwift-Bridging-Header.h"; sourceTree = "<group>"; };
+		3E52510B24C23CC30023F696 /* SwiftFFmpegPlayer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftFFmpegPlayer.entitlements; sourceTree = "<group>"; };
+		3E52519624C23FA30023F696 /* SwiftFFmpegPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftFFmpegPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E52519824C23FA40023F696 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
 		3E58752724D03BED002774FB /* PlayerScheduling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScheduling.swift; sourceTree = "<group>"; };
 		3E58752924D05059002774FB /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
@@ -152,9 +152,9 @@
 		3E4E318224DC365900CDA424 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3E4E318724DC382D00CDA424 /* Assets.xcassets */,
 				3E4E318424DC36B300CDA424 /* basicFFmpegPlayer.png */,
 				3E4E318324DC36B300CDA424 /* screenshot.png */,
-				3E52510524C23CC30023F696 /* Assets.xcassets */,
 				3EA289F624D763AC00AF4C52 /* TODO.txt */,
 			);
 			name = Resources;
@@ -164,7 +164,7 @@
 		3E5250F724C23CC30023F696 = {
 			isa = PBXGroup;
 			children = (
-				3E52510224C23CC30023F696 /* CAndSwift */,
+				3E52510224C23CC30023F696 /* SwiftFFmpegPlayer */,
 				3E52510124C23CC30023F696 /* Products */,
 				3E52519A24C23FD10023F696 /* Frameworks */,
 				3E4E318224DC365900CDA424 /* Resources */,
@@ -174,12 +174,12 @@
 		3E52510124C23CC30023F696 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3E52510024C23CC30023F696 /* CAndSwift.app */,
+				3E52510024C23CC30023F696 /* SwiftFFmpegPlayer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3E52510224C23CC30023F696 /* CAndSwift */ = {
+		3E52510224C23CC30023F696 /* SwiftFFmpegPlayer */ = {
 			isa = PBXGroup;
 			children = (
 				3E52510324C23CC30023F696 /* AppDelegate.swift */,
@@ -200,11 +200,11 @@
 				3E0BECBB24C3342B00FF69D7 /* libswscale */,
 				3E60DB6924CB649C00749A59 /* ffmpeg.c */,
 				3E52519824C23FA40023F696 /* ffmpeg.h */,
-				3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */,
+				3E52519624C23FA30023F696 /* SwiftFFmpegPlayer-Bridging-Header.h */,
 				3E52510A24C23CC30023F696 /* Info.plist */,
-				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
+				3E52510B24C23CC30023F696 /* SwiftFFmpegPlayer.entitlements */,
 			);
-			path = CAndSwift;
+			path = SwiftFFmpegPlayer;
 			sourceTree = "<group>";
 		};
 		3E52519A24C23FD10023F696 /* Frameworks */ = {
@@ -305,9 +305,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3E5250FF24C23CC30023F696 /* CAndSwift */ = {
+		3E5250FF24C23CC30023F696 /* SwiftFFmpegPlayer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E52510E24C23CC30023F696 /* Build configuration list for PBXNativeTarget "CAndSwift" */;
+			buildConfigurationList = 3E52510E24C23CC30023F696 /* Build configuration list for PBXNativeTarget "SwiftFFmpegPlayer" */;
 			buildPhases = (
 				3E5250FC24C23CC30023F696 /* Sources */,
 				3E5250FD24C23CC30023F696 /* Frameworks */,
@@ -317,11 +317,11 @@
 			);
 			dependencies = (
 			);
-			name = CAndSwift;
+			name = SwiftFFmpegPlayer;
 			packageProductDependencies = (
 			);
 			productName = CAndSwift;
-			productReference = 3E52510024C23CC30023F696 /* CAndSwift.app */;
+			productReference = 3E52510024C23CC30023F696 /* SwiftFFmpegPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -340,7 +340,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3E5250FB24C23CC30023F696 /* Build configuration list for PBXProject "CAndSwift" */;
+			buildConfigurationList = 3E5250FB24C23CC30023F696 /* Build configuration list for PBXProject "SwiftFFmpegPlayer" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -355,7 +355,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3E5250FF24C23CC30023F696 /* CAndSwift */,
+				3E5250FF24C23CC30023F696 /* SwiftFFmpegPlayer */,
 			);
 		};
 /* End PBXProject section */
@@ -366,8 +366,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E4E318624DC36B300CDA424 /* basicFFmpegPlayer.png in Resources */,
-				3E52510624C23CC30023F696 /* Assets.xcassets in Resources */,
 				3E4E318524DC36B300CDA424 /* screenshot.png in Resources */,
+				3E4E318824DC382E00CDA424 /* Assets.xcassets in Resources */,
 				3E52510924C23CC30023F696 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -564,14 +564,13 @@
 		3E52510F24C23CC30023F696 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = CAndSwift/CAndSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/**";
-				INFOPLIST_FILE = CAndSwift/Info.plist;
+				INFOPLIST_FILE = SwiftFFmpegPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -585,9 +584,9 @@
 					"-lswresample",
 					"-lswscale",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.anon.CAndSwift;
+				PRODUCT_BUNDLE_IDENTIFIER = org.anon.SwiftFFmpegPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "CAndSwift/CAndSwift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftFFmpegPlayer/SwiftFFmpegPlayer-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
@@ -598,14 +597,13 @@
 		3E52511024C23CC30023F696 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = CAndSwift/CAndSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/**";
-				INFOPLIST_FILE = CAndSwift/Info.plist;
+				INFOPLIST_FILE = SwiftFFmpegPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -619,9 +617,9 @@
 					"-lswresample",
 					"-lswscale",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.anon.CAndSwift;
+				PRODUCT_BUNDLE_IDENTIFIER = org.anon.SwiftFFmpegPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "CAndSwift/CAndSwift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftFFmpegPlayer/SwiftFFmpegPlayer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
 				USER_HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/include/libavutil;
@@ -631,7 +629,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3E5250FB24C23CC30023F696 /* Build configuration list for PBXProject "CAndSwift" */ = {
+		3E5250FB24C23CC30023F696 /* Build configuration list for PBXProject "SwiftFFmpegPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E52510C24C23CC30023F696 /* Debug */,
@@ -640,7 +638,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E52510E24C23CC30023F696 /* Build configuration list for PBXNativeTarget "CAndSwift" */ = {
+		3E52510E24C23CC30023F696 /* Build configuration list for PBXNativeTarget "SwiftFFmpegPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E52510F24C23CC30023F696 /* Debug */,

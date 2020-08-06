@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -36,11 +35,11 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
-                <menuItem title="CAndSwift" id="1Xt-HY-uBw">
+                <menuItem title="SwiftFFmpegPlayer" id="1Xt-HY-uBw">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="CAndSwift" systemMenu="apple" id="uQy-DD-JDr">
+                    <menu key="submenu" title="SwiftFFmpegPlayer" systemMenu="apple" id="uQy-DD-JDr">
                         <items>
-                            <menuItem title="About CAndSwift" id="5kV-Vb-QxS">
+                            <menuItem title="About SwiftFFmpegPlayer" id="5kV-Vb-QxS">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>
@@ -54,7 +53,7 @@
                                 <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
-                            <menuItem title="Hide CAndSwift" keyEquivalent="h" id="Olw-nP-bQN">
+                            <menuItem title="Hide SwiftFFmpegPlayer" keyEquivalent="h" id="Olw-nP-bQN">
                                 <connections>
                                     <action selector="hide:" target="-1" id="PnN-Uc-m68"/>
                                 </connections>
@@ -72,7 +71,7 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
-                            <menuItem title="Quit CAndSwift" keyEquivalent="q" id="4sb-4s-VLi">
+                            <menuItem title="Quit SwiftFFmpegPlayer" keyEquivalent="q" id="4sb-4s-VLi">
                                 <connections>
                                     <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
                                 </connections>
@@ -169,7 +168,7 @@
                         <rect key="frame" x="305" y="397" width="125" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" title="Metadata" id="NPR-mG-ZDc">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -179,7 +178,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="lcj-6C-89B">
                             <rect key="frame" x="0.0" y="0.0" width="297" height="250"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="wCZ-7Y-tR8">
                                     <rect key="frame" x="0.0" y="0.0" width="297" height="250"/>
@@ -206,7 +205,7 @@
                         <rect key="frame" x="645" y="397" width="125" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" title="Audio info" id="Udl-Zi-vgb">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -216,7 +215,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Ke5-sZ-otq">
                             <rect key="frame" x="0.0" y="0.0" width="245" height="250"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="SXF-ed-2hn">
                                     <rect key="frame" x="0.0" y="0.0" width="245" height="250"/>
@@ -260,7 +259,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekBackward" imagePosition="only" alignment="center" continuous="YES" imageScaling="proportionallyUpOrDown" inset="2" id="tvX-Be-Pfr">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                         </buttonCell>
                         <connections>
                             <action selector="seekBackwardAction:" target="1E5-MG-zPn" id="eGl-pt-TXh"/>
@@ -271,7 +270,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Play" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="qSs-pd-wRp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                         </buttonCell>
                         <connections>
                             <action selector="playOrPauseAction:" target="1E5-MG-zPn" id="Qxq-Mn-9gS"/>
@@ -282,7 +281,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Stop" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="zEb-jo-frl">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                         </buttonCell>
                         <connections>
                             <action selector="stopAction:" target="1E5-MG-zPn" id="DZC-RC-u4J"/>
@@ -293,7 +292,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="SeekForward" imagePosition="only" alignment="center" continuous="YES" imageScaling="proportionallyUpOrDown" inset="2" id="BpJ-1u-bRW">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                         </buttonCell>
                         <connections>
                             <action selector="seekForwardAction:" target="1E5-MG-zPn" id="ljM-9T-KhV"/>
@@ -316,7 +315,7 @@
                         <rect key="frame" x="861" y="57" width="43" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="50%" id="geW-z5-Uaf">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -326,7 +325,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="Open File" bezelStyle="shadowlessSquare" image="OpenFile" imagePosition="right" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="Y48-kQ-QwF">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="titleBar"/>
                         </buttonCell>
                         <connections>
                             <action selector="openFileAction:" target="1E5-MG-zPn" id="tzG-hE-YBl"/>
