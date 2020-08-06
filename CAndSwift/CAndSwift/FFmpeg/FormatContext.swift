@@ -128,7 +128,7 @@ class FormatContext {
     /// Bit rate of the audio stream, 0 if not available.
     /// May be computed if not directly known.
     ///
-    let bitRate: Int64
+    var bitRate: Int64
     
     ///
     /// Size of this file, in bytes.
@@ -262,6 +262,7 @@ class FormatContext {
         self.bitRate = pointer.pointee.bit_rate
         
         self.duration = (isRawAudioFile ? bruteForceDuration : audioStream?.duration ?? estimatedDuration) ?? 0
+        if self.bitRate == 0 {self.bitRate = duration == 0 ? 0 : Int64(round(Double(fileSize) / duration))}
     }
     
     ///

@@ -47,8 +47,6 @@ class AudioCodec: Codec {
         self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
     }
     
-    // TODO: Factor out common code in decode() and drain() into a helper method.
-    
     ///
     /// Decodes a single packet and produces (potentially) multiple frames.
     ///
@@ -61,7 +59,7 @@ class AudioCodec: Codec {
     func decode(_ packet: Packet) throws -> [BufferedFrame] {
         
         // Send the packet to the decoder for decoding.
-        var resultCode: Int32 = packet.sendTo(self)
+        let resultCode: Int32 = packet.sendTo(self)
         
         // The packet may be destroyed at this point as it has already been sent to the codec.
         packet.destroy()
@@ -73,6 +71,16 @@ class AudioCodec: Codec {
             throw DecoderError(resultCode)
         }
         
+        return receiveFrames()
+    }
+    
+    ///
+    /// Receives frames from the decoder (after sending one packet to it).
+    ///
+    /// - returns: An ordered list of frames.
+    ///
+    private func receiveFrames() -> [BufferedFrame] {
+        
         // Receive (potentially) multiple frames
 
         // Resuse a single Frame object multiple times.
@@ -82,12 +90,14 @@ class AudioCodec: Codec {
         var bufferedFrames: [BufferedFrame] = []
         
         // Receive a decoded frame from the codec.
-        resultCode = frame.receiveFrom(self)
+        var resultCode: Int32 = frame.receiveFrom(self)
         
         // Keep receiving frames while no errors are encountered
         while resultCode.isZero, frame.hasSamples {
             
             bufferedFrames.append(BufferedFrame(frame))
+            frame.unreferenceBuffers()
+            
             resultCode = frame.receiveFrom(self)
         }
         
@@ -95,15 +105,6 @@ class AudioCodec: Codec {
         frame.destroy()
         
         return bufferedFrames
-    }
-    
-    ///
-    /// Flush this codec's internal buffers.
-    ///
-    /// Make sure to call this function prior to seeking within a stream.
-    ///
-    func flushBuffers() {
-        avcodec_flush_buffers(contextPointer)
     }
     
     ///
@@ -115,10 +116,8 @@ class AudioCodec: Codec {
     ///
     func drain() throws -> [BufferedFrame] {
         
-        // TODO: Do we need to do this whole thing in a while loop ???
-        
         // Send the "flush packet" to the decoder
-        var resultCode: Int32 = avcodec_send_packet(contextPointer, nil)
+        let resultCode: Int32 = avcodec_send_packet(contextPointer, nil)
         
         if resultCode.isNonZero {
             
@@ -126,25 +125,16 @@ class AudioCodec: Codec {
             throw DecoderError(resultCode)
         }
         
-        // Receive (potentially) multiple frames
-        
-        let frame = Frame(sampleFormat: self.sampleFormat)
-        var bufferedFrames: [BufferedFrame] = []
-        
-        resultCode = frame.receiveFrom(self)
-        
-        // Keep receiving frames while no errors are encountered
-        while resultCode.isZero, frame.hasSamples {
-            
-            bufferedFrames.append(BufferedFrame(frame))
-            frame.unreference()
-            
-            resultCode = frame.receiveFrom(self)
-        }
-        
-        frame.destroy()
-        
-        return bufferedFrames
+        return receiveFrames()
+    }
+    
+    ///
+    /// Flush this codec's internal buffers.
+    ///
+    /// Make sure to call this function prior to seeking within a stream.
+    ///
+    func flushBuffers() {
+        avcodec_flush_buffers(contextPointer)
     }
     
     ///

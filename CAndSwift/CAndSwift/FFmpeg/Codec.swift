@@ -58,8 +58,6 @@ class Codec {
     ///
     init?(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
-        // TODO: Nil checks (don't force unwrap).
-        
         self.paramsPointer = paramsPointer
         
         // Find the codec by ID.

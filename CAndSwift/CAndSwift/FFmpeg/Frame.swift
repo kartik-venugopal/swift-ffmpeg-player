@@ -91,7 +91,7 @@ class Frame {
     ///
     /// Unreference all data buffers referenced by the underlying AVFrame.
     ///
-    func unreference() {
+    func unreferenceBuffers() {
         av_frame_unref(&avFrame)
     }
     
