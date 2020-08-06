@@ -28,6 +28,8 @@
 		3E35BBE224DAF20A00ABBD0E /* MetadataDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E35BBE124DAF20A00ABBD0E /* MetadataDictionary.swift */; };
 		3E4DF96024C886CE008988FF /* AudioFileContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DF95F24C886CE008988FF /* AudioFileContext.swift */; };
 		3E4DF96224C895D4008988FF /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DF96124C895D4008988FF /* PlayerViewController.swift */; };
+		3E4E318524DC36B300CDA424 /* screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E4E318324DC36B300CDA424 /* screenshot.png */; };
+		3E4E318624DC36B300CDA424 /* basicFFmpegPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E4E318424DC36B300CDA424 /* basicFFmpegPlayer.png */; };
 		3E52510424C23CC30023F696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52510324C23CC30023F696 /* AppDelegate.swift */; };
 		3E52510624C23CC30023F696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510524C23CC30023F696 /* Assets.xcassets */; };
 		3E52510924C23CC30023F696 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52510724C23CC30023F696 /* MainMenu.xib */; };
@@ -50,7 +52,6 @@
 		3E87E09D24DC21B300FE0D20 /* SliderCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E87E09C24DC21B300FE0D20 /* SliderCells.swift */; };
 		3E88343824CE13BF00B81A2C /* Resampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E88343724CE13BF00B81A2C /* Resampler.swift */; };
 		3E9CD3B124C7A8CB00499954 /* FormatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9CD3B024C7A8CB00499954 /* FormatContext.swift */; };
-		3EA289F724D763AC00AF4C52 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EA289F624D763AC00AF4C52 /* TODO.txt */; };
 		3EA6E59F24D9DEDD00DEF16E /* ResamplingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA6E59E24D9DEDD00DEF16E /* ResamplingContext.swift */; };
 		3EAE719F24DB29AC0079F347 /* ConcurrentArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EAE719E24DB29AC0079F347 /* ConcurrentArray.swift */; };
 		3EB6F55124DB1194007562DE /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB6F55024DB1194007562DE /* AudioCodec.swift */; };
@@ -90,6 +91,8 @@
 		3E35BBE124DAF20A00ABBD0E /* MetadataDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataDictionary.swift; sourceTree = "<group>"; };
 		3E4DF95F24C886CE008988FF /* AudioFileContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileContext.swift; sourceTree = "<group>"; };
 		3E4DF96124C895D4008988FF /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		3E4E318324DC36B300CDA424 /* screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = screenshot.png; path = Resources/screenshot.png; sourceTree = SOURCE_ROOT; };
+		3E4E318424DC36B300CDA424 /* basicFFmpegPlayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = basicFFmpegPlayer.png; path = Resources/basicFFmpegPlayer.png; sourceTree = SOURCE_ROOT; };
 		3E52510024C23CC30023F696 /* CAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E52510324C23CC30023F696 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E52510524C23CC30023F696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -117,7 +120,7 @@
 		3E87E09C24DC21B300FE0D20 /* SliderCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCells.swift; sourceTree = "<group>"; };
 		3E88343724CE13BF00B81A2C /* Resampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resampler.swift; sourceTree = "<group>"; };
 		3E9CD3B024C7A8CB00499954 /* FormatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatContext.swift; sourceTree = "<group>"; };
-		3EA289F624D763AC00AF4C52 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = SOURCE_ROOT; };
+		3EA289F624D763AC00AF4C52 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO.txt; path = CAndSwift/Resources/TODO.txt; sourceTree = SOURCE_ROOT; };
 		3EA6E59E24D9DEDD00DEF16E /* ResamplingContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResamplingContext.swift; sourceTree = "<group>"; };
 		3EAE719E24DB29AC0079F347 /* ConcurrentArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentArray.swift; sourceTree = "<group>"; };
 		3EB6F55024DB1194007562DE /* AudioCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodec.swift; sourceTree = "<group>"; };
@@ -146,12 +149,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E4E318224DC365900CDA424 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3E4E318424DC36B300CDA424 /* basicFFmpegPlayer.png */,
+				3E4E318324DC36B300CDA424 /* screenshot.png */,
+				3E52510524C23CC30023F696 /* Assets.xcassets */,
+				3EA289F624D763AC00AF4C52 /* TODO.txt */,
+			);
+			name = Resources;
+			path = CAndSwift/Resources;
+			sourceTree = "<group>";
+		};
 		3E5250F724C23CC30023F696 = {
 			isa = PBXGroup;
 			children = (
 				3E52510224C23CC30023F696 /* CAndSwift */,
 				3E52510124C23CC30023F696 /* Products */,
 				3E52519A24C23FD10023F696 /* Frameworks */,
+				3E4E318224DC365900CDA424 /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -185,10 +201,8 @@
 				3E60DB6924CB649C00749A59 /* ffmpeg.c */,
 				3E52519824C23FA40023F696 /* ffmpeg.h */,
 				3E52519624C23FA30023F696 /* CAndSwift-Bridging-Header.h */,
-				3E52510524C23CC30023F696 /* Assets.xcassets */,
 				3E52510A24C23CC30023F696 /* Info.plist */,
 				3E52510B24C23CC30023F696 /* CAndSwift.entitlements */,
-				3EA289F624D763AC00AF4C52 /* TODO.txt */,
 			);
 			path = CAndSwift;
 			sourceTree = "<group>";
@@ -351,9 +365,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E4E318624DC36B300CDA424 /* basicFFmpegPlayer.png in Resources */,
 				3E52510624C23CC30023F696 /* Assets.xcassets in Resources */,
+				3E4E318524DC36B300CDA424 /* screenshot.png in Resources */,
 				3E52510924C23CC30023F696 /* MainMenu.xib in Resources */,
-				3EA289F724D763AC00AF4C52 /* TODO.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
