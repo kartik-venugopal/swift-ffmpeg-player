@@ -18,6 +18,7 @@
 		3E2A84DC24DD13290031BFDC /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3E2A84D924DD13290031BFDC /* README.txt */; };
 		3E2A84DD24DD13290031BFDC /* build-ffmpeg.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E2A84DA24DD13290031BFDC /* build-ffmpeg.sh */; };
 		3E2A84DE24DD13290031BFDC /* ffmpeg-sourceCode.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 3E2A84DB24DD13290031BFDC /* ffmpeg-sourceCode.bz2 */; };
+		3E2A84E024DD253B0031BFDC /* OpenDialogButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2A84DF24DD253B0031BFDC /* OpenDialogButtonCell.swift */; };
 		3E540DE024DC3F28002B3E78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540DDF24DC3F28002B3E78 /* AppDelegate.swift */; };
 		3E540DE224DC3F29002B3E78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E540DE124DC3F29002B3E78 /* Assets.xcassets */; };
 		3E540DE524DC3F29002B3E78 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E540DE324DC3F29002B3E78 /* MainMenu.xib */; };
@@ -86,6 +87,7 @@
 		3E2A84D924DD13290031BFDC /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		3E2A84DA24DD13290031BFDC /* build-ffmpeg.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "build-ffmpeg.sh"; sourceTree = "<group>"; };
 		3E2A84DB24DD13290031BFDC /* ffmpeg-sourceCode.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ffmpeg-sourceCode.bz2"; sourceTree = "<group>"; };
+		3E2A84DF24DD253B0031BFDC /* OpenDialogButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenDialogButtonCell.swift; sourceTree = "<group>"; };
 		3E540DDC24DC3F28002B3E78 /* FFmpegPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E540DDF24DC3F28002B3E78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E540DE124DC3F29002B3E78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				3E540DE324DC3F29002B3E78 /* MainMenu.xib */,
 				3E540DF624DC3FC5002B3E78 /* PlayerViewController.swift */,
 				3E540DF524DC3FC5002B3E78 /* SliderCells.swift */,
+				3E2A84DF24DD253B0031BFDC /* OpenDialogButtonCell.swift */,
 				3E540DF724DC3FC5002B3E78 /* UIExtensions.swift */,
 			);
 			path = UI;
@@ -412,6 +415,7 @@
 				3E540E3924DC408F002B3E78 /* SampleFormat.swift in Sources */,
 				3E540E3524DC408F002B3E78 /* ResamplingContext.swift in Sources */,
 				3E540E3124DC408F002B3E78 /* StreamProtocol.swift in Sources */,
+				3E2A84E024DD253B0031BFDC /* OpenDialogButtonCell.swift in Sources */,
 				3E540E3624DC408F002B3E78 /* AudioStream.swift in Sources */,
 				3E540E3224DC408F002B3E78 /* Packet.swift in Sources */,
 				3E540E3D24DC408F002B3E78 /* FormatContext.swift in Sources */,

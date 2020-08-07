@@ -90,6 +90,10 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         txtMetadata.font = NSFont.systemFont(ofSize: 14)
         txtAudioInfo.font = NSFont.systemFont(ofSize: 14)
         
+        let whiteIshColor: NSColor = NSColor(white: 0.9, alpha: 1)
+        txtMetadata.textColor = whiteIshColor
+        txtAudioInfo.textColor = whiteIshColor
+        
         artView.cornerRadius = 3
 
         // Subscribe to notifications that the player has finished playing a track.
