@@ -11,7 +11,6 @@
 #import <libavutil/mathematics.h>
 #import <libavfilter/avfilter.h>
 #import <libswresample/swresample.h>
-#import <libswscale/swscale.h>
 
 long CH_LAYOUT_MONO;
 long CH_LAYOUT_STEREO;

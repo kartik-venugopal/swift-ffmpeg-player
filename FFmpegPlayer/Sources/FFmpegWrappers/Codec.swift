@@ -66,7 +66,8 @@ class Codec {
         
         guard self.pointer != nil else {
             
-            print("\nCodec.init(): Unable to find codec with ID: \(codecID)")
+            let codecName: String = String(cString: avcodec_get_name(codecID))
+            print("\nCodec.init(): Unable to find codec: \(codecName)")
             return nil
         }
         
@@ -117,10 +118,6 @@ class Codec {
         // only once. Otherwise, a fatal error will be
         // thrown.
         if destroyed {return}
-        
-        if avcodec_is_open(contextPointer).isPositive {
-            avcodec_close(contextPointer)
-        }
         
         avcodec_free_context(&contextPointer)
 

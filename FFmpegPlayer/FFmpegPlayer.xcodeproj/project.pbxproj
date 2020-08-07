@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E2A84D024DD0E960031BFDC /* libavcodec.58.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CC24DD0E960031BFDC /* libavcodec.58.dylib */; };
+		3E2A84D124DD0E960031BFDC /* libavutil.56.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */; };
+		3E2A84D224DD0E960031BFDC /* libavformat.58.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */; };
+		3E2A84D324DD0E960031BFDC /* libswresample.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CF24DD0E960031BFDC /* libswresample.3.dylib */; };
+		3E2A84D424DD0E990031BFDC /* libavcodec.58.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3E2A84CC24DD0E960031BFDC /* libavcodec.58.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3E2A84D524DD0E9B0031BFDC /* libavformat.58.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3E2A84D624DD0E9C0031BFDC /* libavutil.56.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3E2A84D724DD0E9D0031BFDC /* libswresample.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3E2A84CF24DD0E960031BFDC /* libswresample.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3E540DE024DC3F28002B3E78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540DDF24DC3F28002B3E78 /* AppDelegate.swift */; };
 		3E540DE224DC3F29002B3E78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E540DE124DC3F29002B3E78 /* Assets.xcassets */; };
 		3E540DE524DC3F29002B3E78 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E540DE324DC3F29002B3E78 /* MainMenu.xib */; };
@@ -47,21 +55,31 @@
 		3E540E4C24DC40A8002B3E78 /* UtilsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E4524DC40A8002B3E78 /* UtilsExtensions.swift */; };
 		3E540E4D24DC40A8002B3E78 /* NumericStringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E4624DC40A8002B3E78 /* NumericStringFormatter.swift */; };
 		3E540E4F24DC40C5002B3E78 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E4E24DC40C5002B3E78 /* Constants.swift */; };
-		3E540E5A24DC410B002B3E78 /* libavresample in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5124DC410A002B3E78 /* libavresample */; };
-		3E540E5B24DC410B002B3E78 /* libavdevice in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5224DC410B002B3E78 /* libavdevice */; };
-		3E540E5C24DC410B002B3E78 /* libavformat in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5324DC410B002B3E78 /* libavformat */; };
-		3E540E5D24DC410B002B3E78 /* libavcodec in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5424DC410B002B3E78 /* libavcodec */; };
-		3E540E5E24DC410B002B3E78 /* libswresample in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5524DC410B002B3E78 /* libswresample */; };
-		3E540E5F24DC410B002B3E78 /* libpostproc in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5624DC410B002B3E78 /* libpostproc */; };
-		3E540E6024DC410B002B3E78 /* libavutil in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5724DC410B002B3E78 /* libavutil */; };
-		3E540E6124DC410B002B3E78 /* libavfilter in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5824DC410B002B3E78 /* libavfilter */; };
-		3E540E6224DC410B002B3E78 /* libswscale in Resources */ = {isa = PBXBuildFile; fileRef = 3E540E5924DC410B002B3E78 /* libswscale */; };
 		3E540E6624DC4157002B3E78 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E6424DC4157002B3E78 /* ffmpeg.c */; };
-		3E6402D824DC4941004736D9 /* screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E6402D624DC4941004736D9 /* screenshot.png */; };
-		3E6402D924DC4941004736D9 /* basicFFmpegPlayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E6402D724DC4941004736D9 /* basicFFmpegPlayer.png */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3E2A84C024DD0C740031BFDC /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3E2A84D524DD0E9B0031BFDC /* libavformat.58.dylib in Embed Libraries */,
+				3E2A84D424DD0E990031BFDC /* libavcodec.58.dylib in Embed Libraries */,
+				3E2A84D724DD0E9D0031BFDC /* libswresample.3.dylib in Embed Libraries */,
+				3E2A84D624DD0E9C0031BFDC /* libavutil.56.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3E2A84CC24DD0E960031BFDC /* libavcodec.58.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libavcodec.58.dylib; sourceTree = "<group>"; };
+		3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libavutil.56.dylib; sourceTree = "<group>"; };
+		3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libavformat.58.dylib; sourceTree = "<group>"; };
+		3E2A84CF24DD0E960031BFDC /* libswresample.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libswresample.3.dylib; sourceTree = "<group>"; };
 		3E540DDC24DC3F28002B3E78 /* FFmpegPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E540DDF24DC3F28002B3E78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E540DE124DC3F29002B3E78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -113,7 +131,6 @@
 		3E540E5624DC410B002B3E78 /* libpostproc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libpostproc; sourceTree = "<group>"; };
 		3E540E5724DC410B002B3E78 /* libavutil */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavutil; sourceTree = "<group>"; };
 		3E540E5824DC410B002B3E78 /* libavfilter */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavfilter; sourceTree = "<group>"; };
-		3E540E5924DC410B002B3E78 /* libswscale */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswscale; sourceTree = "<group>"; };
 		3E540E6324DC4156002B3E78 /* FFmpegPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFmpegPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E540E6424DC4157002B3E78 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E540E6524DC4157002B3E78 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
@@ -126,6 +143,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E2A84D224DD0E960031BFDC /* libavformat.58.dylib in Frameworks */,
+				3E2A84D024DD0E960031BFDC /* libavcodec.58.dylib in Frameworks */,
+				3E2A84D324DD0E960031BFDC /* libswresample.3.dylib in Frameworks */,
+				3E2A84D124DD0E960031BFDC /* libavutil.56.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +159,7 @@
 				3E540DDE24DC3F28002B3E78 /* Sources */,
 				3E540DDD24DC3F28002B3E78 /* Products */,
 				3E540DED24DC3F3F002B3E78 /* Resources */,
+				3E6402F724DC5F81004736D9 /* Frameworks */,
 				3E540DE724DC3F29002B3E78 /* FFmpegPlayer.entitlements */,
 				3E540DE624DC3F29002B3E78 /* Info.plist */,
 			);
@@ -270,9 +292,19 @@
 				3E540E5724DC410B002B3E78 /* libavutil */,
 				3E540E5624DC410B002B3E78 /* libpostproc */,
 				3E540E5524DC410B002B3E78 /* libswresample */,
-				3E540E5924DC410B002B3E78 /* libswscale */,
 			);
 			path = ffmpeg;
+			sourceTree = "<group>";
+		};
+		3E6402F724DC5F81004736D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3E2A84CC24DD0E960031BFDC /* libavcodec.58.dylib */,
+				3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */,
+				3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */,
+				3E2A84CF24DD0E960031BFDC /* libswresample.3.dylib */,
+			);
+			path = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -285,6 +317,7 @@
 				3E540DD824DC3F28002B3E78 /* Sources */,
 				3E540DD924DC3F28002B3E78 /* Frameworks */,
 				3E540DDA24DC3F28002B3E78 /* Resources */,
+				3E2A84C024DD0C740031BFDC /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -334,18 +367,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E540E5A24DC410B002B3E78 /* libavresample in Resources */,
-				3E540E5B24DC410B002B3E78 /* libavdevice in Resources */,
-				3E540E6024DC410B002B3E78 /* libavutil in Resources */,
-				3E6402D924DC4941004736D9 /* basicFFmpegPlayer.png in Resources */,
-				3E540E6124DC410B002B3E78 /* libavfilter in Resources */,
-				3E540E5D24DC410B002B3E78 /* libavcodec in Resources */,
-				3E540E5E24DC410B002B3E78 /* libswresample in Resources */,
-				3E540E6224DC410B002B3E78 /* libswscale in Resources */,
-				3E6402D824DC4941004736D9 /* screenshot.png in Resources */,
-				3E540E5F24DC410B002B3E78 /* libpostproc in Resources */,
 				3E540DE224DC3F29002B3E78 /* Assets.xcassets in Resources */,
-				3E540E5C24DC410B002B3E78 /* libavformat in Resources */,
 				3E540DE524DC3F29002B3E78 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -463,7 +485,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -517,7 +539,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -535,6 +557,7 @@
 				CODE_SIGN_ENTITLEMENTS = FFmpegPlayer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks";
 				HEADER_SEARCH_PATHS = (
 					"${SOURCE_ROOT}/ffmpeg/**",
 					"${SOURCE_ROOT}/**",
@@ -543,15 +566,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/lib;
-				OTHER_LDFLAGS = (
-					"-lswscale",
-					"-lswresample",
-					"-lavcodec",
-					"-lavutil",
-					"-lavformat",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anon.FFmpegPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Sources/FFmpegPlayer-Bridging-Header.h";
@@ -569,6 +588,7 @@
 				CODE_SIGN_ENTITLEMENTS = FFmpegPlayer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks";
 				HEADER_SEARCH_PATHS = (
 					"${SOURCE_ROOT}/ffmpeg/**",
 					"${SOURCE_ROOT}/**",
@@ -577,15 +597,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/4.3_1/lib;
-				OTHER_LDFLAGS = (
-					"-lswscale",
-					"-lswresample",
-					"-lavcodec",
-					"-lavutil",
-					"-lavformat",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anon.FFmpegPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Sources/FFmpegPlayer-Bridging-Header.h";
