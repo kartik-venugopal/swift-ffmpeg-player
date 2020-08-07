@@ -1,14 +1,16 @@
 #include "ffmpeg.h"
 
-/*
+/**
  *  This file exposes constants and macros defined in ffmpeg with "#define" that are not otherwise available
  *   to Swift code.
  */
 
-// The error code corresponding to end of file (EOF). Defined in <libavutil/error.h>.
+/**
+ * The error code corresponding to end of file (EOF). Defined in <libavutil/error.h>.
+ */
 int ERROR_EOF = AVERROR_EOF;
 
-/*
+/**
  * The following definitions are identifiers for several ffmpeg channel layouts defined in <libavutil/channel_layout.h>.
  */
 
