@@ -1,7 +1,7 @@
 import Foundation
 
-class Muxer {
-    
+//class Muxer {
+//
 //    // outputFileFormat: File extension of the desired output format. eg. "mka" or "m4a".
 //    func mux(rawFile: AudioFileContext, outputFileFormat: String) {
 //        
@@ -104,4 +104,4 @@ class Muxer {
 //
 //
 //    }
-}
+//}

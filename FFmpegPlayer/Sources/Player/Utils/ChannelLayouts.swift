@@ -69,7 +69,7 @@ struct ChannelLayouts {
         // L R C LFE Rls Rrs Ls Rs
         CH_LAYOUT_7POINT1: kAudioChannelLayoutTag_WAVE_7_1,
         
-        // MARK: The following mappings are not exact, but the closest possible matches.
+        // MARK: The following mappings are not exact, but the closest possible matches. ---------------------------------------
         // NOTE - Some channels may be dropped entirely.
         
         // TODO: Create custom AudioChannelLayouts and AVAudioChannelLayouts with exact channel mappings
