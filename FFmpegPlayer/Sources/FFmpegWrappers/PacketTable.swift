@@ -33,7 +33,7 @@ class PacketTable {
     ///
     /// Will be nil if an error occurs while opening the file and/or reading its packets.
     ///
-    init?(_ file: URL) {
+    init?(forFile file: URL) {
         
         // Allocate memory for a format context, and ensure that it produced a non-nil pointer.
         var pointer: UnsafeMutablePointer<AVFormatContext>? = avformat_alloc_context()
@@ -140,7 +140,7 @@ class PacketTable {
         
         // Search the packet table to find the closest packet by PTS.
         // Clamp it to ensure it is within the bounds of our packet table.
-        var targetPacketIndex = indexOfClosestPacket(with: targetPTS)
+        var targetPacketIndex = indexOfClosestPacket(havingPTS: targetPTS)
         targetPacketIndex.clamp(minValue: 0, maxValue: packetTable.count - 1)
         
         // Return the byte position of our target packet.
@@ -154,7 +154,7 @@ class PacketTable {
     ///
     /// - returns: The index of the packet targeted by the search, i.e. the search result.
     ///
-    private func indexOfClosestPacket(with targetPTS: Int64) -> Int {
+    private func indexOfClosestPacket(havingPTS targetPTS: Int64) -> Int {
         
         // Binary search algorithm (ok to assume that packets are sorted in ascending order by PTS).
         

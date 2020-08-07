@@ -18,7 +18,7 @@ class AudioCodec: Codec {
     ///
     /// PCM format of the samples.
     ///
-    var sampleFormat: SampleFormat = SampleFormat(avFormat: AVSampleFormat(0))
+    var sampleFormat: SampleFormat = SampleFormat(encapsulating: AVSampleFormat(0))
     
     ///
     /// Number of channels of audio data.
@@ -39,7 +39,7 @@ class AudioCodec: Codec {
         
         super.init(fromParameters: paramsPointer)
         
-        self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
+        self.sampleFormat = SampleFormat(encapsulating: context.sample_fmt)
         self.channelCount = params.channels
         
         // Correct channel layout if necessary.
@@ -56,7 +56,7 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs during decoding.
     ///
-    func decode(_ packet: Packet) throws -> [BufferedFrame] {
+    func decode(packet: Packet) throws -> [BufferedFrame] {
         
         // Send the packet to the decoder for decoding.
         let resultCode: Int32 = packet.send(to: self)

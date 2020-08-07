@@ -204,7 +204,7 @@ class Decoder {
         
             if let packet = try format.readPacket(from: stream) {
                 
-                for frame in try codec.decode(packet) {
+                for frame in try codec.decode(packet: packet) {
                     frameQueue.enqueue(frame)
                 }
             }

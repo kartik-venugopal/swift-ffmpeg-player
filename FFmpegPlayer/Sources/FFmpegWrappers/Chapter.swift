@@ -17,7 +17,7 @@ class Chapter {
     /// All metadata key / value pairs for this chapter marking (e.g. title, artist, etc)
     let metadata: [String: String]
     
-    init(chapter: AVChapter, index: Int) {
+    init(encapsulating chapter: AVChapter, atIndex index: Int) {
         
         // Ratio used to convert from the chapter's time base units to seconds.
         let conversionFactor: Double = Double(chapter.time_base.num) / Double(chapter.time_base.den)
@@ -25,7 +25,7 @@ class Chapter {
         self.startTime = Double(chapter.start) * conversionFactor
         self.endTime = Double(chapter.end) * conversionFactor
         
-        self.metadata = MetadataDictionary(pointer: chapter.metadata).dictionary
+        self.metadata = MetadataDictionary(readingFrom: chapter.metadata).dictionary
 
         // If the chapter's metadata does not have a "title" tag, create a default title
         // that contains the index of the chapter, e.g. "Chapter 2".

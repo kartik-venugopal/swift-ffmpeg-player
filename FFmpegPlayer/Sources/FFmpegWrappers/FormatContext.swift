@@ -122,7 +122,7 @@ class FormatContext {
     ///
     /// This is an expensive and potentially lengthy computation.
     ///
-    private lazy var packetTable: PacketTable? = PacketTable(file)
+    private lazy var packetTable: PacketTable? = PacketTable(forFile: file)
     
     ///
     /// Bit rate of the audio stream, 0 if not available.
@@ -150,7 +150,7 @@ class FormatContext {
     ///
     /// All metadata key / value pairs available in this file's header.
     ///
-    lazy var metadata: [String: String] = MetadataDictionary(pointer: avContext.metadata).dictionary
+    lazy var metadata: [String: String] = MetadataDictionary(readingFrom: avContext.metadata).dictionary
     
     ///
     /// All chapter markings available in this file's header.
@@ -167,7 +167,7 @@ class FormatContext {
             .sorted(by: {c1, c2 in c1.start < c2.start})
         
         // Wrap the AVChapter objects in Chapter objects.
-        return theChapters.enumerated().map {Chapter(chapter: $0.element, index: $0.offset)}
+        return theChapters.enumerated().map {Chapter(encapsulating: $0.element, atIndex: $0.offset)}
     }()
     
     ///

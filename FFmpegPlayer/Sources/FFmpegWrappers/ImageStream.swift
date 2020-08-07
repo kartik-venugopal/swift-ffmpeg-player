@@ -42,7 +42,7 @@ class ImageStream: StreamProtocol {
     ///
     /// All metadata key / value pairs available for this stream.
     ///
-    lazy var metadata: [String: String] = MetadataDictionary(pointer: avStream.metadata).dictionary
+    lazy var metadata: [String: String] = MetadataDictionary(readingFrom: avStream.metadata).dictionary
     
     ///
     /// Instantiates this stream object and its associated codec and codec context.

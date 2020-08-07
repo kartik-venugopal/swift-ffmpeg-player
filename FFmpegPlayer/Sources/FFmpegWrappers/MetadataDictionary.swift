@@ -20,7 +20,7 @@ class MetadataDictionary {
     /// After this initializer has finished executing, all the metadata that was read will be available in the **dictionary**
     /// property of this object.
     ///
-    init(pointer: OpaquePointer!) {
+    init(readingFrom pointer: OpaquePointer!) {
         
         var metadata: [String: String] = [:]
         var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?

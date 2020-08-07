@@ -61,7 +61,7 @@ struct SampleFormat {
     ///
     /// - Parameter avFormat: The AVSampleFormat to be wrapped by this object.
     ///
-    init(avFormat: AVSampleFormat) {
+    init(encapsulating avFormat: AVSampleFormat) {
         
         self.avFormat = avFormat
         
