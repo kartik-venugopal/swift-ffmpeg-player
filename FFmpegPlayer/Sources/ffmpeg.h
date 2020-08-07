@@ -6,10 +6,7 @@
 #import <libavutil/avutil.h>
 #import <libavutil/error.h>
 #import <libavutil/channel_layout.h>
-#import <libavutil/dict.h>
 #import <libavutil/opt.h>
-#import <libavutil/mathematics.h>
-#import <libavfilter/avfilter.h>
 #import <libswresample/swresample.h>
 
 long CH_LAYOUT_MONO;

@@ -2,4 +2,5 @@
 .DS_Store
 FFmpegPlayer/.DS_Store
 FFmpegPlayer/Frameworks
-FFmpegPlayer/Resources/ffmpeg
+FFmpegPlayer/Resources/ffmpeg/dylibs
+FFmpegPlayer/Resources/ffmpeg/ffmpeg-4.3.1
