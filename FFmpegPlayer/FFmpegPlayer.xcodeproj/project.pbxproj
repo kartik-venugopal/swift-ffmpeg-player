@@ -131,14 +131,10 @@
 		3E540E4524DC40A8002B3E78 /* UtilsExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilsExtensions.swift; sourceTree = "<group>"; };
 		3E540E4624DC40A8002B3E78 /* NumericStringFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericStringFormatter.swift; sourceTree = "<group>"; };
 		3E540E4E24DC40C5002B3E78 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		3E540E5124DC410A002B3E78 /* libavresample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavresample; sourceTree = "<group>"; };
-		3E540E5224DC410B002B3E78 /* libavdevice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavdevice; sourceTree = "<group>"; };
 		3E540E5324DC410B002B3E78 /* libavformat */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavformat; sourceTree = "<group>"; };
 		3E540E5424DC410B002B3E78 /* libavcodec */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavcodec; sourceTree = "<group>"; };
 		3E540E5524DC410B002B3E78 /* libswresample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libswresample; sourceTree = "<group>"; };
-		3E540E5624DC410B002B3E78 /* libpostproc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libpostproc; sourceTree = "<group>"; };
 		3E540E5724DC410B002B3E78 /* libavutil */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavutil; sourceTree = "<group>"; };
-		3E540E5824DC410B002B3E78 /* libavfilter */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libavfilter; sourceTree = "<group>"; };
 		3E540E6324DC4156002B3E78 /* FFmpegPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFmpegPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E540E6424DC4157002B3E78 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E540E6524DC4157002B3E78 /* ffmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg.h; sourceTree = "<group>"; };
@@ -197,10 +193,10 @@
 				3E540DDF24DC3F28002B3E78 /* AppDelegate.swift */,
 				3E540E4E24DC40C5002B3E78 /* Constants.swift */,
 				3E540DEE24DC3F8C002B3E78 /* UI */,
-				3E540E3F24DC4093002B3E78 /* Utils */,
-				3E540E1E24DC4077002B3E78 /* FFmpegWrappers */,
-				3E540E1924DC405A002B3E78 /* Metadata */,
 				3E540DFB24DC3FE7002B3E78 /* Player */,
+				3E540E1924DC405A002B3E78 /* Metadata */,
+				3E540E1E24DC4077002B3E78 /* FFmpegWrappers */,
+				3E540E3F24DC4093002B3E78 /* Utils */,
 				3E540E5024DC40F1002B3E78 /* ffmpeg */,
 				3E540E6424DC4157002B3E78 /* ffmpeg.c */,
 				3E540E6524DC4157002B3E78 /* ffmpeg.h */,
@@ -236,9 +232,9 @@
 			isa = PBXGroup;
 			children = (
 				3E540E0424DC4011002B3E78 /* Utils */,
-				3E540DFF24DC400E002B3E78 /* AudioEngine.swift */,
 				3E540DFD24DC400E002B3E78 /* Player.swift */,
 				3E540DFE24DC400E002B3E78 /* PlayerScheduling.swift */,
+				3E540DFF24DC400E002B3E78 /* AudioEngine.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -246,12 +242,12 @@
 		3E540E0424DC4011002B3E78 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				3E540DFC24DC400E002B3E78 /* Muxer.swift */,
-				3E540E1224DC4044002B3E78 /* BufferedFrame.swift */,
-				3E540E1324DC4044002B3E78 /* ChannelLayouts.swift */,
 				3E540E1024DC4044002B3E78 /* Decoder.swift */,
 				3E540E0F24DC4044002B3E78 /* FrameBuffer.swift */,
+				3E540E1224DC4044002B3E78 /* BufferedFrame.swift */,
 				3E540E1124DC4044002B3E78 /* Resampler.swift */,
+				3E540E1324DC4044002B3E78 /* ChannelLayouts.swift */,
+				3E540DFC24DC400E002B3E78 /* Muxer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -268,21 +264,21 @@
 		3E540E1E24DC4077002B3E78 /* FFmpegWrappers */ = {
 			isa = PBXGroup;
 			children = (
-				3E540E2B24DC408F002B3E78 /* AudioCodec.swift */,
 				3E540E2724DC408F002B3E78 /* AudioFileContext.swift */,
-				3E540E2624DC408F002B3E78 /* AudioStream.swift */,
-				3E540E2024DC408F002B3E78 /* Chapter.swift */,
-				3E540E2C24DC408F002B3E78 /* Codec.swift */,
-				3E540E1F24DC408F002B3E78 /* Errors.swift */,
 				3E540E2D24DC408F002B3E78 /* FormatContext.swift */,
-				3E540E2E24DC408F002B3E78 /* Frame.swift */,
-				3E540E2424DC408F002B3E78 /* ImageStream.swift */,
-				3E540E2324DC408F002B3E78 /* MetadataDictionary.swift */,
-				3E540E2224DC408F002B3E78 /* Packet.swift */,
-				3E540E2824DC408F002B3E78 /* PacketTable.swift */,
-				3E540E2524DC408F002B3E78 /* ResamplingContext.swift */,
-				3E540E2924DC408F002B3E78 /* SampleFormat.swift */,
 				3E540E2124DC408F002B3E78 /* StreamProtocol.swift */,
+				3E540E2624DC408F002B3E78 /* AudioStream.swift */,
+				3E540E2424DC408F002B3E78 /* ImageStream.swift */,
+				3E540E2C24DC408F002B3E78 /* Codec.swift */,
+				3E540E2B24DC408F002B3E78 /* AudioCodec.swift */,
+				3E540E2224DC408F002B3E78 /* Packet.swift */,
+				3E540E2E24DC408F002B3E78 /* Frame.swift */,
+				3E540E2924DC408F002B3E78 /* SampleFormat.swift */,
+				3E540E2524DC408F002B3E78 /* ResamplingContext.swift */,
+				3E540E2324DC408F002B3E78 /* MetadataDictionary.swift */,
+				3E540E2024DC408F002B3E78 /* Chapter.swift */,
+				3E540E2824DC408F002B3E78 /* PacketTable.swift */,
+				3E540E1F24DC408F002B3E78 /* Errors.swift */,
 			);
 			path = FFmpegWrappers;
 			sourceTree = "<group>";
@@ -291,10 +287,10 @@
 			isa = PBXGroup;
 			children = (
 				3E540E4224DC40A8002B3E78 /* AtomicCounter.swift */,
+				3E540E4624DC40A8002B3E78 /* NumericStringFormatter.swift */,
 				3E540E4424DC40A8002B3E78 /* BufferFileWriter.swift */,
 				3E540E4024DC40A8002B3E78 /* ConcurrentArray.swift */,
 				3E540E4124DC40A8002B3E78 /* Mapper.swift */,
-				3E540E4624DC40A8002B3E78 /* NumericStringFormatter.swift */,
 				3E540E4324DC40A8002B3E78 /* Queue.swift */,
 				3E540E4524DC40A8002B3E78 /* UtilsExtensions.swift */,
 			);
@@ -305,12 +301,8 @@
 			isa = PBXGroup;
 			children = (
 				3E540E5424DC410B002B3E78 /* libavcodec */,
-				3E540E5224DC410B002B3E78 /* libavdevice */,
-				3E540E5824DC410B002B3E78 /* libavfilter */,
 				3E540E5324DC410B002B3E78 /* libavformat */,
-				3E540E5124DC410A002B3E78 /* libavresample */,
 				3E540E5724DC410B002B3E78 /* libavutil */,
-				3E540E5624DC410B002B3E78 /* libpostproc */,
 				3E540E5524DC410B002B3E78 /* libswresample */,
 			);
 			path = ffmpeg;

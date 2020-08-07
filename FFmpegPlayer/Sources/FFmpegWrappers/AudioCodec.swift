@@ -35,9 +35,9 @@ class AudioCodec: Codec {
     ///
     /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
     ///
-    override init?(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    override init?(fromParameters paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
-        super.init(paramsPointer: paramsPointer)
+        super.init(fromParameters: paramsPointer)
         
         self.sampleFormat = SampleFormat(avFormat: context.sample_fmt)
         self.channelCount = params.channels
@@ -59,7 +59,7 @@ class AudioCodec: Codec {
     func decode(_ packet: Packet) throws -> [BufferedFrame] {
         
         // Send the packet to the decoder for decoding.
-        let resultCode: Int32 = packet.sendTo(self)
+        let resultCode: Int32 = packet.send(to: self)
         
         // The packet may be destroyed at this point as it has already been sent to the codec.
         packet.destroy()
@@ -90,7 +90,7 @@ class AudioCodec: Codec {
         var bufferedFrames: [BufferedFrame] = []
         
         // Receive a decoded frame from the codec.
-        var resultCode: Int32 = frame.receiveFrom(self)
+        var resultCode: Int32 = frame.receive(from: self)
         
         // Keep receiving frames while no errors are encountered
         while resultCode.isZero, frame.hasSamples {
@@ -98,7 +98,7 @@ class AudioCodec: Codec {
             bufferedFrames.append(BufferedFrame(frame))
             frame.unreferenceBuffers()
             
-            resultCode = frame.receiveFrom(self)
+            resultCode = frame.receive(from: self)
         }
         
         // The frame is no longer needed.

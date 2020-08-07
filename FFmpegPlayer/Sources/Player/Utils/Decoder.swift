@@ -151,22 +151,22 @@ class Decoder {
     ///
     /// Seeks to a given position within the currently playing file's audio stream.
     ///
-    /// - Parameter seconds: A number of seconds denoting the new desired seek position. Must be greater than 0.
+    /// - Parameter time: A desired seek position, specified in seconds. Must be greater than 0.
     ///
     /// - throws: A **SeekError** if the seek fails *and* EOF has *not* been reached.
     ///
     /// # Notes #
     ///
-    /// 1. If the seek goes past the end of the currently playing file, i.e. **seconds** > stream duration, the EOF flag will be set.
+    /// 1. If the seek goes past the end of the currently playing file, i.e. **time** > stream duration, the EOF flag will be set.
     ///
     /// 2. If the EOF flag had previously been set (true), but this seek took the stream to a position before EOF,
     /// the EOF flag will be reset (false) by this function call.
     ///
-    func seekToTime(_ seconds: Double) throws {
+    func seek(to time: Double) throws {
         
         do {
             
-            try format.seekWithinStream(stream, seconds)
+            try format.seek(within: stream, to: time)
             
             // If the seek succeeds, we have not reached EOF.
             self.eof = false
@@ -202,7 +202,7 @@ class Decoder {
         
         while frameQueue.isEmpty {
         
-            if let packet = try format.readPacket(stream) {
+            if let packet = try format.readPacket(from: stream) {
                 
                 for frame in try codec.decode(packet) {
                     frameQueue.enqueue(frame)

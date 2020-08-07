@@ -57,7 +57,7 @@ class AudioFileContext {
     /// 2. Has at least one audio stream.
     /// 3. Is able to decode that audio stream.
     ///
-    init?(_ file: URL) {
+    init?(forFile file: URL) {
         
         self.file = file
     
@@ -67,7 +67,7 @@ class AudioFileContext {
         
         // If any of the above steps fail, we cannot proceed with reading / decoding this file, so return nil.
         
-        guard let theFormatContext = FormatContext(file), let theAudioStream = theFormatContext.audioStream, let theAudioCodec = theAudioStream.codec else {return nil}
+        guard let theFormatContext = FormatContext(forFile: file), let theAudioStream = theFormatContext.audioStream, let theAudioCodec = theAudioStream.codec else {return nil}
 
         self.format = theFormatContext
         self.audioStream = theAudioStream

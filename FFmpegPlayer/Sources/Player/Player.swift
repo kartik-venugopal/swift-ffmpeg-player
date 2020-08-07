@@ -209,7 +209,7 @@ class Player {
     /// 1 - initialization of the appropriate codec fails, OR
     /// 2 - preparation of the audio engine fails.
     ///
-    func play(_ fileCtx: AudioFileContext) {
+    func play(fileContext: AudioFileContext) {
         
         // Reset player and decoder state before playback.
         playbackCompleted(false)
@@ -217,7 +217,7 @@ class Player {
         do {
         
             // Prepare decoder and audio engine.
-            try initialize(with: fileCtx)
+            try initialize(with: fileContext)
             
             // Initiate scheduling of audio buffers on the audio engine's playback queue.
             initiateDecodingAndScheduling()
@@ -228,14 +228,14 @@ class Player {
             }
             
         } catch {
-            print("Player setup for file '\(fileCtx.file.path)' failed !")
+            print("Player setup for file '\(fileContext.file.path)' failed !")
         }
     }
     
     ///
     /// Seeks to a given position within the currently playing file.
     ///
-    /// - Parameter seconds: A number of seconds. Must be greater than 0.
+    /// - Parameter time: The desired seek position, specified in seconds. Must be greater than 0.
     ///
     /// # Notes #
     ///
@@ -247,22 +247,22 @@ class Player {
     ///
     /// 3. Does nothing if no file is currently playing.
     ///
-    func seekToTime(_ seconds: Double) {
+    func seek(to time: Double) {
         
         guard playingFile != nil else {return}
         
         let wasPlaying: Bool = audioEngine.isPlaying
         
         haltPlayback()
-        initiateDecodingAndScheduling(from: seconds)
+        initiateDecodingAndScheduling(from: time)
         
         if scheduledBufferCount.value > 0 {
             
             if wasPlaying {
-                beginPlayback(from: seconds)
+                beginPlayback(from: time)
                 
             } else {
-                playbackStartPosition = seconds
+                playbackStartPosition = time
             }
         }
     }
@@ -314,7 +314,10 @@ class Player {
     }
     
     ///
-    /// Initiates playback of the audio engine, .
+    /// Initiates playback of the audio engine.
+    ///
+    /// - Parameter seekPosition:   The seek position, specified in seconds, from which playback is
+    ///                             beginning.
     ///
     /// # Notes #
     ///
@@ -323,6 +326,7 @@ class Player {
     func beginPlayback(from seekPosition: Double = 0) {
 
         playbackStartPosition = seekPosition
+        
         audioEngine.play()
         state = .playing
     }

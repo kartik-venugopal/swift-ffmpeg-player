@@ -39,7 +39,7 @@ extension Player {
             // within the stream.
             if let theSeekPosition = seekPosition {
                 
-                try decoder.seekToTime(theSeekPosition)
+                try decoder.seek(to: theSeekPosition)
                 
                 // If the seek took the decoder to EOF, signal completion of playback
                 // and don't do any scheduling.

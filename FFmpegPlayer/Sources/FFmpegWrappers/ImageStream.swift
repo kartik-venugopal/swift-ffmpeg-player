@@ -11,7 +11,7 @@ class ImageStream: StreamProtocol {
     ///
     /// A pointer to the encapsulated AVStream object.
     ///
-    var pointer: UnsafeMutablePointer<AVStream>
+    private var pointer: UnsafeMutablePointer<AVStream>
     
     ///
     /// The encapsulated AVStream object.
@@ -31,13 +31,13 @@ class ImageStream: StreamProtocol {
     ///
     /// The codec associated with this stream.
     ///
-    lazy var codec: ImageCodec? = ImageCodec(paramsPointer: avStream.codecpar)
+    lazy var codec: ImageCodec? = ImageCodec(fromParameters: avStream.codecpar)
     
     ///
     /// The packet (optionally) containing an attached picture.
     /// This can be used to read cover art.
     ///
-    lazy var attachedPic: Packet = Packet(avPacket: avStream.attached_pic)
+    lazy var attachedPic: Packet = Packet(encapsulating: avStream.attached_pic)
     
     ///
     /// All metadata key / value pairs available for this stream.
@@ -51,7 +51,7 @@ class ImageStream: StreamProtocol {
     ///
     /// - Parameter mediaType: The media type of this stream (e.g. audio / video, etc)
     ///
-    init(_ pointer: UnsafeMutablePointer<AVStream>) {
+    init(encapsulating pointer: UnsafeMutablePointer<AVStream>) {
         
         self.pointer = pointer
         self.index = pointer.pointee.index

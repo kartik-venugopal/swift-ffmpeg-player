@@ -6,11 +6,6 @@ import Foundation
 protocol StreamProtocol {
     
     ///
-    /// A pointer to the encapsulated AVStream object.
-    ///
-    var pointer: UnsafeMutablePointer<AVStream> {get}
-    
-    ///
     /// The encapsulated AVStream object.
     ///
     var avStream: AVStream {get}

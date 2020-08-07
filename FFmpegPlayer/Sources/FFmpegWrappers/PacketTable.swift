@@ -80,7 +80,7 @@ class PacketTable {
             
             while true {
                 
-                let packet = try Packet(pointer)
+                let packet = try Packet(fromFormat: pointer)
             
                 // Only process packets from our audio stream.
                 if packet.streamIndex == audioStreamIndex {

@@ -84,7 +84,7 @@ class Frame {
     ///
     /// - returns: An integer code indicating the result of the receive operation.
     ///
-    func receiveFrom(_ codec: Codec) -> ResultCode {
+    func receive(from codec: Codec) -> ResultCode {
         return avcodec_receive_frame(codec.contextPointer, &avFrame)
     }
     

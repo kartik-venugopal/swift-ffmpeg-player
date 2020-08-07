@@ -61,7 +61,7 @@ class Packet {
     ///
     /// - throws: **PacketReadError** if the read fails.
     ///
-    init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
+    init(fromFormat formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
         self.avPacket = AVPacket()
         
@@ -85,7 +85,7 @@ class Packet {
     ///
     /// - Parameter avPacket: A pre-existing AVPacket that has already been read.
     ///
-    init(avPacket: AVPacket) {
+    init(encapsulating avPacket: AVPacket) {
         
         self.avPacket = avPacket
         
@@ -104,7 +104,7 @@ class Packet {
     ///
     /// - returns: An integer code indicating the result of the send operation.
     ///
-    func sendTo(_ codec: Codec) -> ResultCode {
+    func send(to codec: Codec) -> ResultCode {
         return avcodec_send_packet(codec.contextPointer, &avPacket)
     }
 

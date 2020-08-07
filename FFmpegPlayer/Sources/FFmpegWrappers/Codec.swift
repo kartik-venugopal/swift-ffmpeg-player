@@ -56,7 +56,7 @@ class Codec {
     ///
     /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
     ///
-    init?(paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    init?(fromParameters paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
         
         self.paramsPointer = paramsPointer
         

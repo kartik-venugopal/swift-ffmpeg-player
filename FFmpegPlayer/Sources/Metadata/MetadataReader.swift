@@ -18,15 +18,15 @@ class MetadataReader {
     ///
     /// - returns: All available track metadata for the file pointed to by **fileCtx**.
     ///
-    func readTrack(_ fileCtx: AudioFileContext) -> TrackInfo {
+    func readMetadata(forFile fileContext: AudioFileContext) -> TrackInfo {
         
-        let audioInfo: AudioInfo = readAudioInfo(fileCtx)
-        let metadata: [String: String] = readAudioMetadata(fileCtx)
+        let audioInfo: AudioInfo = readAudioInfo(fileContext)
+        let metadata: [String: String] = readAudioMetadata(fileContext)
         
-        let coverArt: NSImage? = readCoverArt(fileCtx)
-        let artMetadata: [String: String]? = fileCtx.imageStream?.metadata
+        let coverArt: NSImage? = readCoverArt(fileContext)
+        let artMetadata: [String: String]? = fileContext.imageStream?.metadata
         
-        let chapters: [Chapter] = fileCtx.format.chapters
+        let chapters: [Chapter] = fileContext.format.chapters
         
         return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata, chapters: chapters)
     }

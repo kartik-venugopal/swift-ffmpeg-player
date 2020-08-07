@@ -11,7 +11,7 @@ class AudioStream: StreamProtocol {
     ///
     /// A pointer to the encapsulated AVStream object.
     ///
-    var pointer: UnsafeMutablePointer<AVStream>
+    private var pointer: UnsafeMutablePointer<AVStream>
     
     ///
     /// The encapsulated AVStream object.
@@ -31,7 +31,7 @@ class AudioStream: StreamProtocol {
     ///
     /// The codec associated with this stream.
     ///
-    lazy var codec: AudioCodec? = AudioCodec(paramsPointer: avStream.codecpar)
+    lazy var codec: AudioCodec? = AudioCodec(fromParameters: avStream.codecpar)
     
     ///
     /// The duration of this stream, in seconds, if available. Nil if not available.
@@ -70,7 +70,7 @@ class AudioStream: StreamProtocol {
     ///
     /// - Parameter mediaType: The media type of this stream (e.g. audio / video, etc)
     ///
-    init(_ pointer: UnsafeMutablePointer<AVStream>) {
+    init(encapsulating pointer: UnsafeMutablePointer<AVStream>) {
         
         self.pointer = pointer
         self.index = pointer.pointee.index

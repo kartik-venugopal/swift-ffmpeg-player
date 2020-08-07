@@ -168,7 +168,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         // main thread to hang and render the UI unresponsive.
         DispatchQueue.global(qos: .userInteractive).async {
             
-            guard let fileCtx = AudioFileContext(url) else {
+            guard let fileCtx = AudioFileContext(forFile: url) else {
 
                 DispatchQueue.main.async {
                     self.showInvalidFileError(url)
@@ -180,7 +180,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
             self.fileCtx = fileCtx
             
             // First, read the track's metadata.
-            let trackInfo: TrackInfo = self.metadataReader.readTrack(fileCtx)
+            let trackInfo: TrackInfo = self.metadataReader.readMetadata(forFile: fileCtx)
             self.trackInfo = trackInfo
             
             // Perform UI updates back on the main thread (they cannot be done on any other thread).
@@ -198,7 +198,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
                 self.updateSeekPosition(self)
                 
                 // Initiate playback of the file.
-                self.player.play(fileCtx)
+                self.player.play(fileContext: fileCtx)
                 self.btnPlayPause.image = self.imgPause
                 
                 // Dismiss the modal dialog if one was shown.
@@ -353,7 +353,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
             
             let newPosition = seekPercentage * duration / 100.0
             
-            doSeekToTime(newPosition)
+            doSeek(to: newPosition)
         }
     }
     
@@ -361,14 +361,14 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     /// Responds to a click on the seek forward button, by asking the player to seek forward a few seconds within the audio file.
     ///
     @IBAction func seekForwardAction(_ sender: AnyObject) {
-        doSeekToTime(player.seekPosition + seekInterval)
+        doSeek(to: player.seekPosition + seekInterval)
     }
     
     ///
     /// Responds to a click on the seek backward button, by asking the player to seek backward a few seconds within the audio file.
     ///
     @IBAction func seekBackwardAction(_ sender: AnyObject) {
-        doSeekToTime(player.seekPosition - seekInterval)
+        doSeek(to: player.seekPosition - seekInterval)
     }
     
     ///
@@ -376,12 +376,12 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
     ///
     /// - Parameter time: The desired new seek position within the audio file, specified in seconds.
     ///
-    private func doSeekToTime(_ time: Double) {
+    private func doSeek(to time: Double) {
         
         if self.trackInfo != nil {
             
             // Ensure that the seek time is not negative.
-            player.seekToTime(max(0, time))
+            player.seek(to: max(0, time))
             
             // Immediately after a seek, update the seek position label and slider fields to reflect the updated seek position.
             updateSeekPosition(self)

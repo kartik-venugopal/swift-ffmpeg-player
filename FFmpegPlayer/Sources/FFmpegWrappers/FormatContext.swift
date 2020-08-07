@@ -185,7 +185,7 @@ class FormatContext {
     /// - An error occurs while opening the file or reading (demuxing) its streams.
     /// - No audio stream is found in the file.
     ///
-    init?(_ file: URL) {
+    init?(forFile file: URL) {
         
         self.file = file
         self.filePath = file.path
@@ -237,9 +237,9 @@ class FormatContext {
                     
                 // For audio / video streams, wrap the AVStream in a AudioStream / ImageStream.
                     
-                case AVMEDIA_TYPE_AUDIO:    return AudioStream(streamPointer)
+                case AVMEDIA_TYPE_AUDIO:    return AudioStream(encapsulating: streamPointer)
                     
-                case AVMEDIA_TYPE_VIDEO:    return ImageStream(streamPointer)
+                case AVMEDIA_TYPE_VIDEO:    return ImageStream(encapsulating: streamPointer)
                     
                 default:                    return nil
                     
@@ -274,9 +274,9 @@ class FormatContext {
     ///
     /// - throws: **PacketReadError**, if an error occurred while attempting to read a packet.
     ///
-    func readPacket(_ stream: StreamProtocol) throws -> Packet? {
+    func readPacket(from stream: StreamProtocol) throws -> Packet? {
         
-        let packet = try Packet(pointer)
+        let packet = try Packet(fromFormat: pointer)
         return packet.streamIndex == stream.index ? packet : nil
     }
     
@@ -284,11 +284,11 @@ class FormatContext {
     /// Seek to a given position within a given stream.
     ///
     /// - Parameter stream:     The stream within which we want to perform the seek.
-    /// - Parameter seconds:    The target seek position within the stream, specified in seconds.
+    /// - Parameter time:       The target seek position within the stream, specified in seconds.
     ///
     /// - throws: **PacketReadError**, if an error occurred while attempting to read a packet.
     ///
-    func seekWithinStream(_ stream: AudioStream, _ seconds: Double) throws {
+    func seek(within stream: AudioStream, to time: Double) throws {
         
         // Before attempting the seek, it is necessary to ask the codec
         // to flush its internal buffers. Otherwise, the seek will likely fail.
@@ -305,7 +305,7 @@ class FormatContext {
             // For raw audio files, we must use the packet table to determine
             // the byte position of our target packet, given the seek position
             // in seconds.
-            timestamp = packetTable?.closestPacketBytePosition(for: seconds) ?? 0
+            timestamp = packetTable?.closestPacketBytePosition(for: time) ?? 0
             
             // Validate the byte position (cannot be greater than the file size).
             if timestamp >= fileSize {throw SeekError(ERROR_EOF)}
@@ -320,7 +320,7 @@ class FormatContext {
             
             // We need to determine a target frame, given the seek position in seconds,
             // duration, and frame count.
-            timestamp = Int64(seconds * Double(stream.timeBaseDuration) / duration)
+            timestamp = Int64(time * Double(stream.timeBaseDuration) / duration)
             
             // Validate the target frame (cannot exceed the total frame count)
             if timestamp >= stream.timeBaseDuration {throw SeekError(ERROR_EOF)}

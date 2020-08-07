@@ -1,7 +1,7 @@
 import AVFoundation
 
 ///
-/// Helper class that encapsulates an AVAudioEngine audio graph that sends audio to the output hardware.
+/// Encapsulates an AVAudioEngine audio graph that sends audio to the output hardware.
 ///
 /// - Manages the audio engine life cycle.
 /// - Manages connections (and their audio formats) between audio graph nodes.
