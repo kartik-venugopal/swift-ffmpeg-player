@@ -24,14 +24,26 @@ class Player {
     ///
     var scheduledBufferCount: AtomicCounter<Int> = AtomicCounter<Int>()
     
+    ///
     /// A context associated with the currently playing file.
+    /// May be nil (if no file is currently playing).
+    ///
     var playingFile: AudioFileContext!
     
+    ///
     /// The codec for the currently playing file.
+    /// May be nil (if no file is currently playing).
+    ///
     var codec: AudioCodec! {playingFile.audioCodec}
     
+    ///
     /// The audio format for the currently playing file.
+    /// May be nil (if no file is currently playing).
+    ///
+    /// # Note #
+    ///
     /// All audio buffers will be set to this format when scheduled for playback.
+    ///
     var audioFormat: AVAudioFormat!
     
     ///
@@ -88,6 +100,7 @@ class Player {
     
     ///
     /// Property to adjust the player's volume.
+    /// Must be a floating-point value between 0 and 1.
     ///
     var volume: Float {
         
