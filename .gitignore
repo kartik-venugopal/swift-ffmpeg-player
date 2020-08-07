@@ -4,3 +4,4 @@ FFmpegPlayer/.DS_Store
 FFmpegPlayer/Frameworks/orig
 FFmpegPlayer/Resources/ffmpeg/dylibs
 FFmpegPlayer/Resources/ffmpeg/ffmpeg-4.3.1
+FFmpegPlayer/Resources/ffmpeg/ignore
