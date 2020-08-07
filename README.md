@@ -1,4 +1,4 @@
-# swift-ffmpeg-player
+# FFmpeg Player
 
 ## What ?
 
