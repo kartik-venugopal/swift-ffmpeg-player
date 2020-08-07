@@ -8,7 +8,7 @@ A basic audio player that demonstrates the use of ffmpeg together with AVAudioEn
 
 ### In a few more words, ...
 
-![High level component diagram](/FFmpegPlayer/Resources/basicFFmpegPlayer.png?raw=true)
+![High level component diagram](/FFmpegPlayer/Resources/diagram.png?raw=true)
 
 * Demuxing an audio file into streams - audio and image (cover art).
 * Reading packets from an audio stream, and using a codec to decode the packets into PCM samples.
