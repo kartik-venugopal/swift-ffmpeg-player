@@ -37,7 +37,7 @@ class Decoder {
     /// During a decoding loop, in the event that a FrameBuffer fills up, this queue will hold the overflow (excess) frames that can be passed off to the next
     /// FrameBuffer in the next decoding loop.
     ///
-    private var frameQueue: Queue<BufferedFrame> = Queue<BufferedFrame>()
+    private var frameQueue: Queue<Frame> = Queue<Frame>()
     
     ///
     /// Prepares the codec to decode a given audio file.
@@ -130,7 +130,7 @@ class Decoder {
         
         if eof {
             
-            var terminalFrames: [BufferedFrame] = frameQueue.dequeueAll()
+            var terminalFrames: [Frame] = frameQueue.dequeueAll()
             
             do {
                 
@@ -168,6 +168,66 @@ class Decoder {
             
             try format.seek(within: stream, to: time)
             
+            let etime = measureExecutionTime {
+
+                do {
+
+                var packetsRead: [(pkt: Packet, timestamp: Double)] = []
+                var ptime: Double = 0
+
+                while ptime < time {
+
+                    if let packet = try format.readPacket(from: stream) {
+
+                        print("\n*** LOOP - LAST PKT READ: \(packet.pts), TIME = \(Double(packet.pts) * stream.timeBase.ratio)")
+                        ptime = Double(packet.pts) * stream.timeBase.ratio
+                        packetsRead.append((packet, ptime))
+                    }
+                }
+
+                    if let firstIndexAfterTargetTime = packetsRead.firstIndex(where: {$0.timestamp > time}) {
+                        
+                        if 0 < firstIndexAfterTargetTime - 1 {
+                        
+                            for index in 0..<(firstIndexAfterTargetTime - 1) {
+
+                                let pkt = packetsRead[index].pkt
+                                print("\n*** DROPPING PKT: \(pkt.pts)")
+                                codec.decodeAndDrop(packet: pkt)
+                            }
+                        }
+
+                        for index in (firstIndexAfterTargetTime - 1)..<packetsRead.count {
+
+                            let pkt = packetsRead[index].pkt
+
+                            print("\n*** TRYING PKT: \(pkt.pts)")
+
+                            for frame in try codec.decode(packet: pkt) {
+                                frameQueue.enqueue(frame)
+                                print("\n*** ENQUEUED ONE \(frame.pts) FOR: \(pkt.pts)")
+                            }
+                        }
+                        
+                        let err = abs(time - packetsRead[firstIndexAfterTargetTime - 1].timestamp)
+                        print("\nSEEK-ERROR = \(err)")
+                        
+                        if err > 0.01 {
+                            
+                            let frame = frameQueue.peek()!
+                            let numSamplesToKeep = Int32((packetsRead[firstIndexAfterTargetTime].timestamp - time) * Double(codec.sampleRate))
+                            
+                            print("\nKeeping last \(numSamplesToKeep) in start frame with PTS \(frame.pts).")
+                            
+//                            frame.keepLastNSamples(sampleCount: numSamplesToKeep)
+                        }
+                    }
+                    
+                } catch {}
+            }
+
+            print("\nSKIPPING TOOK \(etime * 1000) msec")
+            
             // If the seek succeeds, we have not reached EOF.
             self.eof = false
             
@@ -198,7 +258,7 @@ class Decoder {
     /// 3. The returned frame will not be dequeued (removed from the queue) by this function. It is the responsibility of the caller
     /// to do so, upon consuming the frame.
     ///
-    private func nextFrame() throws -> BufferedFrame {
+    private func nextFrame() throws -> Frame {
         
         while frameQueue.isEmpty {
         

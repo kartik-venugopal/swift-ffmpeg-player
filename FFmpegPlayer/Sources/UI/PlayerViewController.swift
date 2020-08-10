@@ -81,7 +81,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         initializeFileOpenDialog()
         
         // Remember the player volume from the previous app launch (or use a default value).
-        player.volume = UserDefaults.standard.value(forKey: "player.volume") as? Float ?? 0.5
+        player.volume = UserDefaults.standard.value(forKey: "player.volume") as? Float ?? 0
         volumeSlider.floatValue = player.volume
         
         let volumePercentage = Int(round(player.volume * 100))
@@ -117,7 +117,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         
         dialog.resolvesAliases = true;
         
-        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music")
+        dialog.directoryURL = URL(fileURLWithPath: NSHomeDirectory() + "/Music/Aural-Test")
     }
     
     ///

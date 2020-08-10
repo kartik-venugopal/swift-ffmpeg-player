@@ -152,8 +152,10 @@ class Player {
         // Try to open the codec.
         try decoder.initialize(with: file)
         
+        let codec: AudioCodec = playingFile.audioCodec
+        
         let sampleRate: Int32 = codec.sampleRate
-        let channelCount: Int32 = codec.params.channels
+        let channelCount: Int32 = codec.channelCount
         
         // The effective sample rate, which also takes into account the channel count, gives us a better idea
         // of the computational cost of decoding and resampling the given file, as opposed to just the
@@ -203,7 +205,7 @@ class Player {
         // all samples need to be resampled (converted) to a suitable format. So, prepare the resampler
         // if required.
         
-        if file.audioCodec.sampleFormat.needsResampling {
+        if codec.sampleFormat.needsResampling {
             Resampler.instance.allocateFor(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
         }
         

@@ -1,4 +1,5 @@
-import Foundation
+import AVFoundation
+import Accelerate
 
 ///
 /// Encapsulates an ffmpeg AVFrame struct that represents a single (decoded) frame,
@@ -10,7 +11,11 @@ class Frame {
     ///
     /// The encapsulated AVFrame object.
     ///
-    var avFrame: AVFrame
+    var avFrame: AVFrame {pointer.pointee}
+    
+    var pointer: UnsafeMutablePointer<AVFrame>
+    
+    var rawDataPointers: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?>!
     
     ///
     /// Describes the number and physical / spatial arrangement of the channels. (e.g. "5.1 surround" or "stereo")
@@ -61,10 +66,7 @@ class Frame {
     ///
     var timestamp: Int64 {avFrame.best_effort_timestamp}
     
-    ///
-    /// Pointers to the raw data (unsigned bytes) constituting this frame's samples.
-    ///
-    var dataPointers: [UnsafeMutablePointer<UInt8>?] {avFrame.dataPointers}
+    var pts: Int64 {avFrame.pts}
     
     ///
     /// Instantiates a Frame and sets the sample format.
@@ -73,26 +75,40 @@ class Frame {
     ///
     init(sampleFormat: SampleFormat) {
         
-        self.avFrame = AVFrame()
+        self.pointer = av_frame_alloc()
         self.sampleFormat = sampleFormat
+        
+        self.rawDataPointers = UnsafeMutableBufferPointer(start: pointer.pointee.extended_data, count: 8)
     }
     
-    ///
-    /// Receives a decoded frame from a codec.
-    ///
-    /// - Parameter codec: The codec that will produce a decoded frame.
-    ///
-    /// - returns: An integer code indicating the result of the receive operation.
-    ///
-    func receive(from codec: Codec) -> ResultCode {
-        return avcodec_receive_frame(codec.contextPointer, &avFrame)
-    }
-    
-    ///
-    /// Unreference all data buffers referenced by the underlying AVFrame.
-    ///
-    func unreferenceBuffers() {
-        av_frame_unref(&avFrame)
+    func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
+
+        // Get pointers to 1 - this frame's raw data buffers, and 2 - the audio buffer's internal Float data buffers.
+        guard let rawDataPointer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?> = rawDataPointers.baseAddress,
+            let audioBufferChannels = audioBuffer.floatChannelData else {return}
+        
+        let intSampleCount: Int = Int(sampleCount)
+//        let intFirstSampleIndex: Int = Int(firstSampleIndex)
+        
+        for channelIndex in 0..<Int(channelCount) {
+            
+            // Get the pointers to the source and destination buffers for the copy operation.
+            guard let bytesForChannel = rawDataPointer[channelIndex] else {break}
+            let audioBufferChannel = audioBufferChannels[channelIndex]
+            
+            // Re-bind this frame's bytes to Float for the copy operation.
+            _ = bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount) {
+                
+                (floatsForChannel: UnsafeMutablePointer<Float>) in
+                
+                // Use Accelerate to perform the copy optimally, starting at the given offset.
+                cblas_scopy(sampleCount, floatsForChannel.advanced(by: 0), 1, audioBufferChannel.advanced(by: offset), 1)
+                
+//                if channelIndex == 0, firstSampleIndex != 0 {
+//                    print("\n\(sampleCount) samples copied from frame with PTS \(pts), firstIndex = \(firstSampleIndex)")
+//                }
+            }
+        }
     }
     
     /// Indicates whether or not this object has already been destroyed.
@@ -110,8 +126,10 @@ class Frame {
         if destroyed {return}
         
         // Free up the space allocated to this frame.
-        av_frame_unref(&avFrame)
-        av_freep(&avFrame)
+        av_frame_unref(pointer)
+        av_freep(pointer)
+        
+        self.rawDataPointers.deallocate()
         
         destroyed = true
     }

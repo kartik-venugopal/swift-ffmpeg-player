@@ -322,6 +322,8 @@ class FormatContext {
             // duration, and frame count.
             timestamp = Int64(time * Double(stream.timeBaseDuration) / duration)
             
+            print("\n*** Seeking to frame \(timestamp) having time \(time) / \(duration)")
+            
             // Validate the target frame (cannot exceed the total frame count)
             if timestamp >= stream.timeBaseDuration {throw SeekError(ERROR_EOF)}
             

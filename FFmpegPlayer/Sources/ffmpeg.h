@@ -14,6 +14,8 @@
  */
 int ERROR_EOF;
 
+AVRational TIME_BASE_Q;
+
 /**
  * The following definitions are identifiers for several ffmpeg channel layouts defined in <libavutil/channel_layout.h>.
  */

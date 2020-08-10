@@ -8,6 +8,8 @@ import Foundation
 ///
 class AudioStream: StreamProtocol {
     
+    static var timeBase: AVRational!
+    
     ///
     /// A pointer to the encapsulated AVStream object.
     ///
@@ -75,6 +77,8 @@ class AudioStream: StreamProtocol {
         self.pointer = pointer
         self.index = pointer.pointee.index
         self.duration = avStream.duration > 0 ? Double(avStream.duration) * avStream.time_base.ratio : nil
+        
+        Self.timeBase = avStream.time_base
     }
     
     ///

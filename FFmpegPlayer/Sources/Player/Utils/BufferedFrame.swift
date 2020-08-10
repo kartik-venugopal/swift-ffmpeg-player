@@ -37,7 +37,9 @@ class BufferedFrame: Hashable {
     ///
     /// The number of samples contained in this frame.
     ///
-    let sampleCount: Int32
+    var sampleCount: Int32
+    
+    var firstSampleIndex: Int32
     
     ///
     /// The sampling rate for the samples contained in this frame, i.e. samples per second (or Hz).
@@ -68,6 +70,8 @@ class BufferedFrame: Hashable {
     ///
     let timestamp: Int64
     
+    let pts: Int64
+    
     init(_ frame: Frame) {
         
         self.timestamp = frame.timestamp
@@ -78,11 +82,12 @@ class BufferedFrame: Hashable {
         self.sampleRate = frame.sampleRate
         self.lineSize = frame.lineSize
         self.sampleFormat = frame.sampleFormat
+        self.pts = frame.pts
         
         self.actualDataPointers = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: channelCount)
         self.allocatedDataPointerCount = 0
         
-        let sourceBuffers = frame.dataPointers
+//        let sourceBuffers = frame.dataPointers
         
         // Copy over all the raw data from the source frame into this buffered frame.
         
@@ -92,18 +97,28 @@ class BufferedFrame: Hashable {
         // - For interleaved (packed) data, there will be only a single source buffer.
         // - For non-interleaved (planar) data, the number of source buffers will equal the channel count.
         
-        for bufferIndex in 0..<8 {
-            
-            guard let sourceBuffer = sourceBuffers[bufferIndex] else {break}
-            
-            // Allocate memory space equal to lineSize bytes, and initialize the data (copy) from the source buffer.
-            actualDataPointers[bufferIndex] = UnsafeMutablePointer<UInt8>.allocate(capacity: lineSize)
-            actualDataPointers[bufferIndex]?.initialize(from: sourceBuffer, count: lineSize)
-            
-            allocatedDataPointerCount += 1
-        }
+//        for bufferIndex in 0..<8 {
+//
+////            guard let sourceBuffer = sourceBuffers[bufferIndex] else {break}
+//
+//            // Allocate memory space equal to lineSize bytes, and initialize the data (copy) from the source buffer.
+////            actualDataPointers[bufferIndex] = UnsafeMutablePointer<UInt8>.allocate(capacity: lineSize)
+////            actualDataPointers[bufferIndex]?.initialize(from: sourceBuffer, count: lineSize)
+//
+//            allocatedDataPointerCount += 1
+//        }
         
         self.rawDataPointers = UnsafeMutableBufferPointer(start: actualDataPointers, count: channelCount)
+        self.firstSampleIndex = 0
+    }
+    
+    func keepLastNSamples(sampleCount: Int32) {
+        
+        if sampleCount < self.sampleCount {
+            
+            firstSampleIndex = self.sampleCount - sampleCount
+            self.sampleCount = sampleCount
+        }
     }
     
     ///
@@ -133,6 +148,7 @@ class BufferedFrame: Hashable {
             let audioBufferChannels = audioBuffer.floatChannelData else {return}
         
         let intSampleCount: Int = Int(sampleCount)
+        let intFirstSampleIndex: Int = Int(firstSampleIndex)
         
         for channelIndex in 0..<channelCount {
             
@@ -146,7 +162,11 @@ class BufferedFrame: Hashable {
                 (floatsForChannel: UnsafeMutablePointer<Float>) in
                 
                 // Use Accelerate to perform the copy optimally, starting at the given offset.
-                cblas_scopy(sampleCount, floatsForChannel, 1, audioBufferChannel.advanced(by: offset), 1)
+                cblas_scopy(sampleCount, floatsForChannel.advanced(by: intFirstSampleIndex), 1, audioBufferChannel.advanced(by: offset), 1)
+                
+                if channelIndex == 0, firstSampleIndex != 0 {
+                    print("\n\(sampleCount) samples copied from frame with PTS \(pts), firstIndex = \(firstSampleIndex)")
+                }
             }
         }
     }

@@ -86,7 +86,7 @@ extension Player {
         if eof {return}
         
         self.schedulingOpQueue.addOperation {
-            self.decodeAndScheduleOneBuffer(maxSampleCount: self.sampleCountForDeferredPlayback)
+            self.decodeAndScheduleOneBuffer(maxSampleCount: maxSampleCount)
         }
     }
 

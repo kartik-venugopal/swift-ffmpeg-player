@@ -13,7 +13,7 @@ class FrameBuffer {
     /// An ordered list of buffered frames. The ordering is important as it reflects the order of
     /// the corresponding samples in the audio file from which they were read.
     ///
-    private var frames: [BufferedFrame] = []
+    private var frames: [Frame] = []
     
     ///
     /// The PCM format of the samples in this buffer.
@@ -53,7 +53,7 @@ class FrameBuffer {
     ///
     /// - returns: Whether or not the frame was successfully appended to the buffer.
     ///
-    func appendFrame(frame: BufferedFrame) -> Bool {
+    func appendFrame(frame: Frame) -> Bool {
 
         // Check if the sample count of the new frame would cause this buffer to
         // exceed maxSampleCount.
@@ -82,7 +82,7 @@ class FrameBuffer {
     /// So, unlike **appendFrame()**, this function will not reject the terminal frames ... they will always
     /// be appended to this buffer.
     ///
-    func appendTerminalFrames(frames: [BufferedFrame]) {
+    func appendTerminalFrames(frames: [Frame]) {
         
         for frame in frames {
             

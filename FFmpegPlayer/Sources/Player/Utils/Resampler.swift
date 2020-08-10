@@ -120,7 +120,7 @@ class Resampler {
     /// It is good from a safety perspective, to copy the output samples to the audio buffer right here rather than to give out a pointer to the memory
     /// space allocated from within this object so that a client object may perform the copy. This prevents any potentially unsafe use of the pointer.
     ///
-    func resample(_ frame: BufferedFrame, andCopyOutputTo audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
+    func resample(_ frame: Frame, andCopyOutputTo audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
         
         // Allocate the context used to perform the resampling.
         guard let resampleCtx = ResamplingContext() else {
@@ -154,7 +154,7 @@ class Resampler {
         
         // Perform the resampling.
         
-        let outputDataPointer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outputData, count: frame.channelCount)
+        let outputDataPointer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outputData, count: Int(frame.channelCount))
         
         let sampleCount: Int32 = frame.sampleCount
         
@@ -184,15 +184,16 @@ class Resampler {
     ///                          frames copied to it previously. So, the offset will equal the sum of the
     ///                          the sample counts of all frames previously copied to the audio buffer.
     ///
-    private func copyOutputFor(frame: BufferedFrame, to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
+    private func copyOutputFor(frame: Frame, to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
         
         // Get a pointer to the audio buffer's internal data buffer.
         guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
         
         let intSampleCount: Int = Int(frame.sampleCount)
+//        let intFirstSampleIndex: Int = Int(frame.firstSampleIndex)
         
         // Iterate through all the channels.
-        for channelIndex in 0..<frame.channelCount {
+        for channelIndex in 0..<Int(frame.channelCount) {
             
             // Obtain pointers to the input and output data.
             guard let bytesForChannel = outputData[channelIndex] else {break}
@@ -203,7 +204,11 @@ class Resampler {
                 (outputDataPointer: UnsafeMutablePointer<Float>) in
                 
                 // Use Accelerate to perform the copy optimally, starting at the given offset.
-                cblas_scopy(frame.sampleCount, outputDataPointer, 1, audioBufferChannel.advanced(by: offset), 1)
+                cblas_scopy(frame.sampleCount, outputDataPointer.advanced(by: 0), 1, audioBufferChannel.advanced(by: offset), 1)
+                
+//                if channelIndex == 0, intFirstSampleIndex != 0 {
+//                    print("\n\(intSampleCount) samples copied from frame with PTS \(frame.pts), firstIndex = \(intFirstSampleIndex)")
+//                }
             }
         }
     }

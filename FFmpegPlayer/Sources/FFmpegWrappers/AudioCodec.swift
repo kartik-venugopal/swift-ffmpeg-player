@@ -56,7 +56,7 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs during decoding.
     ///
-    func decode(packet: Packet) throws -> [BufferedFrame] {
+    func decode(packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder for decoding.
         let resultCode: Int32 = packet.send(to: self)
@@ -74,35 +74,59 @@ class AudioCodec: Codec {
         return receiveFrames()
     }
     
+    func decodeAndDrop(packet: Packet) {
+        
+        // Send the packet to the decoder for decoding.
+        var resultCode: Int32 = packet.send(to: self)
+        if resultCode.isNegative {return}
+        
+        var avFrame: AVFrame = AVFrame()
+        
+        repeat {
+            resultCode = avcodec_receive_frame(contextPointer, &avFrame)
+        } while resultCode.isZero && avFrame.nb_samples > 0
+    }
+    
+    ///
+    /// Receives a decoded frame from the underlying codec.
+    ///
+    /// - Parameter codec: The codec that will produce a decoded frame.
+    ///
+    /// - returns: An integer code indicating the result of the receive operation.
+    ///
+    func receiveFrame(into frame: Frame) -> ResultCode {
+        return avcodec_receive_frame(contextPointer, frame.pointer)
+    }
+    
     ///
     /// Receives frames from the decoder (after sending one packet to it).
     ///
     /// - returns: An ordered list of frames.
     ///
-    private func receiveFrames() -> [BufferedFrame] {
+    private func receiveFrames() -> [Frame] {
         
         // Receive (potentially) multiple frames
 
         // Resuse a single Frame object multiple times.
-        let frame = Frame(sampleFormat: self.sampleFormat)
+        var frame = Frame(sampleFormat: self.sampleFormat)
         
         // Collect the received frames in an array.
-        var bufferedFrames: [BufferedFrame] = []
+        var bufferedFrames: [Frame] = []
         
         // Receive a decoded frame from the codec.
-        var resultCode: Int32 = frame.receive(from: self)
+        var resultCode: Int32 = receiveFrame(into: frame)
         
         // Keep receiving frames while no errors are encountered
         while resultCode.isZero, frame.hasSamples {
             
-            bufferedFrames.append(BufferedFrame(frame))
-            frame.unreferenceBuffers()
+//            let reald = Double(frame.avFrame.nb_samples) / Double(frame.sampleRate)
+//            print("Frame PTS: \(frame.pts) \(Double(frame.pts) * AudioStream.timeBase.ratio), sampleCount = \(frame.sampleCount), duration = \(reald), isKeyFrame: \(frame.avFrame.key_frame == 1)")
             
-            resultCode = frame.receive(from: self)
+            bufferedFrames.append(frame)
+            
+            frame = Frame(sampleFormat: self.sampleFormat)
+            resultCode = receiveFrame(into: frame)
         }
-        
-        // The frame is no longer needed.
-        frame.destroy()
         
         return bufferedFrames
     }
@@ -114,7 +138,7 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs while draining the codec.
     ///
-    func drain() throws -> [BufferedFrame] {
+    func drain() throws -> [Frame] {
         
         // Send the "flush packet" to the decoder
         let resultCode: Int32 = avcodec_send_packet(contextPointer, nil)
