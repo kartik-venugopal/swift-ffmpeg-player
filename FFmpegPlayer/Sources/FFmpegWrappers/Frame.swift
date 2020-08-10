@@ -79,6 +79,17 @@ class Frame {
         self.sampleFormat = sampleFormat
     }
     
+    func keepLastNSamples(sampleCount: Int32) {
+        
+        // TODO
+        
+//        if sampleCount < self.sampleCount {
+//
+//            firstSampleIndex = self.sampleCount - sampleCount
+//            self.sampleCount = sampleCount
+//        }
+    }
+    
     func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
 
         // Get pointers to the audio buffer's internal Float data buffers.

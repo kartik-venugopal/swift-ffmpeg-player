@@ -10,7 +10,9 @@ class Packet {
     ///
     /// The encapsulated AVPacket object.
     ///
-    var avPacket: AVPacket
+    var avPacket: AVPacket {pointer.pointee}
+    
+    var pointer: UnsafeMutablePointer<AVPacket>
     
     ///
     /// Index of the stream from which this packet was read.
@@ -61,12 +63,12 @@ class Packet {
     ///
     /// - throws: **PacketReadError** if the read fails.
     ///
-    init(fromFormat formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
+    init(readingFromFormat formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
-        self.avPacket = AVPacket()
+        self.pointer = av_packet_alloc()
         
         // Try to read a packet.
-        let readResult: Int32 = av_read_frame(formatCtx, &avPacket)
+        let readResult: Int32 = av_read_frame(formatCtx, pointer)
         
         // If the read fails, log a message and throw an error.
         guard readResult >= 0 else {
@@ -85,9 +87,9 @@ class Packet {
     ///
     /// - Parameter avPacket: A pre-existing AVPacket that has already been read.
     ///
-    init(encapsulating avPacket: AVPacket) {
+    init(encapsulating pointer: UnsafeMutablePointer<AVPacket>) {
         
-        self.avPacket = avPacket
+        self.pointer = pointer
         
         // Since this avPacket was not allocated by this object, we
         // cannot deallocate it here. It is the caller's responsibility
@@ -95,17 +97,6 @@ class Packet {
         //
         // So, set the destroyed flag, to prevent deallocation.
         destroyed = true
-    }
-
-    ///
-    /// Sends this packet to a codec for decoding.
-    ///
-    /// - Parameter codec: The codec that will decode this packet.
-    ///
-    /// - returns: An integer code indicating the result of the send operation.
-    ///
-    func send(to codec: Codec) -> ResultCode {
-        return avcodec_send_packet(codec.contextPointer, &avPacket)
     }
 
     /// Indicates whether or not this object has already been destroyed.
@@ -122,8 +113,8 @@ class Packet {
         // thrown.
         if destroyed {return}
         
-        av_packet_unref(&avPacket)
-        av_freep(&avPacket)
+        av_packet_unref(pointer)
+        av_freep(pointer)
         
         destroyed = true
     }

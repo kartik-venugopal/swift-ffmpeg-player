@@ -59,7 +59,7 @@ class AudioCodec: Codec {
     func decode(packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder for decoding.
-        let resultCode: Int32 = packet.send(to: self)
+        let resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
         
         // The packet may be destroyed at this point as it has already been sent to the codec.
         packet.destroy()
@@ -77,7 +77,7 @@ class AudioCodec: Codec {
     func decodeAndDrop(packet: Packet) {
         
         // Send the packet to the decoder for decoding.
-        var resultCode: Int32 = packet.send(to: self)
+        var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
         if resultCode.isNegative {return}
         
         var avFrame: AVFrame = AVFrame()
@@ -85,17 +85,6 @@ class AudioCodec: Codec {
         repeat {
             resultCode = avcodec_receive_frame(contextPointer, &avFrame)
         } while resultCode.isZero && avFrame.nb_samples > 0
-    }
-    
-    ///
-    /// Receives a decoded frame from the underlying codec.
-    ///
-    /// - Parameter codec: The codec that will produce a decoded frame.
-    ///
-    /// - returns: An integer code indicating the result of the receive operation.
-    ///
-    func receiveFrame(into frame: Frame) -> ResultCode {
-        return avcodec_receive_frame(contextPointer, frame.pointer)
     }
     
     ///
@@ -114,7 +103,7 @@ class AudioCodec: Codec {
         var bufferedFrames: [Frame] = []
         
         // Receive a decoded frame from the codec.
-        var resultCode: Int32 = receiveFrame(into: frame)
+        var resultCode: Int32 = avcodec_receive_frame(contextPointer, frame.pointer)
         
         // Keep receiving frames while no errors are encountered
         while resultCode.isZero, frame.hasSamples {
@@ -125,7 +114,7 @@ class AudioCodec: Codec {
             bufferedFrames.append(frame)
             
             frame = Frame(sampleFormat: self.sampleFormat)
-            resultCode = receiveFrame(into: frame)
+            resultCode = avcodec_receive_frame(contextPointer, frame.pointer)
         }
         
         return bufferedFrames
