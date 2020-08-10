@@ -159,10 +159,11 @@ class Resampler {
         let sampleCount: Int32 = frame.sampleCount
         
         // Access the input data as pointers from the frame being resampled.
-        _ = frame.rawDataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self) {
-            (inputDataPointer: UnsafeMutableBufferPointer<UnsafePointer<UInt8>?>) in
+        frame.dataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self, capacity: Int(frame.channelCount)) {
             
-            resampleCtx.convert(inputDataPointer: inputDataPointer.baseAddress,
+            (inputDataPointer: UnsafeMutablePointer<UnsafePointer<UInt8>?>) in
+            
+            resampleCtx.convert(inputDataPointer: inputDataPointer,
                                 inputSampleCount: sampleCount,
                                 outputDataPointer: outputDataPointer.baseAddress!,
                                 outputSampleCount: sampleCount)

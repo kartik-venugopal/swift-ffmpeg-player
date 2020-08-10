@@ -15,8 +15,6 @@ class Frame {
     
     var pointer: UnsafeMutablePointer<AVFrame>
     
-    var rawDataPointers: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?>!
-    
     ///
     /// Describes the number and physical / spatial arrangement of the channels. (e.g. "5.1 surround" or "stereo")
     ///
@@ -68,6 +66,8 @@ class Frame {
     
     var pts: Int64 {avFrame.pts}
     
+    var dataPointers: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>! {avFrame.extended_data}
+    
     ///
     /// Instantiates a Frame and sets the sample format.
     ///
@@ -77,15 +77,12 @@ class Frame {
         
         self.pointer = av_frame_alloc()
         self.sampleFormat = sampleFormat
-        
-        self.rawDataPointers = UnsafeMutableBufferPointer(start: pointer.pointee.extended_data, count: 8)
     }
     
     func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
 
-        // Get pointers to 1 - this frame's raw data buffers, and 2 - the audio buffer's internal Float data buffers.
-        guard let rawDataPointer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?> = rawDataPointers.baseAddress,
-            let audioBufferChannels = audioBuffer.floatChannelData else {return}
+        // Get pointers to the audio buffer's internal Float data buffers.
+        guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
         
         let intSampleCount: Int = Int(sampleCount)
 //        let intFirstSampleIndex: Int = Int(firstSampleIndex)
@@ -93,11 +90,11 @@ class Frame {
         for channelIndex in 0..<Int(channelCount) {
             
             // Get the pointers to the source and destination buffers for the copy operation.
-            guard let bytesForChannel = rawDataPointer[channelIndex] else {break}
+            guard let bytesForChannel = dataPointers[channelIndex] else {break}
             let audioBufferChannel = audioBufferChannels[channelIndex]
             
             // Re-bind this frame's bytes to Float for the copy operation.
-            _ = bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount) {
+            bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount) {
                 
                 (floatsForChannel: UnsafeMutablePointer<Float>) in
                 
@@ -129,23 +126,11 @@ class Frame {
         av_frame_unref(pointer)
         av_freep(pointer)
         
-        self.rawDataPointers.deallocate()
-        
         destroyed = true
     }
     
     /// When this object is deinitialized, make sure that its allocated memory space is deallocated.
     deinit {
         destroy()
-    }
-}
-
-extension AVFrame {
-
-    ///
-    /// An array of pointers to the raw data contained in this AVFrame.
-    ///
-    var dataPointers: [UnsafeMutablePointer<UInt8>?] {
-        Array(UnsafeBufferPointer(start: self.extended_data, count: 8)) // Access up to 8 channels of samples.
     }
 }
