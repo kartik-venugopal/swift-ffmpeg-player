@@ -95,7 +95,7 @@ class Decoder {
                 // Try appending the frame to the frame buffer.
                 // The frame buffer may reject the new frame if appending it would
                 // cause its sample count to exceed the maximum.
-                if buffer.appendFrame(frame: frame) {
+                if buffer.appendFrame(frame) {
                     
                     // The buffer accepted the new frame. Remove it from the queue.
                     _ = frameQueue.dequeue()
@@ -142,7 +142,7 @@ class Decoder {
             }
           
             // Append these terminal frames to the frame buffer (the frame buffer cannot reject terminal frames).
-            buffer.appendTerminalFrames(frames: terminalFrames)
+            buffer.appendTerminalFrames(terminalFrames)
         }
         
         return buffer
@@ -167,80 +167,66 @@ class Decoder {
         do {
             
             try format.seek(within: stream, to: time)
-            
-            let etime = measureExecutionTime {
+
+            // Because ffmpeg's seeking is not always accurate, we need to check where the seek took us to, within the stream, and
+            // we may need to skip some packets / samples.
+            do {
                 
-                do {
+                // Keep track of which packets we have read, and the corresponding timestamp (in seconds) for each.
+                var packetsRead: [(packet: Packet, timestampSeconds: Double)] = []
+                
+                // Keep track of the last read packet's timestamp.
+                var lastReadPacketTimestamp: Double = -1
+                
+                // Keep reading packets till the packet timestamp crosses our target seek time.
+                while lastReadPacketTimestamp < time {
                     
-                    var packetsRead: [(pkt: Packet, timestamp: Double)] = []
-                    var ptime: Double = 0
-                    
-                    while ptime < time {
+                    if let packet = try format.readPacket(from: stream) {
                         
-                        if let packet = try format.readPacket(from: stream) {
-                            
-                            print("\n*** LOOP - LAST PKT READ: \(packet.pts), TIME = \(Double(packet.pts) * stream.timeBase.ratio)")
-                            ptime = Double(packet.pts) * stream.timeBase.ratio
-                            packetsRead.append((packet, ptime))
-                        }
+                        lastReadPacketTimestamp = Double(packet.pts) * stream.timeBase.ratio
+                        packetsRead.append((packet, lastReadPacketTimestamp))
+                    }
+                }
+                
+                if let firstIndexAfterTargetTime = packetsRead.firstIndex(where: {$0.timestampSeconds > time}) {
+                    
+                    // Decode and drop all but the last packet whose timestamp < seek target time.
+                    if firstIndexAfterTargetTime > 1 {
+                        (0..<(firstIndexAfterTargetTime - 1)).map {packetsRead[$0].packet}.forEach {codec.decodeAndDrop(packet: $0)}
                     }
                     
-                    if let firstIndexAfterTargetTime = packetsRead.firstIndex(where: {$0.timestamp > time}) {
-                        
-                        if 0 < firstIndexAfterTargetTime - 1 {
-                            
-                            for index in 0..<(firstIndexAfterTargetTime - 1) {
-                                
-                                let pkt = packetsRead[index].pkt
-                                print("\n*** DROPPING PKT: \(pkt.pts)")
-                                codec.decodeAndDrop(packet: pkt)
-                            }
-                        }
-                        
-                        let firstUsablePacketIndex = max(firstIndexAfterTargetTime - 1, 0)
-                        
-                        var framesFromUsablePackets: [PacketFrames] = []
-                        
-                        for index in firstUsablePacketIndex..<packetsRead.count {
-                            
-                            let pkt = packetsRead[index].pkt
-                            
-                            print("\n*** TRYING PKT: \(pkt.pts)")
-                            framesFromUsablePackets.append(try codec.decode(packet: pkt))
-                        }
-                        
-                        // Check the seek error (time difference)
-                        if framesFromUsablePackets.count > 1, time - packetsRead[firstUsablePacketIndex].timestamp > 0.01 {
-                            
-                            print("\nSEEK-ERROR = \(time - packetsRead[firstUsablePacketIndex].timestamp)")
-                            
-                            let numSamplesToKeep = Int32((packetsRead[firstIndexAfterTargetTime].timestamp - time) * Double(codec.sampleRate))
-                            print("\nKeeping last \(numSamplesToKeep) in start frame with PTS \(packetsRead[firstUsablePacketIndex].pkt.pts).")
-                            
-                            framesFromUsablePackets[0].keepLastNSamples(sampleCount: numSamplesToKeep)
-                        }
-                        
-                        //                        for frame in framesFromAllPackets.flatMap({$0.frames}) {
-                        //                            frameQueue.enqueue(frame)
-                        //                            print("\n*** ENQUEUED ONE \(frame.pts) with \(frame.sampleCount) samples FOR: \(pkt.pts)")
-                        //                        }
-                        
-                        for pktFrames in framesFromUsablePackets {
-                            
-                            for frame in pktFrames.frames {
-                                
-                                frameQueue.enqueue(frame)
-                                print("\n*** ENQUEUED ONE \(frame.pts) with \(frame.sampleCount) samples FOR: \(pktFrames.packet!.pts)")
-                            }
-                            
-                            print("---------------")
-                        }
+                    // Decode and enqueue all usable packets, starting at either:
+                    // 1 - the last packet whose timestamp < seek target time, (this case is most likely) OR
+                    // 2 - the first packet whose timestamp > seek target time (rare cases),
+                    // depending on where the seek took us to within the stream.
+                    
+                    let firstUsablePacketIndex = max(firstIndexAfterTargetTime - 1, 0)
+                    var framesFromUsablePackets: [PacketFrames] = []
+                    
+                    for packet in (firstUsablePacketIndex..<packetsRead.count).map({packetsRead[$0].packet}) {
+                        framesFromUsablePackets.append(try codec.decode(packet: packet))
                     }
                     
-                } catch {}
+                    // If the difference between the target time and the first usable packet's timestamp is greater
+                    // than some tolerance threshold, truncate and/or discard the first few frames to get to our
+                    // target seek time.
+                    //
+                    // NOTE - This may be required because some packet sizes can be quite large (eg. 1 second or more),
+                    // increasing the margin of error (i.e. granularity) when seeking.
+                    if framesFromUsablePackets.count > 1, time - packetsRead[firstUsablePacketIndex].timestampSeconds > 0.01 {
+                        
+                        // The number of samples we keep will be determined by the timestamp of the first packet whose timestamp > seek target time.
+                        let numSamplesToKeep = Int32((packetsRead[firstIndexAfterTargetTime].timestampSeconds - time) * Double(codec.sampleRate))
+                        framesFromUsablePackets.first?.keepLastNSamples(sampleCount: numSamplesToKeep)
+                    }
+                    
+                    // Put all our usable frames in the queue so that they may be read later from within the decoding loop.
+                    framesFromUsablePackets.flatMap{$0.frames}.forEach {frameQueue.enqueue($0)}
+                }
+                
+            } catch {
+                print("\nError while skipping packets after seeking to time: \(time) seconds.")
             }
-            
-            print("\nSKIPPING TOOK \(etime * 1000) msec")
             
             // If the seek succeeds, we have not reached EOF.
             self.eof = false

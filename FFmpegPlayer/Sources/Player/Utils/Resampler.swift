@@ -206,10 +206,6 @@ class Resampler {
                 
                 // Use Accelerate to perform the copy optimally, starting at the given offset.
                 cblas_scopy(frame.sampleCount, outputDataPointer.advanced(by: intFirstSampleIndex), 1, audioBufferChannel.advanced(by: offset), 1)
-                
-                if channelIndex == 0, intFirstSampleIndex != 0 {
-                    print("\n\(intSampleCount) samples copied from frame with PTS \(frame.pts), firstIndex = \(intFirstSampleIndex)")
-                }
             }
         }
     }

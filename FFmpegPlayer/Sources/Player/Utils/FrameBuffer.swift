@@ -53,7 +53,7 @@ class FrameBuffer {
     ///
     /// - returns: Whether or not the frame was successfully appended to the buffer.
     ///
-    func appendFrame(frame: Frame) -> Bool {
+    func appendFrame(_ frame: Frame) -> Bool {
 
         // Check if the sample count of the new frame would cause this buffer to
         // exceed maxSampleCount.
@@ -82,7 +82,7 @@ class FrameBuffer {
     /// So, unlike **appendFrame()**, this function will not reject the terminal frames ... they will always
     /// be appended to this buffer.
     ///
-    func appendTerminalFrames(frames: [Frame]) {
+    func appendTerminalFrames(_ frames: [Frame]) {
         
         for frame in frames {
             
@@ -106,8 +106,6 @@ class FrameBuffer {
     /// audio buffer.
     ///
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
-        
-//        print("\n**** Constructing audio buffer with \(sampleCount) samples")
         
         guard sampleCount > 0 else {return nil}
         

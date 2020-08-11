@@ -30,7 +30,6 @@
 		3E540E1424DC4044002B3E78 /* FrameBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E0F24DC4044002B3E78 /* FrameBuffer.swift */; };
 		3E540E1524DC4044002B3E78 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E1024DC4044002B3E78 /* Decoder.swift */; };
 		3E540E1624DC4044002B3E78 /* Resampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E1124DC4044002B3E78 /* Resampler.swift */; };
-		3E540E1724DC4044002B3E78 /* BufferedFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E1224DC4044002B3E78 /* BufferedFrame.swift */; };
 		3E540E1824DC4044002B3E78 /* ChannelLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E1324DC4044002B3E78 /* ChannelLayouts.swift */; };
 		3E540E1C24DC4072002B3E78 /* MetadataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E1A24DC4072002B3E78 /* MetadataReader.swift */; };
 		3E540E1D24DC4072002B3E78 /* TrackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540E1B24DC4072002B3E78 /* TrackInfo.swift */; };
@@ -102,7 +101,6 @@
 		3E540E0F24DC4044002B3E78 /* FrameBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameBuffer.swift; sourceTree = "<group>"; };
 		3E540E1024DC4044002B3E78 /* Decoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		3E540E1124DC4044002B3E78 /* Resampler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resampler.swift; sourceTree = "<group>"; };
-		3E540E1224DC4044002B3E78 /* BufferedFrame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferedFrame.swift; sourceTree = "<group>"; };
 		3E540E1324DC4044002B3E78 /* ChannelLayouts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelLayouts.swift; sourceTree = "<group>"; };
 		3E540E1A24DC4072002B3E78 /* MetadataReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataReader.swift; sourceTree = "<group>"; };
 		3E540E1B24DC4072002B3E78 /* TrackInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackInfo.swift; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 			children = (
 				3E540E1024DC4044002B3E78 /* Decoder.swift */,
 				3E540E0F24DC4044002B3E78 /* FrameBuffer.swift */,
-				3E540E1224DC4044002B3E78 /* BufferedFrame.swift */,
 				3E540E1124DC4044002B3E78 /* Resampler.swift */,
 				3E540E1324DC4044002B3E78 /* ChannelLayouts.swift */,
 				3E540DFC24DC400E002B3E78 /* Muxer.swift */,
@@ -266,13 +263,13 @@
 				3E540E2B24DC408F002B3E78 /* AudioCodec.swift */,
 				3E540E2224DC408F002B3E78 /* Packet.swift */,
 				3E540E2E24DC408F002B3E78 /* Frame.swift */,
+				3E3D249624E26C0200975403 /* PacketFrames.swift */,
 				3E540E2924DC408F002B3E78 /* SampleFormat.swift */,
 				3E540E2524DC408F002B3E78 /* ResamplingContext.swift */,
 				3E540E2324DC408F002B3E78 /* MetadataDictionary.swift */,
 				3E540E2024DC408F002B3E78 /* Chapter.swift */,
 				3E540E2824DC408F002B3E78 /* PacketTable.swift */,
 				3E540E1F24DC408F002B3E78 /* Errors.swift */,
-				3E3D249624E26C0200975403 /* PacketFrames.swift */,
 			);
 			path = FFmpegWrappers;
 			sourceTree = "<group>";
@@ -388,7 +385,6 @@
 				3E540E4B24DC40A8002B3E78 /* BufferFileWriter.swift in Sources */,
 				3E540E4D24DC40A8002B3E78 /* NumericStringFormatter.swift in Sources */,
 				3E540E3724DC408F002B3E78 /* AudioFileContext.swift in Sources */,
-				3E540E1724DC4044002B3E78 /* BufferedFrame.swift in Sources */,
 				3E540E3024DC408F002B3E78 /* Chapter.swift in Sources */,
 				3E540E3B24DC408F002B3E78 /* AudioCodec.swift in Sources */,
 				3E540E4824DC40A8002B3E78 /* Mapper.swift in Sources */,

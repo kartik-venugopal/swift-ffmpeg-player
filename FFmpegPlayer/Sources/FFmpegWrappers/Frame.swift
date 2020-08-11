@@ -13,7 +13,7 @@ class Frame {
     ///
     var avFrame: AVFrame {pointer.pointee}
     
-    var pointer: UnsafeMutablePointer<AVFrame>
+    var pointer: UnsafeMutablePointer<AVFrame>!
     
     ///
     /// Describes the number and physical / spatial arrangement of the channels. (e.g. "5.1 surround" or "stereo")
@@ -77,9 +77,20 @@ class Frame {
     ///
     /// - Parameter sampleFormat: The format of the samples in this frame.
     ///
-    init(sampleFormat: SampleFormat) {
+    init?(readingFrom codecCtx: UnsafeMutablePointer<AVCodecContext>, withSampleFormat sampleFormat: SampleFormat) {
         
+        // Allocate memory for the frame.
         self.pointer = av_frame_alloc()
+        
+        guard pointer != nil else {
+            
+            print("\nFrame.init(): Unable to allocate memory for frame.")
+            return nil
+        }
+        
+        // Receive the frame from the codec context.
+        guard avcodec_receive_frame(codecCtx, pointer).isNonNegative else {return nil}
+        
         self.sampleFormat = sampleFormat
         self.firstSampleIndex = 0
     }
@@ -123,10 +134,6 @@ class Frame {
                 
                 // Use Accelerate to perform the copy optimally, starting at the given offset.
                 cblas_scopy(sampleCount, floatsForChannel.advanced(by: intFirstSampleIndex), 1, audioBufferChannel.advanced(by: offset), 1)
-                
-                if channelIndex == 0, firstSampleIndex != 0 {
-                    print("\n\(sampleCount) samples copied from frame with PTS \(pts), firstIndex = \(firstSampleIndex)")
-                }
             }
         }
     }

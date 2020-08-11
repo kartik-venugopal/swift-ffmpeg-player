@@ -5,15 +5,8 @@ class PacketFrames {
     
     var frames: [Frame] = []
     var sampleCount: Int32 = 0
-    var packet: Packet?
     
-    init() {}
-    
-    init(from packet: Packet) {
-        self.packet = packet
-    }
-    
-    func appendFrame(frame: Frame) {
+    func appendFrame(_ frame: Frame) {
             
         // Update the sample count, and append the frame.
         self.sampleCount += frame.sampleCount
@@ -27,37 +20,38 @@ class PacketFrames {
             var samplesSoFar: Int32 = 0
             var firstFrameToKeep: Int = 0
 
+            // Iterate the frames in reverse, counting the accumulated samples till we have enough.
             for (index, frame) in frames.enumerated().reversed() {
                 
                 let samplesInThisFrame = frame.sampleCount
-                print("\nFrame \(index) has \(samplesInThisFrame) samples.")
                 
                 if samplesSoFar + samplesInThisFrame <= sampleCount {
+                    
+                    // This frame fits in its entirety.
                     samplesSoFar += samplesInThisFrame
-                    print("Frame \(index) will fit. Keeping ALL \(samplesInThisFrame) samples.")
                     
                 } else {
                     
-                    // Need to truncate frame
+                    // This frame fits partially. Need to truncate it.
                     let samplesToKeep = sampleCount - samplesSoFar
                     samplesSoFar += samplesToKeep
                     frame.keepLastNSamples(sampleCount: samplesToKeep)
-                    print("Frame \(index) did NOT fit. Keeping ONLY \(samplesToKeep) samples.")
                 }
                 
                 if samplesSoFar == sampleCount {
                     
-                    print("We will keep frames: \(index)-\(frames.count - 1)")
-                    
+                    // We have enough samples. Note down the index of this frame.
                     firstFrameToKeep = index
                     break
                 }
             }
             
+            // Discard any surplus frames.
             if firstFrameToKeep > 0 {
                 frames.removeFirst(firstFrameToKeep)
             }
             
+            // Update the sample count.
             self.sampleCount = sampleCount
         }
     }

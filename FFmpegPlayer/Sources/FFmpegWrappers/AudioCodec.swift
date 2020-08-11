@@ -64,11 +64,19 @@ class AudioCodec: Codec {
         // If the packet send failed, log a message and throw an error.
         if resultCode.isNegative {
             
-            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode) \(resultCode.errorDescription))")
+            print("\nCodec.decode(): Failed to send packet. Error: \(resultCode) \(resultCode.errorDescription))")
             throw DecoderError(resultCode)
         }
         
-        return receiveFrames(for: packet)
+        // Collect the received frames in an array.
+        let packetFrames: PacketFrames = PacketFrames()
+        
+        // Keep receiving decoded frames while no errors are encountered
+        while let frame = Frame(readingFrom: contextPointer, withSampleFormat: self.sampleFormat) {
+            packetFrames.appendFrame(frame)
+        }
+        
+        return packetFrames
     }
     
     func decodeAndDrop(packet: Packet) {
@@ -85,39 +93,6 @@ class AudioCodec: Codec {
     }
     
     ///
-    /// Receives frames from the decoder (after sending one packet to it).
-    ///
-    /// - returns: An ordered list of frames.
-    ///
-    private func receiveFrames(for packet: Packet? = nil) -> PacketFrames {
-        
-        // Receive (potentially) multiple frames
-
-        // Resuse a single Frame object multiple times.
-        var frame = Frame(sampleFormat: self.sampleFormat)
-        
-        // Collect the received frames in an array.
-        let packetFrames: PacketFrames = packet == nil ? PacketFrames() : PacketFrames(from: packet!)
-        
-        // Receive a decoded frame from the codec.
-        var resultCode: Int32 = avcodec_receive_frame(contextPointer, frame.pointer)
-        
-        // Keep receiving frames while no errors are encountered
-        while resultCode.isZero, frame.hasSamples {
-            
-//            let reald = Double(frame.avFrame.nb_samples) / Double(frame.sampleRate)
-//            print("Frame PTS: \(frame.pts) \(Double(frame.pts) * AudioStream.timeBase.ratio), sampleCount = \(frame.sampleCount), duration = \(reald), isKeyFrame: \(frame.avFrame.key_frame == 1)")
-            
-            packetFrames.appendFrame(frame: frame)
-            
-            frame = Frame(sampleFormat: self.sampleFormat)
-            resultCode = avcodec_receive_frame(contextPointer, frame.pointer)
-        }
-        
-        return packetFrames
-    }
-    
-    ///
     /// Drains the codec of all internally buffered frames.
     ///
     /// Call this function after reaching EOF within a stream.
@@ -131,11 +106,19 @@ class AudioCodec: Codec {
         
         if resultCode.isNonZero {
             
-            print("\nCodec.decode(): Failed to decode packet. Error: \(resultCode) \(resultCode.errorDescription))")
+            print("\nCodec.decode(): Failed to send packet. Error: \(resultCode) \(resultCode.errorDescription))")
             throw DecoderError(resultCode)
         }
         
-        return receiveFrames()
+        // Collect the received frames in an array.
+        let packetFrames: PacketFrames = PacketFrames()
+        
+        // Keep receiving decoded frames while no errors are encountered
+        while let frame = Frame(readingFrom: contextPointer, withSampleFormat: self.sampleFormat) {
+            packetFrames.appendFrame(frame)
+        }
+        
+        return packetFrames
     }
     
     ///
