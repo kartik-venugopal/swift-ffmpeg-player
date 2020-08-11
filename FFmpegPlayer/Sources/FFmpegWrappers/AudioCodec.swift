@@ -56,7 +56,7 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs during decoding.
     ///
-    func decode(packet: Packet) throws -> [Frame] {
+    func decode(packet: Packet) throws -> PacketFrames {
         
         // Send the packet to the decoder for decoding.
         let resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
@@ -68,7 +68,7 @@ class AudioCodec: Codec {
             throw DecoderError(resultCode)
         }
         
-        return receiveFrames()
+        return receiveFrames(for: packet)
     }
     
     func decodeAndDrop(packet: Packet) {
@@ -89,7 +89,7 @@ class AudioCodec: Codec {
     ///
     /// - returns: An ordered list of frames.
     ///
-    private func receiveFrames() -> [Frame] {
+    private func receiveFrames(for packet: Packet? = nil) -> PacketFrames {
         
         // Receive (potentially) multiple frames
 
@@ -97,7 +97,7 @@ class AudioCodec: Codec {
         var frame = Frame(sampleFormat: self.sampleFormat)
         
         // Collect the received frames in an array.
-        var bufferedFrames: [Frame] = []
+        let packetFrames: PacketFrames = packet == nil ? PacketFrames() : PacketFrames(from: packet!)
         
         // Receive a decoded frame from the codec.
         var resultCode: Int32 = avcodec_receive_frame(contextPointer, frame.pointer)
@@ -105,16 +105,16 @@ class AudioCodec: Codec {
         // Keep receiving frames while no errors are encountered
         while resultCode.isZero, frame.hasSamples {
             
-            let reald = Double(frame.avFrame.nb_samples) / Double(frame.sampleRate)
-            print("Frame PTS: \(frame.pts) \(Double(frame.pts) * AudioStream.timeBase.ratio), sampleCount = \(frame.sampleCount), duration = \(reald), isKeyFrame: \(frame.avFrame.key_frame == 1)")
+//            let reald = Double(frame.avFrame.nb_samples) / Double(frame.sampleRate)
+//            print("Frame PTS: \(frame.pts) \(Double(frame.pts) * AudioStream.timeBase.ratio), sampleCount = \(frame.sampleCount), duration = \(reald), isKeyFrame: \(frame.avFrame.key_frame == 1)")
             
-            bufferedFrames.append(frame)
+            packetFrames.appendFrame(frame: frame)
             
             frame = Frame(sampleFormat: self.sampleFormat)
             resultCode = avcodec_receive_frame(contextPointer, frame.pointer)
         }
         
-        return bufferedFrames
+        return packetFrames
     }
     
     ///
@@ -124,7 +124,7 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs while draining the codec.
     ///
-    func drain() throws -> [Frame] {
+    func drain() throws -> PacketFrames {
         
         // Send the "flush packet" to the decoder
         let resultCode: Int32 = avcodec_send_packet(contextPointer, nil)

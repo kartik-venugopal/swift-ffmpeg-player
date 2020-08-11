@@ -135,7 +135,7 @@ class Decoder {
             do {
                 
                 let drainFrames = try codec.drain()
-                terminalFrames.append(contentsOf: drainFrames)
+                terminalFrames.append(contentsOf: drainFrames.frames)
                 
             } catch {
                 print("\nDecoder drain error:", error)
@@ -169,28 +169,28 @@ class Decoder {
             try format.seek(within: stream, to: time)
             
             let etime = measureExecutionTime {
-
+                
                 do {
-
-                var packetsRead: [(pkt: Packet, timestamp: Double)] = []
-                var ptime: Double = 0
-
-                while ptime < time {
-
-                    if let packet = try format.readPacket(from: stream) {
-
-                        print("\n*** LOOP - LAST PKT READ: \(packet.pts), TIME = \(Double(packet.pts) * stream.timeBase.ratio)")
-                        ptime = Double(packet.pts) * stream.timeBase.ratio
-                        packetsRead.append((packet, ptime))
+                    
+                    var packetsRead: [(pkt: Packet, timestamp: Double)] = []
+                    var ptime: Double = 0
+                    
+                    while ptime < time {
+                        
+                        if let packet = try format.readPacket(from: stream) {
+                            
+                            print("\n*** LOOP - LAST PKT READ: \(packet.pts), TIME = \(Double(packet.pts) * stream.timeBase.ratio)")
+                            ptime = Double(packet.pts) * stream.timeBase.ratio
+                            packetsRead.append((packet, ptime))
+                        }
                     }
-                }
-
+                    
                     if let firstIndexAfterTargetTime = packetsRead.firstIndex(where: {$0.timestamp > time}) {
                         
                         if 0 < firstIndexAfterTargetTime - 1 {
-                        
+                            
                             for index in 0..<(firstIndexAfterTargetTime - 1) {
-
+                                
                                 let pkt = packetsRead[index].pkt
                                 print("\n*** DROPPING PKT: \(pkt.pts)")
                                 codec.decodeAndDrop(packet: pkt)
@@ -198,36 +198,48 @@ class Decoder {
                         }
                         
                         let firstUsablePacketIndex = max(firstIndexAfterTargetTime - 1, 0)
-
+                        
+                        var framesFromUsablePackets: [PacketFrames] = []
+                        
                         for index in firstUsablePacketIndex..<packetsRead.count {
-
+                            
                             let pkt = packetsRead[index].pkt
-
+                            
                             print("\n*** TRYING PKT: \(pkt.pts)")
-
-                            for frame in try codec.decode(packet: pkt) {
-                                frameQueue.enqueue(frame)
-                                print("\n*** ENQUEUED ONE \(frame.pts) with \(frame.sampleCount) samples FOR: \(pkt.pts)")
-                            }
+                            framesFromUsablePackets.append(try codec.decode(packet: pkt))
                         }
                         
-                        let err = abs(time - packetsRead[firstUsablePacketIndex].timestamp)
-                        print("\nSEEK-ERROR = \(err)")
-                        
-                        if err > 0.01 {
+                        // Check the seek error (time difference)
+                        if framesFromUsablePackets.count > 1, time - packetsRead[firstUsablePacketIndex].timestamp > 0.01 {
                             
-                            let frame = frameQueue.peek()!
+                            print("\nSEEK-ERROR = \(time - packetsRead[firstUsablePacketIndex].timestamp)")
+                            
                             let numSamplesToKeep = Int32((packetsRead[firstIndexAfterTargetTime].timestamp - time) * Double(codec.sampleRate))
+                            print("\nKeeping last \(numSamplesToKeep) in start frame with PTS \(packetsRead[firstUsablePacketIndex].pkt.pts).")
                             
-                            print("\nKeeping last \(numSamplesToKeep) in start frame with PTS \(frame.pts).")
+                            framesFromUsablePackets[0].keepLastNSamples(sampleCount: numSamplesToKeep)
+                        }
+                        
+                        //                        for frame in framesFromAllPackets.flatMap({$0.frames}) {
+                        //                            frameQueue.enqueue(frame)
+                        //                            print("\n*** ENQUEUED ONE \(frame.pts) with \(frame.sampleCount) samples FOR: \(pkt.pts)")
+                        //                        }
+                        
+                        for pktFrames in framesFromUsablePackets {
                             
-                            frame.keepLastNSamples(sampleCount: numSamplesToKeep)
+                            for frame in pktFrames.frames {
+                                
+                                frameQueue.enqueue(frame)
+                                print("\n*** ENQUEUED ONE \(frame.pts) with \(frame.sampleCount) samples FOR: \(pktFrames.packet!.pts)")
+                            }
+                            
+                            print("---------------")
                         }
                     }
                     
                 } catch {}
             }
-
+            
             print("\nSKIPPING TOOK \(etime * 1000) msec")
             
             // If the seek succeeds, we have not reached EOF.
@@ -266,7 +278,7 @@ class Decoder {
         
             if let packet = try format.readPacket(from: stream) {
                 
-                for frame in try codec.decode(packet: packet) {
+                for frame in try codec.decode(packet: packet).frames {
                     frameQueue.enqueue(frame)
                 }
             }
