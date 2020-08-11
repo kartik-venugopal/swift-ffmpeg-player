@@ -191,7 +191,7 @@ class Resampler {
         guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
         
         let intSampleCount: Int = Int(frame.sampleCount)
-//        let intFirstSampleIndex: Int = Int(frame.firstSampleIndex)
+        let intFirstSampleIndex: Int = Int(frame.firstSampleIndex)
         
         // Iterate through all the channels.
         for channelIndex in 0..<Int(frame.channelCount) {
@@ -205,11 +205,11 @@ class Resampler {
                 (outputDataPointer: UnsafeMutablePointer<Float>) in
                 
                 // Use Accelerate to perform the copy optimally, starting at the given offset.
-                cblas_scopy(frame.sampleCount, outputDataPointer.advanced(by: 0), 1, audioBufferChannel.advanced(by: offset), 1)
+                cblas_scopy(frame.sampleCount, outputDataPointer.advanced(by: intFirstSampleIndex), 1, audioBufferChannel.advanced(by: offset), 1)
                 
-//                if channelIndex == 0, intFirstSampleIndex != 0 {
-//                    print("\n\(intSampleCount) samples copied from frame with PTS \(frame.pts), firstIndex = \(intFirstSampleIndex)")
-//                }
+                if channelIndex == 0, intFirstSampleIndex != 0 {
+                    print("\n\(intSampleCount) samples copied from frame with PTS \(frame.pts), firstIndex = \(intFirstSampleIndex)")
+                }
             }
         }
     }

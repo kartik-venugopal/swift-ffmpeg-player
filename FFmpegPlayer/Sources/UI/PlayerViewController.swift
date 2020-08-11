@@ -81,7 +81,7 @@ class PlayerViewController: NSViewController, NSMenuDelegate {
         initializeFileOpenDialog()
         
         // Remember the player volume from the previous app launch (or use a default value).
-        player.volume = UserDefaults.standard.value(forKey: "player.volume") as? Float ?? 0
+        player.volume = UserDefaults.standard.value(forKey: "player.volume") as? Float ?? 0.5
         volumeSlider.floatValue = player.volume
         
         let volumePercentage = Int(round(player.volume * 100))

@@ -196,8 +196,10 @@ class Decoder {
                                 codec.decodeAndDrop(packet: pkt)
                             }
                         }
+                        
+                        let firstUsablePacketIndex = max(firstIndexAfterTargetTime - 1, 0)
 
-                        for index in (firstIndexAfterTargetTime - 1)..<packetsRead.count {
+                        for index in firstUsablePacketIndex..<packetsRead.count {
 
                             let pkt = packetsRead[index].pkt
 
@@ -205,11 +207,11 @@ class Decoder {
 
                             for frame in try codec.decode(packet: pkt) {
                                 frameQueue.enqueue(frame)
-                                print("\n*** ENQUEUED ONE \(frame.pts) FOR: \(pkt.pts)")
+                                print("\n*** ENQUEUED ONE \(frame.pts) with \(frame.sampleCount) samples FOR: \(pkt.pts)")
                             }
                         }
                         
-                        let err = abs(time - packetsRead[firstIndexAfterTargetTime - 1].timestamp)
+                        let err = abs(time - packetsRead[firstUsablePacketIndex].timestamp)
                         print("\nSEEK-ERROR = \(err)")
                         
                         if err > 0.01 {
@@ -219,7 +221,7 @@ class Decoder {
                             
                             print("\nKeeping last \(numSamplesToKeep) in start frame with PTS \(frame.pts).")
                             
-//                            frame.keepLastNSamples(sampleCount: numSamplesToKeep)
+                            frame.keepLastNSamples(sampleCount: numSamplesToKeep)
                         }
                     }
                     

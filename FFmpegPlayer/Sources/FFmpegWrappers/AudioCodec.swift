@@ -59,11 +59,8 @@ class AudioCodec: Codec {
     func decode(packet: Packet) throws -> [Frame] {
         
         // Send the packet to the decoder for decoding.
-        let resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
+        let resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
         
-        // The packet may be destroyed at this point as it has already been sent to the codec.
-        packet.destroy()
-
         // If the packet send failed, log a message and throw an error.
         if resultCode.isNegative {
             
@@ -77,7 +74,7 @@ class AudioCodec: Codec {
     func decodeAndDrop(packet: Packet) {
         
         // Send the packet to the decoder for decoding.
-        var resultCode: Int32 = avcodec_send_packet(contextPointer, packet.pointer)
+        var resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
         if resultCode.isNegative {return}
         
         var avFrame: AVFrame = AVFrame()
@@ -108,8 +105,8 @@ class AudioCodec: Codec {
         // Keep receiving frames while no errors are encountered
         while resultCode.isZero, frame.hasSamples {
             
-//            let reald = Double(frame.avFrame.nb_samples) / Double(frame.sampleRate)
-//            print("Frame PTS: \(frame.pts) \(Double(frame.pts) * AudioStream.timeBase.ratio), sampleCount = \(frame.sampleCount), duration = \(reald), isKeyFrame: \(frame.avFrame.key_frame == 1)")
+            let reald = Double(frame.avFrame.nb_samples) / Double(frame.sampleRate)
+            print("Frame PTS: \(frame.pts) \(Double(frame.pts) * AudioStream.timeBase.ratio), sampleCount = \(frame.sampleCount), duration = \(reald), isKeyFrame: \(frame.avFrame.key_frame == 1)")
             
             bufferedFrames.append(frame)
             

@@ -107,6 +107,8 @@ class FrameBuffer {
     ///
     func constructAudioBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
         
+        print("\n**** Constructing audio buffer with \(sampleCount) samples")
+        
         guard sampleCount > 0 else {return nil}
         
         // If required by the sample format, command the resampler to

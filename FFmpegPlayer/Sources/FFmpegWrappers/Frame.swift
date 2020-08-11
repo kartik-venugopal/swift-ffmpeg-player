@@ -33,7 +33,11 @@ class Frame {
     ///
     /// Total number of samples in this frame.
     ///
-    var sampleCount: Int32 {avFrame.nb_samples}
+    var sampleCount: Int32 {truncatedSampleCount ?? avFrame.nb_samples}
+    
+    var truncatedSampleCount: Int32?
+    
+    var firstSampleIndex: Int32
     
     ///
     /// Whether or not this frame has any samples.
@@ -77,17 +81,25 @@ class Frame {
         
         self.pointer = av_frame_alloc()
         self.sampleFormat = sampleFormat
+        self.firstSampleIndex = 0
+    }
+    
+    func keepFirstNSamples(sampleCount: Int32) {
+        
+        if sampleCount < self.sampleCount {
+
+            firstSampleIndex = 0
+            truncatedSampleCount = sampleCount
+        }
     }
     
     func keepLastNSamples(sampleCount: Int32) {
         
-        // TODO
-        
-//        if sampleCount < self.sampleCount {
-//
-//            firstSampleIndex = self.sampleCount - sampleCount
-//            self.sampleCount = sampleCount
-//        }
+        if sampleCount < self.sampleCount {
+
+            firstSampleIndex = self.sampleCount - sampleCount
+            truncatedSampleCount = sampleCount
+        }
     }
     
     func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
@@ -96,7 +108,7 @@ class Frame {
         guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
         
         let intSampleCount: Int = Int(sampleCount)
-//        let intFirstSampleIndex: Int = Int(firstSampleIndex)
+        let intFirstSampleIndex: Int = Int(firstSampleIndex)
         
         for channelIndex in 0..<Int(channelCount) {
             
@@ -110,11 +122,11 @@ class Frame {
                 (floatsForChannel: UnsafeMutablePointer<Float>) in
                 
                 // Use Accelerate to perform the copy optimally, starting at the given offset.
-                cblas_scopy(sampleCount, floatsForChannel.advanced(by: 0), 1, audioBufferChannel.advanced(by: offset), 1)
+                cblas_scopy(sampleCount, floatsForChannel.advanced(by: intFirstSampleIndex), 1, audioBufferChannel.advanced(by: offset), 1)
                 
-//                if channelIndex == 0, firstSampleIndex != 0 {
-//                    print("\n\(sampleCount) samples copied from frame with PTS \(pts), firstIndex = \(firstSampleIndex)")
-//                }
+                if channelIndex == 0, firstSampleIndex != 0 {
+                    print("\n\(sampleCount) samples copied from frame with PTS \(pts), firstIndex = \(firstSampleIndex)")
+                }
             }
         }
     }
