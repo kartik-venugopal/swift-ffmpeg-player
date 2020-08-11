@@ -24,6 +24,12 @@ class Resampler {
     ///
     private static let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
+    ///
+    /// The standard (i.e. "canonical") audio sample format preferred by Core Audio on macOS.
+    /// All our samples scheduled for playback with AVAudioEngine must be in this format.
+    ///
+    /// Source: https://developer.apple.com/library/archive/documentation/MusicAudio/Conceptual/CoreAudioOverview/CoreAudioEssentials/CoreAudioEssentials.html#//apple_ref/doc/uid/TP40003577-CH10-SW16
+    ///
     private static let standardSampleFormat: AVSampleFormat = AV_SAMPLE_FMT_FLTP
     
     ///
@@ -123,11 +129,8 @@ class Resampler {
     func resample(_ frame: Frame, andCopyOutputTo audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
         
         // Allocate the context used to perform the resampling.
-        guard let resampleCtx = ResamplingContext() else {
-            
-            print("\nUnable to instantiate resampling context !")
-            return
-        }
+        // TODO: Throw an error from here ???
+        guard let resampleCtx = ResamplingContext() else {return}
         
         // Set the input / output channel layouts as options prior to resampling.
         // NOTE - Our output channel layout will be the same as that of the input, since we don't
@@ -152,11 +155,7 @@ class Resampler {
         resampleCtx.inputSampleFormat = frame.sampleFormat.avFormat
         resampleCtx.outputSampleFormat = Self.standardSampleFormat
         
-        // Perform the resampling.
-        
-        let outputDataPointer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UInt8>?> = UnsafeMutableBufferPointer(start: outputData, count: Int(frame.channelCount))
-        
-        let sampleCount: Int32 = frame.sampleCount
+        // Perform the resampling conversion.
         
         // Access the input data as pointers from the frame being resampled.
         frame.dataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self, capacity: Int(frame.channelCount)) {
@@ -164,9 +163,9 @@ class Resampler {
             (inputDataPointer: UnsafeMutablePointer<UnsafePointer<UInt8>?>) in
             
             resampleCtx.convert(inputDataPointer: inputDataPointer,
-                                inputSampleCount: sampleCount,
-                                outputDataPointer: outputDataPointer.baseAddress!,
-                                outputSampleCount: sampleCount)
+                                inputSampleCount: frame.sampleCount,
+                                outputDataPointer: outputData,
+                                outputSampleCount: frame.sampleCount)
         }
         
         // Finally, copy the output samples to the given audio buffer.

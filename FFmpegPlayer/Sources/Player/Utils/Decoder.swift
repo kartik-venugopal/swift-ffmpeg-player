@@ -6,6 +6,13 @@ import Foundation
 ///
 class Decoder {
     
+    ///
+    /// The maximum difference between a desired seek position and an actual seek
+    /// position (that results from actually performing a seek) that will be tolerated,
+    /// i.e. will not require a correction.
+    ///
+    private static let seekPositionTolerance: Double = 0.01
+    
     /// A context associated with the currently playing file.
     private var file: AudioFileContext!
     
@@ -208,12 +215,12 @@ class Decoder {
                     }
                     
                     // If the difference between the target time and the first usable packet's timestamp is greater
-                    // than some tolerance threshold, truncate and/or discard the first few frames to get to our
+                    // than our tolerance threshold, truncate and/or discard the first few frames to get to our
                     // target seek time.
                     //
                     // NOTE - This may be required because some packet sizes can be quite large (eg. 1 second or more),
                     // increasing the margin of error (i.e. granularity) when seeking.
-                    if framesFromUsablePackets.count > 1, time - packetsRead[firstUsablePacketIndex].timestampSeconds > 0.01 {
+                    if framesFromUsablePackets.count > 1, time - packetsRead[firstUsablePacketIndex].timestampSeconds > Self.seekPositionTolerance {
                         
                         // The number of samples we keep will be determined by the timestamp of the first packet whose timestamp > seek target time.
                         let numSamplesToKeep = Int32((packetsRead[firstIndexAfterTargetTime].timestampSeconds - time) * Double(codec.sampleRate))

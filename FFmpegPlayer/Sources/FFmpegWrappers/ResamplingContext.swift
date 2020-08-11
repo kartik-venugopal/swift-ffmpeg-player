@@ -19,17 +19,24 @@ class ResamplingContext {
     ///
     /// An UnsafeMutableRawPointer to **resampleCtx**.
     ///
-    private let resampleCtxPointer: UnsafeMutableRawPointer?
+    private let rawPointer: UnsafeMutableRawPointer?
     
     ///
     /// Tries to allocate a resampling context. Returns nil if the allocation fails.
     ///
     init?() {
         
-        guard let context = swr_alloc() else {return nil}
+        // Allocate memory for the context.
+        self.resampleCtx = swr_alloc()
         
-        self.resampleCtx = context
-        self.resampleCtxPointer = UnsafeMutableRawPointer(resampleCtx)
+        // Check if memory allocation was successful. Can't proceed otherwise.
+        guard resampleCtx != nil else {
+            
+            print("\nResamplingContext.init() Unable to allocate memory for resampling context.")
+            return nil
+        }
+        
+        self.rawPointer = UnsafeMutableRawPointer(resampleCtx)
     }
     
     ///
@@ -40,7 +47,7 @@ class ResamplingContext {
         didSet {
             
             if let channelLayout = inputChannelLayout {
-                av_opt_set_channel_layout(resampleCtxPointer, "in_channel_layout", channelLayout, 0)
+                av_opt_set_channel_layout(rawPointer, "in_channel_layout", channelLayout, 0)
             }
         }
     }
@@ -53,7 +60,7 @@ class ResamplingContext {
         didSet {
             
             if let channelLayout = outputChannelLayout {
-                av_opt_set_channel_layout(resampleCtxPointer, "out_channel_layout", channelLayout, 0)
+                av_opt_set_channel_layout(rawPointer, "out_channel_layout", channelLayout, 0)
             }
         }
     }
@@ -66,7 +73,7 @@ class ResamplingContext {
         didSet {
             
             if let sampleRate = inputSampleRate {
-                av_opt_set_int(resampleCtxPointer, "in_sample_rate", sampleRate, 0)
+                av_opt_set_int(rawPointer, "in_sample_rate", sampleRate, 0)
             }
         }
     }
@@ -79,7 +86,7 @@ class ResamplingContext {
         didSet {
             
             if let sampleRate = outputSampleRate {
-                av_opt_set_int(resampleCtxPointer, "out_sample_rate", sampleRate, 0)
+                av_opt_set_int(rawPointer, "out_sample_rate", sampleRate, 0)
             }
         }
     }
@@ -92,7 +99,7 @@ class ResamplingContext {
         didSet {
             
             if let sampleFormat = inputSampleFormat {
-                av_opt_set_sample_fmt(resampleCtxPointer, "in_sample_fmt", sampleFormat, 0)
+                av_opt_set_sample_fmt(rawPointer, "in_sample_fmt", sampleFormat, 0)
             }
         }
     }
@@ -105,7 +112,7 @@ class ResamplingContext {
         didSet {
             
             if let sampleFormat = outputSampleFormat {
-                av_opt_set_sample_fmt(resampleCtxPointer, "out_sample_fmt", sampleFormat, 0)
+                av_opt_set_sample_fmt(rawPointer, "out_sample_fmt", sampleFormat, 0)
             }
         }
     }

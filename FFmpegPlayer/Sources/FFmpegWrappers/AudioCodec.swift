@@ -79,6 +79,16 @@ class AudioCodec: Codec {
         return packetFrames
     }
     
+    ///
+    /// Decode the given packet and drop (ignore) the received frames.
+    ///
+    /// ```
+    /// This is useful after performing a seek, when the
+    /// resulting seek position is less than (before) the target position.
+    /// In such a case, it may be necessary to drop a few packets
+    /// till the desired seek position is reached.
+    /// ```
+    ///
     func decodeAndDrop(packet: Packet) {
         
         // Send the packet to the decoder for decoding.
@@ -96,6 +106,8 @@ class AudioCodec: Codec {
     /// Drains the codec of all internally buffered frames.
     ///
     /// Call this function after reaching EOF within a stream.
+    ///
+    /// - returns: All remaining (buffered) frames, ordered.
     ///
     /// - throws: **DecoderError** if an error occurs while draining the codec.
     ///

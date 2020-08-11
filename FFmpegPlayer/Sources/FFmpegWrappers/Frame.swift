@@ -13,6 +13,9 @@ class Frame {
     ///
     var avFrame: AVFrame {pointer.pointee}
     
+    ///
+    /// A pointer to the encapsulated AVFrame object.
+    ///
     var pointer: UnsafeMutablePointer<AVFrame>!
     
     ///
@@ -33,10 +36,65 @@ class Frame {
     ///
     /// Total number of samples in this frame.
     ///
+    /// ```
+    /// If frame truncation has occurred, this value will equal
+    /// the (lesser) **truncatedSampleCount**. Otherwise, it will
+    /// equal the sample count of the encapsulated AVFrame.
+    /// ```
+    ///
+    /// # Note #
+    ///
+    /// See member **truncatedSampleCount** for an explanation of frame truncation.
+    ///
     var sampleCount: Int32 {truncatedSampleCount ?? avFrame.nb_samples}
     
+    ///
+    /// The (lesser) number of samples to read, as a result of frame truncation. May be nil (if no truncation has occurred).
+    /// For most samples, this value will be nil, i.e. most frames are not truncated.
+    ///
+    /// ```
+    /// Frame truncation occurs when a frame has more samples
+    /// than desired for scheduling or when seeking. So, only
+    /// a subset of the frame's samples is actually used.
+    ///
+    /// Truncation can occur at either the beginning of the frame,
+    /// via keepLastNSamples(), or at the end of the frame, via
+    /// keepFirstNSamples().
+    ///
+    /// Example:
+    ///
+    /// Before truncation (has 1000 samples),
+    /// sampleCount = 1000
+    /// truncatedSampleCount = nil
+    /// firstSampleIndex = 0
+    ///
+    /// Truncation at the beginning of the frame (keep the last 300 samples):
+    /// keepLastNSamples(300)
+    ///
+    /// Result (Use only the last 300 samples of this frame, starting at index 700):
+    /// sampleCount = 300
+    /// truncatedSampleCount = 300
+    /// firstSampleIndex = 700
+    /// ```
+    ///
     var truncatedSampleCount: Int32?
     
+    ///
+    /// Represents a starting offset to use when scheduling this frame's samples for playback.
+    ///
+    /// ```
+    /// If frame truncation has occurred, i.e. through keepLastNSamples(),
+    /// this value will represent the (non-zero) index of the first sample
+    /// to be used. Otherwise, it will be 0.
+    ///
+    /// If truncation occurred at the end of the frame, i.e. when
+    /// keepFirstNSamples() was called, this value will remain 0.
+    /// ```
+    ///
+    /// # Note #
+    ///
+    /// See member **truncatedSampleCount** for an explanation of frame truncation.
+    ///
     var firstSampleIndex: Int32
     
     ///
@@ -68,12 +126,25 @@ class Frame {
     ///
     var timestamp: Int64 {avFrame.best_effort_timestamp}
     
+    ///
+    /// Presentation timestamp (PTS) of this frame, specified in the source stream's time base units.
+    ///
+    /// ```
+    /// For packets containing a single frame, this frame timestamp will
+    /// match that of the corrsponding packet.
+    /// ```
+    ///
     var pts: Int64 {avFrame.pts}
     
+    ///
+    /// Pointers to the raw data (unsigned bytes) constituting this frame's samples.
+    ///
     var dataPointers: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>! {avFrame.extended_data}
     
     ///
-    /// Instantiates a Frame and sets the sample format.
+    /// Instantiates a Frame, reading an AVFrame from the given codec context, and sets its sample format.
+    ///
+    /// - Parameter codecCtx: The codec context (i.e. decoder) from which to receive the new frame.
     ///
     /// - Parameter sampleFormat: The format of the samples in this frame.
     ///
@@ -82,6 +153,7 @@ class Frame {
         // Allocate memory for the frame.
         self.pointer = av_frame_alloc()
         
+        // Check if memory allocation was successful. Can't proceed otherwise.
         guard pointer != nil else {
             
             print("\nFrame.init(): Unable to allocate memory for frame.")
@@ -95,6 +167,17 @@ class Frame {
         self.firstSampleIndex = 0
     }
     
+    ///
+    /// Updates the frame's sample count to the given value, so that
+    /// only the given number of samples, from the beginning of the frame,
+    /// will be used when scheduling this frame for playback.
+    ///
+    /// - Parameter sampleCount: The new effective sample count.
+    ///
+    /// # Note #
+    ///
+    /// See member **truncatedSampleCount** for an explanation of frame truncation.
+    ///
     func keepFirstNSamples(sampleCount: Int32) {
         
         if sampleCount < self.sampleCount {
@@ -104,6 +187,17 @@ class Frame {
         }
     }
     
+    ///
+    /// Updates the frame's sample count to the given value, and updates the starting sample
+    /// offset (**firstSampleIndex**) accordingly, so that only the given number of samples,
+    /// from the end of the frame, will be used when scheduling this frame for playback.
+    ///
+    /// - Parameter sampleCount: The new effective sample count.
+    ///
+    /// # Note #
+    ///
+    /// See member **truncatedSampleCount** for an explanation of frame truncation.
+    ///
     func keepLastNSamples(sampleCount: Int32) {
         
         if sampleCount < self.sampleCount {
@@ -113,6 +207,26 @@ class Frame {
         }
     }
     
+    ///
+    /// Copies this frame's samples to a given audio buffer starting at the given offset.
+    ///
+    /// - Parameter audioBuffer: The audio buffer to which this frame's samples are to be copied over.
+    ///
+    /// - Parameter offset:      A starting offset for each channel's data buffer in the audio buffer.
+    ///                          This is required because the audio buffer may hold data from other
+    ///                          frames copied to it previously. So, the offset will equal the sum of the
+    ///                          the sample counts of all frames previously copied to the audio buffer.
+    ///
+    /// # Important #
+    ///
+    /// This function assumes that the format of the samples contained in this frame is: 32-bit floating-point planar,
+    /// i.e. the samples do *not* require resampling.
+    ///
+    /// # Note #
+    ///
+    /// It is good from a safety perspective, to copy the frame's samples to the audio buffer right here rather than to give out a pointer to the memory
+    /// space allocated from within this object so that a client object may perform the copy. This prevents any potentially unsafe use of the pointer.
+    ///
     func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
 
         // Get pointers to the audio buffer's internal Float data buffers.
