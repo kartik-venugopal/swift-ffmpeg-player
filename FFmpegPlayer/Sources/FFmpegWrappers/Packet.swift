@@ -10,12 +10,9 @@ class Packet {
     ///
     /// The encapsulated AVPacket object.
     ///
-    var avPacket: AVPacket {pointer.pointee}
+    var avPacket: AVPacket
     
-    ///
-    /// A pointer to the encapsulated AVPacket object.
-    ///
-    var pointer: UnsafeMutablePointer<AVPacket>!
+    var pointer: UnsafeMutablePointer<AVPacket>
     
     ///
     /// Index of the stream from which this packet was read.
@@ -43,16 +40,16 @@ class Packet {
     var pts: Int64 {avPacket.pts}
     
     ///
-    /// Pointer to the raw data (unsigned bytes) contained in this packet.
+    /// The raw data (unsigned bytes) contained in this packet.
     ///
-    var rawDataPointer: UnsafeMutablePointer<UInt8>! {avPacket.data}
+    var rawData: UnsafeMutablePointer<UInt8>! {avPacket.data}
     
     ///
     /// The raw data encapsulated in a byte buffer, if there is any raw data. Nil if there is no raw data.
     ///
     var data: Data? {
         
-        if let theData = rawDataPointer, size > 0 {
+        if let theData = rawData, size > 0 {
             return Data(bytes: theData, count: Int(size))
         }
         
@@ -66,20 +63,13 @@ class Packet {
     ///
     /// - throws: **PacketReadError** if the read fails.
     ///
-    init(readingFromFormat formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
+    init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
-        // Allocate memory for the packet.
-        self.pointer = av_packet_alloc()
-        
-        // Check if memory allocation was successful. Can't proceed otherwise.
-        guard pointer != nil else {
-            
-            print("\nPacket.init(): Unable to allocate memory for packet.")
-            throw PacketReadError(-1)
-        }
+        self.avPacket = AVPacket()
+        self.pointer = withUnsafeMutablePointer(to: &avPacket, {$0})
         
         // Try to read a packet.
-        let readResult: Int32 = av_read_frame(formatCtx, pointer)
+        let readResult: Int32 = av_read_frame(formatCtx, &avPacket)
         
         // If the read fails, log a message and throw an error.
         guard readResult >= 0 else {
@@ -96,11 +86,12 @@ class Packet {
     ///
     /// Instantiates a Packet from an AVPacket that has already been read from the source stream.
     ///
-    /// - Parameter pointer: A pointer to a pre-existing AVPacket that has already been read.
+    /// - Parameter avPacket: A pre-existing AVPacket that has already been read.
     ///
-    init(encapsulating pointer: UnsafeMutablePointer<AVPacket>) {
+    init(avPacket: AVPacket) {
         
-        self.pointer = pointer
+        self.avPacket = avPacket
+        self.pointer = withUnsafeMutablePointer(to: &self.avPacket, {$0})
         
         // Since this avPacket was not allocated by this object, we
         // cannot deallocate it here. It is the caller's responsibility

@@ -174,6 +174,11 @@ class Decoder {
         do {
             
             try format.seek(within: stream, to: time)
+            
+            if format.isRawAudioFile {
+                self.eof = false
+                return
+            }
 
             // Because ffmpeg's seeking is not always accurate, we need to check where the seek took us to, within the stream, and
             // we may need to skip some packets / samples.

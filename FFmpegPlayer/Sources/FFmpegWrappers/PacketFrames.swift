@@ -1,7 +1,9 @@
 import Foundation
 
 ///
-/// A container for frames read from a single packet. Performs operations such as truncation (discarding unwanted frames / samples)
+/// A container for frames decoded from a single packet.
+///
+/// Performs operations such as truncation (discarding unwanted frames / samples)
 /// on the frames together as a single unit.
 ///
 class PacketFrames {

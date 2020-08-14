@@ -276,7 +276,7 @@ class FormatContext {
     ///
     func readPacket(from stream: StreamProtocol) throws -> Packet? {
         
-        let packet = try Packet(readingFromFormat: pointer)
+        let packet = try Packet(pointer)
         return packet.streamIndex == stream.index ? packet : nil
     }
     
