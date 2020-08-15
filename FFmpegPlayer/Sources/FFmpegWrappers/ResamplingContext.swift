@@ -117,9 +117,16 @@ class ResamplingContext {
         }
     }
     
+    ///
+    /// Initializes this context.
+    ///
+    /// ```
+    /// Must be called:
+    /// **after** setting all options (eg. channel layout, sample rate), and
+    /// **before** performing a conversion (i.e. calling **convert()**)
+    /// ```
+    ///
     func initialize() {
-        
-        // Need to initialize the context before the conversion can be performed.
         swr_init(resampleCtx)
     }
     

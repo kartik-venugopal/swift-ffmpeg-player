@@ -2,22 +2,11 @@ import AVFoundation
 import Accelerate
 
 ///
-/// Performs conversion of PCM audio samples to the standard sample format suitable for playback in an AVAudioEngine,
-/// i.e. 32-bit floating point non-interleaved (aka planar). Sample rate and channel layout are not affected by this process.
+/// An FFmpeg implementation of **SampleConverterProtocol**.
 ///
-/// ```
-/// Resampling is only required when codecs produce PCM samples that are not already in
-/// the required standard format.
-/// ```
+/// Uses **libswresample** to do the actual conversion.
 ///
 class FFmpegSampleConverter: SampleConverterProtocol {
-    
-    ///
-    /// The default channel layout to assume when the channel layout for an audio file cannot be determined.
-    ///
-    /// Should never have to be used.
-    ///
-    private static let defaultChannelLayout: Int64 = Int64(AV_CH_LAYOUT_STEREO)
     
     ///
     /// The standard (i.e. "canonical") audio sample format preferred by Core Audio on macOS.
@@ -28,8 +17,8 @@ class FFmpegSampleConverter: SampleConverterProtocol {
     private static let standardSampleFormat: AVSampleFormat = AV_SAMPLE_FMT_FLTP
     
     ///
-    /// Pointers to the memory space allocated for the resampler's output samples. Each pointer points to
-    /// space allocated to samples for a single channel.
+    /// Pointers to the memory space allocated for the converter's output samples. Each pointer points to
+    /// space allocated to samples for a single channel / plane.
     ///
     var outputData: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>!
     
@@ -43,13 +32,6 @@ class FFmpegSampleConverter: SampleConverterProtocol {
     ///
     var allocatedSampleCount: Int32 = 0
     
-    ///
-    /// The initializer is made private so as to prevent clients from creating their own instances.
-    /// Only one instance (i.e. a singleton) of this class should be created and made available
-    /// as a static member.
-    ///
-    /// See **instance**.
-    ///
     init() {
         
         // Allocate space for up to 8 channels of sample data.
@@ -57,24 +39,27 @@ class FFmpegSampleConverter: SampleConverterProtocol {
         outputData.initialize(to: nil)
     }
     
-    func supports(format: SampleFormat) -> Bool {
-        return true
+    /// See **SampleConverterProtocol.supports()**.
+    func supports(inputFormat: SampleFormat) -> Bool {
+        return true     // FFmpeg can handle all relevant format conversions.
     }
     
+    /// See **SampleConverterProtocol.convert()**.
     func convert(samplesIn frameBuffer: FrameBuffer, andCopyTo audioBuffer: AVAudioPCMBuffer) {
+        
+        // --------------------- Step 1: Allocate space for the conversion ---------------------
         
         let audioFormat: FFmpegAudioFormat = frameBuffer.audioFormat
         allocateFor(channelCount: audioFormat.channelCount, sampleCount: frameBuffer.maxFrameSampleCount)
+        
+        // --------------------- Step 2: Create a context and set options for the conversion ---------------------
         
         var sampleCountSoFar: Int = 0
         let channelCount: Int = Int(audioFormat.channelCount)
         let channelLayout: Int64 = audioFormat.channelLayout
         let sampleRate: Int64 = Int64(audioFormat.sampleRate)
         
-        // Get a pointer to the audio buffer's internal data buffer.
-        guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
-        
-        // Allocate the context used to perform the resampling.
+        // Allocate the context used to perform the conversion.
         // TODO: Throw an error from here ???
         guard let resampleCtx = ResamplingContext() else {return}
         
@@ -99,11 +84,15 @@ class FFmpegSampleConverter: SampleConverterProtocol {
         resampleCtx.inputSampleFormat = audioFormat.sampleFormat.avFormat
         resampleCtx.outputSampleFormat = Self.standardSampleFormat
         
+        // --------------------- Step 3: Perform the conversion (and copy), frame by frame ---------------------
+        
         resampleCtx.initialize()
         
+        // Get a pointer to the audio buffer's internal data buffer.
+        guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
+        
+        // Convert one frame at a time.
         for frame in frameBuffer.frames {
-            
-            // Perform the format conversion.
             
             // Access the input data as pointers from the frame being resampled.
             frame.dataPointers.withMemoryRebound(to: UnsafePointer<UInt8>?.self, capacity: channelCount) {
@@ -117,6 +106,7 @@ class FFmpegSampleConverter: SampleConverterProtocol {
             }
             
             // Finally, copy the output samples to the given audio buffer.
+            
             let intSampleCount: Int = Int(frame.sampleCount)
             let intFirstSampleIndex: Int = Int(frame.firstSampleIndex)
             
@@ -146,7 +136,7 @@ class FFmpegSampleConverter: SampleConverterProtocol {
     }
     
     ///
-    /// Allocates enough memory space for a resampling conversion that produces output
+    /// Allocates enough memory space for a format conversion that produces output
     /// having a given channel count and sample count.
     ///
     /// - Parameter channelCount:   The number of channels to allocate space for (i.e. the number of output buffers).
@@ -180,7 +170,7 @@ class FFmpegSampleConverter: SampleConverterProtocol {
     }
     
     ///
-    /// Deallocates any space previously allocated to hold the resampler's output samples.
+    /// Deallocates any space previously allocated to hold the converter's output samples.
     ///
     func deallocate() {
         

@@ -30,8 +30,22 @@ class FrameBuffer {
     ///
     var sampleCount: Int32 = 0
     
+    ///
+    /// Computes the maximum of the sample counts of all the contained frames.
+    ///
+    /// ```
+    /// This value is useful when allocating reusable memory space for
+    /// a sample format conversion, i.e. space large enough to accomodate
+    /// any of the frames contained in this buffer.
+    /// ```
+    ///
     var maxFrameSampleCount: Int32 {frames.map{$0.sampleCount}.max() ?? 0}
     
+    ///
+    /// Whether or not samples in this buffer require conversion before they can be fed into AVAudioEngine for playback.
+    ///
+    /// Will be true unless the sample format is 32-bit float non-interleaved (i.e. the standard Core Audio format).
+    ///
     var needsFormatConversion: Bool {audioFormat.needsFormatConversion}
     
     ///
@@ -96,18 +110,15 @@ class FrameBuffer {
     }
     
     ///
-    /// Constructs a **playable** audio buffer from the samples in this buffer's frames.
-    /// The returned audio buffer can be scheduled for playback by the audio engine.
+    /// Copies this buffer's samples, as non-interleaved (aka planar) 32-bit floats, to a given (playable) audio buffer.
     ///
-    /// - Parameter format: The format of the audio buffer that is to be constructed.
+    /// - Parameter audioBuffer: The playable audio buffer that will hold the samples contained in this buffer.
     ///
-    /// - returns:  The newly constructed audio buffer. Nil if this buffer contains no samples or
-    ///             if an invalid audio format has been specified.
+    /// # Note #
     ///
-    /// # Notes #
-    ///
-    /// If required, the contained samples will be resampled before being copied to the
-    /// audio buffer.
+    /// The caller of this function must first verify that this buffer's samples are indeed of the required (playable) standard
+    /// Core Audio format. In other words, this function does not do any kind of sample format conversion. It copies
+    /// the samples as is.
     ///
     func copySamples(to audioBuffer: AVAudioPCMBuffer) {
         
@@ -127,8 +138,6 @@ class FrameBuffer {
             
             let intSampleCount: Int = Int(frame.sampleCount)
             let intFirstSampleIndex: Int = Int(frame.firstSampleIndex)
-            
-            // NOTE - The following copy operation assumes a non-interleaved output format (i.e. the standard Core Audio format).
             
             for channelIndex in 0..<channelCount {
                 

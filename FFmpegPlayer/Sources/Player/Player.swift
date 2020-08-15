@@ -9,6 +9,10 @@ class Player {
     /// A helper object that does the actual decoding.
     let decoder: Decoder = Decoder()
     
+    ///
+    /// A helper object that performs conversion of PCM samples to the format required
+    /// for AVAudioEngine playback, if required.
+    ///
     let sampleConverter: SampleConverter = SampleConverter()
     
     /// A helper object that manages the underlying audio engine.
@@ -164,7 +168,8 @@ class Player {
         // sample rate.
         let effectiveSampleRate: Int32 = sampleRate * channelCount
         
-        guard let channelLayout = ChannelLayouts.mapLayout(ffmpegLayout: Int(codec.channelLayout)) else {
+        // Map the ffmpeg channel layout to an AVFoundation channel layout.
+        guard let channelLayout: AVAudioChannelLayout = ChannelLayouts.mapLayout(ffmpegLayout: Int(codec.channelLayout)) else {
             
             print("\nFailed to initialize Player: Invalid ffmpeg channel layout: \(codec.channelLayout)")
             throw PlayerInitializationError()
@@ -220,8 +225,6 @@ class Player {
     ///
     func play(fileContext: AudioFileContext) {
         
-        let time = measureExecutionTime {
-            
         // Reset player and decoder state before playback.
         playbackCompleted(false)
     
@@ -241,10 +244,6 @@ class Player {
         } catch {
             print("Player setup for file '\(fileContext.file.path)' failed !")
         }
-            
-        }
-        
-        print("\nPlayer took \(time * 1000) msec to initiate playback.")
     }
     
     ///
