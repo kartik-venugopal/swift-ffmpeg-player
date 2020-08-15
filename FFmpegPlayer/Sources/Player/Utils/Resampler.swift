@@ -1,6 +1,13 @@
 import AVFoundation
 import Accelerate
 
+protocol SampleConverterProtocol {
+    
+    func supports(format: SampleFormat) -> Bool
+    
+    func convert(samplesIn frameBuffer: FrameBuffer, andCopyTo audioBuffer: AVAudioPCMBuffer)
+}
+
 ///
 /// Performs conversion of PCM audio samples to the standard sample format suitable for playback in an AVAudioEngine,
 /// i.e. 32-bit floating point non-interleaved (aka planar). Sample rate and channel layout are not affected by this process.
@@ -10,12 +17,12 @@ import Accelerate
 /// the required standard format.
 /// ```
 ///
-class Resampler {
+class FFmpegSampleConverter: SampleConverterProtocol {
     
     ///
     /// Singleton instance of this class that is shared by different client objects.
     ///
-    static let instance = Resampler()
+    static let instance = FFmpegSampleConverter()
     
     ///
     /// The default channel layout to assume when the channel layout for an audio file cannot be determined.
@@ -93,6 +100,8 @@ class Resampler {
             // Update these variables to keep track of allocated space.
             self.allocatedChannelCount = channelCount
             self.allocatedSampleCount = sampleCount
+            
+            print("\nRESAMPLER - ALLOC FOR: \(sampleCount)")
         }
     }
     

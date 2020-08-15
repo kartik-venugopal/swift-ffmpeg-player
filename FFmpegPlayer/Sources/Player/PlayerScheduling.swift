@@ -118,8 +118,26 @@ extension Player {
         // Ask the decoder to decode up to the given number of samples.
         let frameBuffer: FrameBuffer = decoder.decode(maxSampleCount: maxSampleCount)
         
+        let st = CFAbsoluteTimeGetCurrent()
+        
         // Transfer the decoded samples into an audio buffer that the audio engine can schedule for playback.
-        if let audioBuffer: AVAudioPCMBuffer = frameBuffer.constructAudioBuffer(format: audioFormat) {
+        if let playbackBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: AVAudioFrameCount(frameBuffer.sampleCount)) {
+            
+            let st2 = CFAbsoluteTimeGetCurrent()
+            
+            if frameBuffer.needsFormatConversion {
+                sampleConverter.convert(samplesIn: frameBuffer, andCopyTo: playbackBuffer)
+                
+            } else {
+                frameBuffer.copySamples(to: playbackBuffer)
+            }
+            
+            let end = CFAbsoluteTimeGetCurrent()
+            let time = end - st
+            print("\nTook \(time * 1000) msec to construct buffer")
+            
+            let t2 = end - st2
+            print("\nTook \(t2 * 1000) msec to convert samples")
             
             // Pass off the audio buffer to the audio engine. The completion handler is executed when
             // the buffer has finished playing.
@@ -131,7 +149,7 @@ extension Player {
             // 3 - the completion handler will execute even when the player is stopped, i.e. the buffer
             //      has not really completed playback but has been removed from the playback queue.
             
-            audioEngine.scheduleBuffer(audioBuffer, completionHandler: {
+            audioEngine.scheduleBuffer(playbackBuffer, completionHandler: {
                 
                 // Audio buffer has completed playback, so decrement the counter.
                 self.scheduledBufferCount.decrement()

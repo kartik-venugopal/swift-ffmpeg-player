@@ -54,7 +54,7 @@ struct SampleFormat {
     /// Whether or not samples of this format require resampling in order to
     /// be able to fed into AVAudioEngine for playback.
     ///
-    let needsResampling: Bool
+    let needsFormatConversion: Bool
     
     ///
     /// Instantiates a SampleFormat from an AVSampleFormat.
@@ -84,7 +84,7 @@ struct SampleFormat {
         
         // Apparently, AVAudioEngine can only play 32-bit floating point samples.
         // TODO: Investigate further, if this is really true.
-        self.needsResampling = avFormat != AV_SAMPLE_FMT_FLTP
+        self.needsFormatConversion = avFormat != AV_SAMPLE_FMT_FLTP
     }
     
     ///

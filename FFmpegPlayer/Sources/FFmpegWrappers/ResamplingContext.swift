@@ -117,6 +117,12 @@ class ResamplingContext {
         }
     }
     
+    func initialize() {
+        
+        // Need to initialize the context before the conversion can be performed.
+        swr_init(resampleCtx)
+    }
+    
     ///
     /// Performs the resampling conversion.
     ///
@@ -138,8 +144,6 @@ class ResamplingContext {
                  outputDataPointer: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>,
                  outputSampleCount: Int32) {
 
-        // Need to initialize the context before the conversion can be performed.
-        swr_init(resampleCtx)
         swr_convert(resampleCtx, outputDataPointer, outputSampleCount, inputDataPointer, inputSampleCount)
     }
 

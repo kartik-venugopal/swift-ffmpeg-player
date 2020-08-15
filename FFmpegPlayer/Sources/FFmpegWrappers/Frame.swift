@@ -207,51 +207,6 @@ class Frame {
         }
     }
     
-    ///
-    /// Copies this frame's samples to a given audio buffer starting at the given offset.
-    ///
-    /// - Parameter audioBuffer: The audio buffer to which this frame's samples are to be copied over.
-    ///
-    /// - Parameter offset:      A starting offset for each channel's data buffer in the audio buffer.
-    ///                          This is required because the audio buffer may hold data from other
-    ///                          frames copied to it previously. So, the offset will equal the sum of the
-    ///                          the sample counts of all frames previously copied to the audio buffer.
-    ///
-    /// # Important #
-    ///
-    /// This function assumes that the format of the samples contained in this frame is: 32-bit floating-point planar,
-    /// i.e. the samples do *not* require resampling.
-    ///
-    /// # Note #
-    ///
-    /// It is good from a safety perspective, to copy the frame's samples to the audio buffer right here rather than to give out a pointer to the memory
-    /// space allocated from within this object so that a client object may perform the copy. This prevents any potentially unsafe use of the pointer.
-    ///
-    func copySamples(to audioBuffer: AVAudioPCMBuffer, startingAt offset: Int) {
-
-        // Get pointers to the audio buffer's internal Float data buffers.
-        guard let audioBufferChannels = audioBuffer.floatChannelData else {return}
-        
-        let intSampleCount: Int = Int(sampleCount)
-        let intFirstSampleIndex: Int = Int(firstSampleIndex)
-        
-        for channelIndex in 0..<Int(channelCount) {
-            
-            // Get the pointers to the source and destination buffers for the copy operation.
-            guard let bytesForChannel = dataPointers[channelIndex] else {break}
-            let audioBufferChannel = audioBufferChannels[channelIndex]
-            
-            // Re-bind this frame's bytes to Float for the copy operation.
-            bytesForChannel.withMemoryRebound(to: Float.self, capacity: intSampleCount) {
-                
-                (floatsForChannel: UnsafeMutablePointer<Float>) in
-                
-                // Use Accelerate to perform the copy optimally, starting at the given offset.
-                cblas_scopy(sampleCount, floatsForChannel.advanced(by: intFirstSampleIndex), 1, audioBufferChannel.advanced(by: offset), 1)
-            }
-        }
-    }
-    
     /// Indicates whether or not this object has already been destroyed.
     private var destroyed: Bool = false
     

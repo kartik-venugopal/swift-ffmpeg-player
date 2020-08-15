@@ -9,6 +9,8 @@ class Player {
     /// A helper object that does the actual decoding.
     let decoder: Decoder = Decoder()
     
+    let sampleConverter: SampleConverter = SampleConverter()
+    
     /// A helper object that manages the underlying audio engine.
     let audioEngine: AudioEngine = AudioEngine()
 
@@ -201,14 +203,6 @@ class Player {
             sampleCountForDeferredPlayback = 7 * sampleRate     // 7 seconds of audio
         }
         
-        // If the PCM sample format produced by the codec for this file is not suitable for use with our audio engine,
-        // all samples need to be resampled (converted) to a suitable format. So, prepare the resampler
-        // if required.
-        
-        if codec.sampleFormat.needsResampling {
-            Resampler.instance.allocateFor(channelCount: channelCount, sampleCount: sampleCountForDeferredPlayback)
-        }
-        
         scheduledBufferCount.value = 0
         playbackStartPosition = 0
     }
@@ -226,6 +220,8 @@ class Player {
     ///
     func play(fileContext: AudioFileContext) {
         
+        let time = measureExecutionTime {
+            
         // Reset player and decoder state before playback.
         playbackCompleted(false)
     
@@ -245,6 +241,10 @@ class Player {
         } catch {
             print("Player setup for file '\(fileContext.file.path)' failed !")
         }
+            
+        }
+        
+        print("\nPlayer took \(time * 1000) msec to initiate playback.")
     }
     
     ///
@@ -359,11 +359,6 @@ class Player {
 
         haltPlayback()
         decoder.playbackCompleted()
-        
-        // If the resampler was used, instruct it to deallocate the allocated memory space.
-        if playingFile != nil, playingFile.audioCodec.sampleFormat.needsResampling {
-            Resampler.instance.deallocate()
-        }
         
         playingFile = nil
 

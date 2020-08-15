@@ -88,8 +88,10 @@ class Decoder {
     ///
     func decode(maxSampleCount: Int32) -> FrameBuffer {
         
+        let audioFormat: FFmpegAudioFormat = FFmpegAudioFormat(sampleRate: codec.sampleRate, channelCount: codec.channelCount, channelLayout: codec.channelLayout, sampleFormat: codec.sampleFormat)
+        
         // Create a frame buffer with the specified maximum sample count and the codec's sample format for this file.
-        let buffer: FrameBuffer = FrameBuffer(sampleFormat: codec.sampleFormat, maxSampleCount: maxSampleCount)
+        let buffer: FrameBuffer = FrameBuffer(audioFormat: audioFormat, maxSampleCount: maxSampleCount)
         
         // Keep decoding as long as EOF is not reached.
         while !eof {
