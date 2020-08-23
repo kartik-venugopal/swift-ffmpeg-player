@@ -24,11 +24,10 @@ class BufferFileWriter {
             for i in 0..<2 {
                 
                 fwrite(&data![i][s], MemoryLayout<Float>.size, 1, outfile)
-                ctr += 1
                 
-//                if (ctr > 44100 && ctr < 44200) {
-//                    print("\(ctr): \(data![i][s])");
-//                }
+                if (s > 44100 && s < 44200) {
+                    print("\(s): \(data![i][s])");
+                }
             }
         }
         

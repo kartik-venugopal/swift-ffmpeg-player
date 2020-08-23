@@ -1,5 +1,4 @@
 import AVFoundation
-import Accelerate
 
 ///
 /// A contract for a sample converter that performs conversion of PCM audio samples to the standard format suitable for playback in an AVAudioEngine,
