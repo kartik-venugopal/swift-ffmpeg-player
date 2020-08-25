@@ -6,6 +6,21 @@ import Foundation
 class AudioCodec: Codec {
     
     ///
+    /// Constant value to use as the number of parallel threads to use when decoding.
+    ///
+    /// This should equal the number of physical CPU cores in the system.
+    ///
+    static let threadCount: Int32 = Int32(systemNumberOfCores)
+    
+    ///
+    /// The type of multithreading used by ffmpeg when decoding.
+    ///
+    /// *FF_THREAD_SLICE* means decode multiple segments
+    /// or "slices" of a frame concurrently.
+    ///
+    static let threadType: Int32 = FF_THREAD_SLICE
+    
+    ///
     /// Average bit rate of the encoded data.
     ///
     var bitRate: Int64 {params.bit_rate}
@@ -19,6 +34,24 @@ class AudioCodec: Codec {
     /// PCM format of the samples.
     ///
     var sampleFormat: SampleFormat = SampleFormat(encapsulating: AVSampleFormat(0))
+    
+    ///
+    /// A collection of all sample formats supported by this codec.
+    ///
+    lazy var supportedSampleFormats: [SampleFormat] = {
+       
+        var formats: [SampleFormat] = []
+        let avFormatsPtr = self.avCodec.sample_fmts
+        var index: Int = 0
+        
+        while let format = avFormatsPtr?[index], format.rawValue.isNonNegative {
+            
+            formats.append(SampleFormat(encapsulating: format))
+            index += 1
+        }
+        
+        return formats
+    }()
     
     ///
     /// Number of channels of audio data.
@@ -45,6 +78,15 @@ class AudioCodec: Codec {
         // Correct channel layout if necessary.
         // NOTE - This is necessary for some files like WAV files that don't specify a channel layout.
         self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
+        
+        // Request floating-point non-interleaved samples.
+        // NOTE - This is only a request. Codecs may not
+        // support this format.
+        self.contextPointer.pointee.request_sample_fmt = AV_SAMPLE_FMT_FLTP
+        
+        // Use multithreading to speed up decoding.
+        self.contextPointer.pointee.thread_count = Self.threadCount
+        self.contextPointer.pointee.thread_type = Self.threadType
     }
     
     ///
