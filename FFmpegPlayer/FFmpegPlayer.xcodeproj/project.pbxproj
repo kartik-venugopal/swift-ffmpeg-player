@@ -61,6 +61,12 @@
 		3E71AED824E724520085DAE5 /* AVFUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E71AED724E724520085DAE5 /* AVFUtils.swift */; };
 		3EC22CDE24E79A4C001F7EA3 /* FFmpegSampleConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC22CDD24E79A4C001F7EA3 /* FFmpegSampleConverter.swift */; };
 		3EC22CE024E79FD9001F7EA3 /* FFmpegAudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC22CDF24E79FD9001F7EA3 /* FFmpegAudioFormat.swift */; };
+		3ECCA06725116347006C692A /* libspeex.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECCA06425116347006C692A /* libspeex.1.dylib */; };
+		3ECCA06825116347006C692A /* libopencore-amrnb.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */; };
+		3ECCA06925116347006C692A /* libopencore-amrwb.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */; };
+		3ECCA06A25116350006C692A /* libopencore-amrnb.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3ECCA06B25116352006C692A /* libopencore-amrwb.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3ECCA06C25116354006C692A /* libspeex.1.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3ECCA06425116347006C692A /* libspeex.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,8 +76,11 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3ECCA06A25116350006C692A /* libopencore-amrnb.0.dylib in Embed Libraries */,
 				3E2A84D524DD0E9B0031BFDC /* libavformat.58.dylib in Embed Libraries */,
 				3E2A84D424DD0E990031BFDC /* libavcodec.58.dylib in Embed Libraries */,
+				3ECCA06B25116352006C692A /* libopencore-amrwb.0.dylib in Embed Libraries */,
+				3ECCA06C25116354006C692A /* libspeex.1.dylib in Embed Libraries */,
 				3E2A84D724DD0E9D0031BFDC /* libswresample.3.dylib in Embed Libraries */,
 				3E2A84D624DD0E9C0031BFDC /* libavutil.56.dylib in Embed Libraries */,
 			);
@@ -142,6 +151,9 @@
 		3E71AED724E724520085DAE5 /* AVFUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFUtils.swift; sourceTree = "<group>"; };
 		3EC22CDD24E79A4C001F7EA3 /* FFmpegSampleConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegSampleConverter.swift; sourceTree = "<group>"; };
 		3EC22CDF24E79FD9001F7EA3 /* FFmpegAudioFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegAudioFormat.swift; sourceTree = "<group>"; };
+		3ECCA06425116347006C692A /* libspeex.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libspeex.1.dylib; sourceTree = "<group>"; };
+		3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libopencore-amrnb.0.dylib"; sourceTree = "<group>"; };
+		3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libopencore-amrwb.0.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,10 +161,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3ECCA06825116347006C692A /* libopencore-amrnb.0.dylib in Frameworks */,
+				3ECCA06925116347006C692A /* libopencore-amrwb.0.dylib in Frameworks */,
 				3E2A84D224DD0E960031BFDC /* libavformat.58.dylib in Frameworks */,
 				3E2A84D024DD0E960031BFDC /* libavcodec.58.dylib in Frameworks */,
 				3E2A84D324DD0E960031BFDC /* libswresample.3.dylib in Frameworks */,
 				3E2A84D124DD0E960031BFDC /* libavutil.56.dylib in Frameworks */,
+				3ECCA06725116347006C692A /* libspeex.1.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +333,9 @@
 				3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */,
 				3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */,
 				3E2A84CF24DD0E960031BFDC /* libswresample.3.dylib */,
+				3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */,
+				3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */,
+				3ECCA06425116347006C692A /* libspeex.1.dylib */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";

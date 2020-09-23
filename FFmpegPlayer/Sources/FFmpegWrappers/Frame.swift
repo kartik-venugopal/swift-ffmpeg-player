@@ -33,6 +33,8 @@ class Frame {
     ///
     var sampleFormat: SampleFormat
     
+    var actualSampleCount: Int32 {avFrame.nb_samples}
+    
     ///
     /// Total number of samples in this frame.
     ///
@@ -46,7 +48,7 @@ class Frame {
     ///
     /// See member **truncatedSampleCount** for an explanation of frame truncation.
     ///
-    var sampleCount: Int32 {truncatedSampleCount ?? avFrame.nb_samples}
+    var sampleCount: Int32 {truncatedSampleCount ?? actualSampleCount}
     
     ///
     /// The (lesser) number of samples to read, as a result of frame truncation. May be nil (if no truncation has occurred).
@@ -180,7 +182,7 @@ class Frame {
     ///
     func keepFirstNSamples(sampleCount: Int32) {
         
-        if sampleCount < self.sampleCount {
+        if sampleCount < self.actualSampleCount {
 
             firstSampleIndex = 0
             truncatedSampleCount = sampleCount
@@ -200,7 +202,7 @@ class Frame {
     ///
     func keepLastNSamples(sampleCount: Int32) {
         
-        if sampleCount < self.sampleCount {
+        if sampleCount < self.actualSampleCount {
 
             firstSampleIndex = self.sampleCount - sampleCount
             truncatedSampleCount = sampleCount

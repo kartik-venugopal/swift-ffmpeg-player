@@ -100,9 +100,9 @@ class FFmpegSampleConverter: SampleConverterProtocol {
                 (inputDataPointer: UnsafeMutablePointer<UnsafePointer<UInt8>?>) in
                 
                 resampleCtx.convert(inputDataPointer: inputDataPointer,
-                                    inputSampleCount: frame.sampleCount,
+                                    inputSampleCount: frame.actualSampleCount,
                                     outputDataPointer: outputData,
-                                    outputSampleCount: frame.sampleCount)
+                                    outputSampleCount: frame.actualSampleCount)
             }
             
             // Finally, copy the output samples to the given audio buffer.

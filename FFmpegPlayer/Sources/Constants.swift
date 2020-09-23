@@ -9,7 +9,7 @@ struct Constants {
     /// A comprehensive list of all allowed audio file extensions,
     /// i.e. all file types that can be played by our player.
     ///
-    static let audioFileExtensions: [String] = ["aac", "adts", "ac3", "aif", "aiff", "aifc", "caf", "flac", "mp3", "m4a", "m4b", "m4r", "snd", "au", "sd2", "wav", "oga", "ogg", "opus", "wma", "dsf", "mpc", "mp2", "ape", "wv", "dts", "mka"]
+    static let audioFileExtensions: [String] = ["8svx", "aac", "adts", "ac3", "aif", "aiff", "aifc", "caf", "flac", "mp3", "m4a", "m4b", "m4r", "snd", "au", "sd2", "wav", "oga", "ogg", "opus", "wma", "dsf", "mpc", "mp2", "ape", "wv", "dts", "mka", "paf", "tta", "ra", "ram", "rm", "tak", "aa"]
     
     ///
     /// A list of extensions of files that represent raw audio streams that lack accurate duration information.

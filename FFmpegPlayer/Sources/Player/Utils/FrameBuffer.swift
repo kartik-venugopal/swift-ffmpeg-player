@@ -15,6 +15,8 @@ class FrameBuffer {
     ///
     var frames: [Frame] = []
     
+    var isEmpty: Bool {frames.isEmpty}
+    
     ///
     /// The PCM format of the samples in this buffer.
     ///
@@ -39,7 +41,7 @@ class FrameBuffer {
     /// any of the frames contained in this buffer.
     /// ```
     ///
-    var maxFrameSampleCount: Int32 {frames.map{$0.sampleCount}.max() ?? 0}
+    var maxFrameSampleCount: Int32 {frames.map{$0.actualSampleCount}.max() ?? 0}
     
     ///
     /// Whether or not samples in this buffer require conversion before they can be fed into AVAudioEngine for playback.

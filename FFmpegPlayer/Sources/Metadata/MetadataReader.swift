@@ -90,11 +90,9 @@ class MetadataReader {
     private func readCoverArt(_ fileCtx: AudioFileContext) -> NSImage? {
         
         // If no image (video) stream is present within the file, there is no cover art.
-        guard let imageStream = fileCtx.imageStream else {return nil}
-        
         // Check if the attached pic in the image stream
         // has any data.
-        if let imageData = imageStream.attachedPic.data {
+        if let imageData = fileCtx.imageStream?.attachedPic?.data {
             return NSImage(data: imageData)
         }
         

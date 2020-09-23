@@ -26,6 +26,13 @@ protocol StreamProtocol {
     var metadata: [String: String] {get}
 }
 
+extension StreamProtocol {
+    
+    func hasDisposition(field: Int32) -> Bool {
+        return avStream.disposition & field == field
+    }
+}
+
 ///
 /// Convenience functions that are useful when converting between stream time units and seconds (used by the user interface).
 ///

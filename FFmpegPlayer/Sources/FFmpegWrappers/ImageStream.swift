@@ -37,10 +37,8 @@ class ImageStream: StreamProtocol {
     /// The packet (optionally) containing an attached picture.
     /// This can be used to read cover art.
     ///
-    lazy var attachedPic: Packet! = {
-        
-        var avPacket = avStream.attached_pic
-        return Packet(avPacket: avPacket)
+    lazy var attachedPic: Packet? = {
+        hasDisposition(field: AV_DISPOSITION_ATTACHED_PIC) ? Packet(avPacket: avStream.attached_pic) : nil
     }()
     
     ///

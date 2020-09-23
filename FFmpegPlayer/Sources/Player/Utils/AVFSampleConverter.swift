@@ -51,6 +51,10 @@ class AVFSampleConverter: SampleConverterProtocol {
             
             copySamples(in: frameBuffer, ofType: Int32.self, to: inputBuffer.int32ChannelData)
             
+        case AV_SAMPLE_FMT_FLT:
+            
+            copySamples(in: frameBuffer, ofType: Float.self, to: inputBuffer.floatChannelData)
+            
         default:
             
             return
@@ -78,7 +82,7 @@ class AVFSampleConverter: SampleConverterProtocol {
     ///
     /// - Parameter destBuffer:     Pointer to a destination buffer.
     ///
-    private func copySamples<T>(in frameBuffer: FrameBuffer, ofType: T.Type, to destBuffer: UnsafePointer<UnsafeMutablePointer<T>>?) where T: SignedInteger {
+    private func copySamples<T>(in frameBuffer: FrameBuffer, ofType: T.Type, to destBuffer: UnsafePointer<UnsafeMutablePointer<T>>?) where T: Numeric {
         
         // Keeps track of how many samples have been copied over so far.
         var sampleCountSoFar: Int = 0

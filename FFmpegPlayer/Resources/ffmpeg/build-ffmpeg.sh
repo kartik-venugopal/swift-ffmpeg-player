@@ -22,7 +22,6 @@ echo "Done extracting FFmpeg sources from archive.\n"
 
 # CD to the source directory and configure FFmpeg
 cd $sourceDirectoryName
-pwd
 echo "Configuring FFmpeg ..."
 
 ./configure \
