@@ -156,6 +156,10 @@ class MetadataEditingContext {
             var outAudioStream = outFormatContext!.pointee.streams.advanced(by: Int(audio_stream_index)).pointee!.pointee
             var outVideoStream = outFormatContext!.pointee.streams.advanced(by: Int(video_stream_index)).pointee!.pointee
         
+        av_dict_copy(&outFormatContext!.pointee.streams.advanced(by: Int(video_stream_index)).pointee!.pointee.metadata, inVideoStream.metadata, 0)
+        
+        av_dict_set(&outFormatContext!.pointee.streams.advanced(by: Int(video_stream_index)).pointee!.pointee.metadata, "muthu", "Sami", 0)
+        
         
 //        if  let sd = inAudioStream.side_data {
 //
@@ -218,7 +222,7 @@ class MetadataEditingContext {
             }
 
             av_packet_free(&pkt)
-
+        
             av_write_trailer(outFormatContext)
 
 //            var tagPtr: UnsafeMutablePointer<AVDictionaryEntry>?
@@ -231,8 +235,6 @@ class MetadataEditingContext {
 //
 //                tagPtr = tag
 //            }
-        
-        av_dict_copy(&outFormatContext!.pointee.streams.advanced(by: Int(video_stream_index)).pointee!.pointee.metadata, inVideoStream.metadata, 0)
         
         if  let sd = outFormatContext?.pointee.streams.advanced(by: Int(audio_stream_index)).pointee!.pointee.side_data {
             
