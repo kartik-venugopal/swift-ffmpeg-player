@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E24F9EA260CD70B003404A7 /* MEC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E24F9E9260CD70B003404A7 /* MEC.swift */; };
 		3E2A84D024DD0E960031BFDC /* libavcodec.58.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CC24DD0E960031BFDC /* libavcodec.58.dylib */; };
 		3E2A84D124DD0E960031BFDC /* libavutil.56.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */; };
 		3E2A84D224DD0E960031BFDC /* libavformat.58.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */; };
@@ -61,12 +62,8 @@
 		3E71AED824E724520085DAE5 /* AVFUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E71AED724E724520085DAE5 /* AVFUtils.swift */; };
 		3EC22CDE24E79A4C001F7EA3 /* FFmpegSampleConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC22CDD24E79A4C001F7EA3 /* FFmpegSampleConverter.swift */; };
 		3EC22CE024E79FD9001F7EA3 /* FFmpegAudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC22CDF24E79FD9001F7EA3 /* FFmpegAudioFormat.swift */; };
-		3ECCA06725116347006C692A /* libspeex.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECCA06425116347006C692A /* libspeex.1.dylib */; };
-		3ECCA06825116347006C692A /* libopencore-amrnb.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */; };
-		3ECCA06925116347006C692A /* libopencore-amrwb.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */; };
-		3ECCA06A25116350006C692A /* libopencore-amrnb.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		3ECCA06B25116352006C692A /* libopencore-amrwb.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		3ECCA06C25116354006C692A /* libspeex.1.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 3ECCA06425116347006C692A /* libspeex.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3EE3F424260C480E00FCAAEF /* MetadataEditingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE3F423260C480E00FCAAEF /* MetadataEditingContext.swift */; };
+		3EFE8A8B260C69F7008B150C /* TagEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFE8A8A260C69F7008B150C /* TagEditorViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -76,11 +73,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3ECCA06A25116350006C692A /* libopencore-amrnb.0.dylib in Embed Libraries */,
 				3E2A84D524DD0E9B0031BFDC /* libavformat.58.dylib in Embed Libraries */,
 				3E2A84D424DD0E990031BFDC /* libavcodec.58.dylib in Embed Libraries */,
-				3ECCA06B25116352006C692A /* libopencore-amrwb.0.dylib in Embed Libraries */,
-				3ECCA06C25116354006C692A /* libspeex.1.dylib in Embed Libraries */,
 				3E2A84D724DD0E9D0031BFDC /* libswresample.3.dylib in Embed Libraries */,
 				3E2A84D624DD0E9C0031BFDC /* libavutil.56.dylib in Embed Libraries */,
 			);
@@ -90,6 +84,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3E24F9E9260CD70B003404A7 /* MEC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEC.swift; sourceTree = "<group>"; };
 		3E2A84CC24DD0E960031BFDC /* libavcodec.58.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libavcodec.58.dylib; sourceTree = "<group>"; };
 		3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libavutil.56.dylib; sourceTree = "<group>"; };
 		3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libavformat.58.dylib; sourceTree = "<group>"; };
@@ -151,9 +146,8 @@
 		3E71AED724E724520085DAE5 /* AVFUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFUtils.swift; sourceTree = "<group>"; };
 		3EC22CDD24E79A4C001F7EA3 /* FFmpegSampleConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegSampleConverter.swift; sourceTree = "<group>"; };
 		3EC22CDF24E79FD9001F7EA3 /* FFmpegAudioFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegAudioFormat.swift; sourceTree = "<group>"; };
-		3ECCA06425116347006C692A /* libspeex.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libspeex.1.dylib; sourceTree = "<group>"; };
-		3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libopencore-amrnb.0.dylib"; sourceTree = "<group>"; };
-		3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libopencore-amrwb.0.dylib"; sourceTree = "<group>"; };
+		3EE3F423260C480E00FCAAEF /* MetadataEditingContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEditingContext.swift; sourceTree = "<group>"; };
+		3EFE8A8A260C69F7008B150C /* TagEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,13 +155,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3ECCA06825116347006C692A /* libopencore-amrnb.0.dylib in Frameworks */,
-				3ECCA06925116347006C692A /* libopencore-amrwb.0.dylib in Frameworks */,
 				3E2A84D224DD0E960031BFDC /* libavformat.58.dylib in Frameworks */,
 				3E2A84D024DD0E960031BFDC /* libavcodec.58.dylib in Frameworks */,
 				3E2A84D324DD0E960031BFDC /* libswresample.3.dylib in Frameworks */,
 				3E2A84D124DD0E960031BFDC /* libavutil.56.dylib in Frameworks */,
-				3ECCA06725116347006C692A /* libspeex.1.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +226,7 @@
 			children = (
 				3E540DE324DC3F29002B3E78 /* MainMenu.xib */,
 				3E540DF624DC3FC5002B3E78 /* PlayerViewController.swift */,
+				3EFE8A8A260C69F7008B150C /* TagEditorViewController.swift */,
 				3E540DF524DC3FC5002B3E78 /* SliderCells.swift */,
 				3E2A84DF24DD253B0031BFDC /* OpenDialogButtonCell.swift */,
 				3E540DF724DC3FC5002B3E78 /* UIExtensions.swift */,
@@ -297,6 +289,8 @@
 				3E540E2024DC408F002B3E78 /* Chapter.swift */,
 				3E540E2824DC408F002B3E78 /* PacketTable.swift */,
 				3E540E1F24DC408F002B3E78 /* Errors.swift */,
+				3EE3F423260C480E00FCAAEF /* MetadataEditingContext.swift */,
+				3E24F9E9260CD70B003404A7 /* MEC.swift */,
 			);
 			path = FFmpegWrappers;
 			sourceTree = "<group>";
@@ -333,9 +327,6 @@
 				3E2A84CE24DD0E960031BFDC /* libavformat.58.dylib */,
 				3E2A84CD24DD0E960031BFDC /* libavutil.56.dylib */,
 				3E2A84CF24DD0E960031BFDC /* libswresample.3.dylib */,
-				3ECCA06525116347006C692A /* libopencore-amrnb.0.dylib */,
-				3ECCA06625116347006C692A /* libopencore-amrwb.0.dylib */,
-				3ECCA06425116347006C692A /* libspeex.1.dylib */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
@@ -418,6 +409,7 @@
 				3E540E3024DC408F002B3E78 /* Chapter.swift in Sources */,
 				3E540E3B24DC408F002B3E78 /* AudioCodec.swift in Sources */,
 				3E540E4824DC40A8002B3E78 /* Mapper.swift in Sources */,
+				3EFE8A8B260C69F7008B150C /* TagEditorViewController.swift in Sources */,
 				3EC22CE024E79FD9001F7EA3 /* FFmpegAudioFormat.swift in Sources */,
 				3E540E3424DC408F002B3E78 /* ImageStream.swift in Sources */,
 				3E540E3324DC408F002B3E78 /* MetadataDictionary.swift in Sources */,
@@ -433,6 +425,7 @@
 				3E540E3C24DC408F002B3E78 /* Codec.swift in Sources */,
 				3E540E4A24DC40A8002B3E78 /* Queue.swift in Sources */,
 				3E540DF824DC3FC5002B3E78 /* SliderCells.swift in Sources */,
+				3EE3F424260C480E00FCAAEF /* MetadataEditingContext.swift in Sources */,
 				3E540E1424DC4044002B3E78 /* FrameBuffer.swift in Sources */,
 				3E540E4F24DC40C5002B3E78 /* Constants.swift in Sources */,
 				3E540E2F24DC408F002B3E78 /* Errors.swift in Sources */,
@@ -445,6 +438,7 @@
 				3E540E3E24DC408F002B3E78 /* Frame.swift in Sources */,
 				3E71AED824E724520085DAE5 /* AVFUtils.swift in Sources */,
 				3E540E0324DC400E002B3E78 /* AudioEngine.swift in Sources */,
+				3E24F9EA260CD70B003404A7 /* MEC.swift in Sources */,
 				3E540E6624DC4157002B3E78 /* ffmpeg.c in Sources */,
 				3E540E3824DC408F002B3E78 /* PacketTable.swift in Sources */,
 				3E3D249724E26C0200975403 /* PacketFrames.swift in Sources */,

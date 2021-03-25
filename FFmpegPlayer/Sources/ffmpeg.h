@@ -8,6 +8,7 @@
 #import <libavutil/channel_layout.h>
 #import <libavutil/opt.h>
 #import <libswresample/swresample.h>
+#import <libavutil/replaygain.h>
 
 /**
  * The error code corresponding to end of file (EOF). Defined in <libavutil/error.h>.

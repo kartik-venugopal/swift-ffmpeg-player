@@ -239,7 +239,7 @@ class Decoder {
                 }
                 
             } catch {
-                print("\nError while skipping packets after seeking to time: \(time) seconds.")
+                print("\nError while skipping packets after seeking to time: \(time) seconds. Error: \(error)")
             }
             
             // If the seek succeeds, we have not reached EOF.

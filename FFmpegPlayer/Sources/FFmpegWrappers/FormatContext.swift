@@ -261,7 +261,19 @@ class FormatContext {
         self.isRawAudioFile = Constants.rawAudioFileExtensions.contains(file.pathExtension.lowercased())
         self.bitRate = pointer.pointee.bit_rate
         
-        self.duration = (isRawAudioFile ? bruteForceDuration : audioStream?.duration ?? estimatedDuration) ?? 0
+        if isRawAudioFile {
+            self.duration = bruteForceDuration ?? 0
+        } else {
+            
+            let asd = audioStream?.duration
+            let esd = estimatedDuration
+            let bfd = bruteForceDuration
+            
+            self.duration = audioStream?.duration ?? estimatedDuration ?? bruteForceDuration ?? 0
+            
+            print(asd, esd, bfd, self.duration)
+        }
+        
         if self.bitRate == 0 {self.bitRate = duration == 0 ? 0 : Int64(round(Double(fileSize) / duration))}
     }
     
@@ -300,7 +312,12 @@ class FormatContext {
         // Describes the seeking mode to use (seek by frame, seek by byte, etc)
         var flags: Int32 = 0
         
-        if isRawAudioFile {
+        // TODO: isRawAudioFile is not sufficient for this check.
+        // Must check if using packet table. Maybe check if packetTable != nil ???
+        
+        // TODO: MLP seeking doesn't work. (Meridian Lossless format)
+        
+        if isRawAudioFile || packetTable != nil {
             
             // For raw audio files, we must use the packet table to determine
             // the byte position of our target packet, given the seek position

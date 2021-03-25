@@ -13,7 +13,8 @@ class AVFSampleConverter: SampleConverterProtocol {
     
     /// See **SampleConverterProtocol.supports()**.
     func supports(inputFormat: SampleFormat) -> Bool {
-        return supportedFormats.contains(inputFormat.avFormat)
+//        return supportedFormats.contains(inputFormat.avFormat)
+        return false
     }
     
     /// See **SampleConverterProtocol.convert()**.
