@@ -21,7 +21,8 @@ class TagEditorViewController: NSViewController, NSMenuDelegate {
     
     override func viewDidLoad() {
         initializeFileOpenDialog()
-        doOpenFile(URL(fileURLWithPath: "/Users/kven/Music/01 - Secret Life.mp3"))
+//        doOpenFile(URL(fileURLWithPath: "/Users/kven/Music/01 - Secret Life.mp3"))
+//        doOpenFile(URL(fileURLWithPath: "/Users/kven/Music/TagEdit/Dumb.flac"))
     }
     
     private func initializeFileOpenDialog() {

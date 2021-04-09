@@ -68,7 +68,7 @@ class MetadataEditingContext {
     init?(forFile file: URL) {
 
         self.file = file
-        self.outFilePath = "/Users/kven/Music/TagEdit/tagEditOut-\(Int.random(in: 1000..<1000000)).mp3"
+        self.outFilePath = "/Users/kven/Music/TagEdit/out-\(Int.random(in: 1000..<1000000)).\(file.pathExtension)"
 
         inFormatContext = avformat_alloc_context()
 
@@ -80,8 +80,8 @@ class MetadataEditingContext {
             print("find stream info failed")
         }
         
-        let ofmt: UnsafeMutablePointer<AVOutputFormat>? = av_guess_format("mp3", outFilePath, nil)
-        let status = avformat_alloc_output_context2(&outFormatContext, ofmt, "mp3", outFilePath)
+//        let ofmt: UnsafeMutablePointer<AVOutputFormat>? = av_guess_format("mp3", outFilePath, nil)
+        let status = avformat_alloc_output_context2(&outFormatContext, nil, nil, outFilePath)
 
         if (status < 0) {
             print("could not allocate output format")
@@ -99,10 +99,10 @@ class MetadataEditingContext {
             tagPtr = tag
         }
         
-        self.title = "Muthu"
-        self.artist = "Sami"
-        self.album = "Papa"
-        self.genre = "Pandi"
+//        self.title = "Muthu"
+//        self.artist = "Sami"
+//        self.album = "Papa"
+//        self.genre = "Pandi"
         
         save()
     }
@@ -160,6 +160,7 @@ class MetadataEditingContext {
         
         av_dict_set(&outFormatContext!.pointee.streams.advanced(by: Int(video_stream_index)).pointee!.pointee.metadata, "muthu", "Sami", 0)
         
+        print("VCodec:", outVideoStream.codecpar.pointee.codec_id)
         
 //        if  let sd = inAudioStream.side_data {
 //
@@ -218,9 +219,13 @@ class MetadataEditingContext {
             pkt!.pointee.size = 0
 
             while av_read_frame(inFormatContext, pkt) == 0 {
+                
+                if pkt!.pointee.stream_index == video_stream_index {
+                    print("Here")
+                }
                 av_write_frame(outFormatContext, pkt)
             }
-
+        
             av_packet_free(&pkt)
         
             av_write_trailer(outFormatContext)

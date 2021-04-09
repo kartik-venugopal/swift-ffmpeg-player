@@ -16,7 +16,7 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="FFmpegPlayer" customModuleProvider="target">
             <connections>
                 <outlet property="playerVC" destination="08S-L9-i7J" id="ges-MN-nRT"/>
-                <outlet property="window" destination="74L-Xm-qLs" id="DNn-FL-eAf"/>
+                <outlet property="window" destination="0eq-qQ-Agi" id="7BD-ej-cDo"/>
             </connections>
         </customObject>
         <customObject id="08S-L9-i7J" customClass="PlayerViewController" customModule="FFmpegPlayer">
@@ -147,7 +147,7 @@
             </items>
             <point key="canvasLocation" x="119" y="455"/>
         </menu>
-        <window title="FFmpeg Player" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" appearanceType="darkAqua" animationBehavior="default" id="0eq-qQ-Agi" userLabel="FFmpeg Player">
+        <window title="FFmpeg Player" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" appearanceType="darkAqua" animationBehavior="default" id="0eq-qQ-Agi" userLabel="FFmpeg Player">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="922" height="491"/>
@@ -348,7 +348,7 @@
             </userDefinedRuntimeAttributes>
             <point key="canvasLocation" x="364" y="-54.5"/>
         </window>
-        <window title="Tag Editor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" animationBehavior="default" id="74L-Xm-qLs">
+        <window title="Tag Editor" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="74L-Xm-qLs">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="599" height="469"/>

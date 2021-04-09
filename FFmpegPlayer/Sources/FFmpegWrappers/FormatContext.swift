@@ -270,8 +270,6 @@ class FormatContext {
             let bfd = bruteForceDuration
             
             self.duration = audioStream?.duration ?? estimatedDuration ?? bruteForceDuration ?? 0
-            
-            print(asd, esd, bfd, self.duration)
         }
         
         if self.bitRate == 0 {self.bitRate = duration == 0 ? 0 : Int64(round(Double(fileSize) / duration))}
