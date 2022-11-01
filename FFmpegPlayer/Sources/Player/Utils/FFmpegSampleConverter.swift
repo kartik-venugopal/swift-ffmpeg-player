@@ -6,7 +6,7 @@ import Accelerate
 ///
 /// Uses **libswresample** to do the actual conversion.
 ///
-class FFmpegSampleConverter: SampleConverterProtocol {
+class FFmpegSampleConverter {
     
     ///
     /// The standard (i.e. "canonical") audio sample format preferred by Core Audio on macOS.

@@ -13,7 +13,7 @@ class Player {
     /// A helper object that performs conversion of PCM samples to the format required
     /// for AVAudioEngine playback, if required.
     ///
-    let sampleConverter: SampleConverter = SampleConverter()
+    let sampleConverter: FFmpegSampleConverter = FFmpegSampleConverter()
     
     /// A helper object that manages the underlying audio engine.
     let audioEngine: AudioEngine = AudioEngine()
