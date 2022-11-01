@@ -9,7 +9,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
         
         super.init()
-//        configureLoggingToAFile()
+        configureLoggingToAFile()
         
 //        let ctx = MetadataEditingContext(forFile: URL(fileURLWithPath: "/Users/kven/Music/TagEdit/Bourne.mp3"))
     }
