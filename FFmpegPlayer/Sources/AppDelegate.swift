@@ -10,8 +10,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         super.init()
         configureLoggingToAFile()
-        
-//        let ctx = MetadataEditingContext(forFile: URL(fileURLWithPath: "/Users/kven/Music/TagEdit/Bourne.mp3"))
     }
     
     private func configureLoggingToAFile() {

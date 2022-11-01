@@ -1,12 +1,21 @@
+//
+//  FFmpegFrame.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import AVFoundation
 import Accelerate
 
 ///
-/// Encapsulates an ffmpeg AVFrame struct that represents a single (decoded) frame,
+/// Encapsulates an ffmpeg **AVFrame** struct that represents a single (decoded) frame,
 /// i.e. audio data in its raw decoded / uncompressed form, post-decoding,
 /// and provides convenient Swift-style access to its functions and member variables.
 ///
-class Frame {
+class FFmpegFrame {
  
     ///
     /// The encapsulated AVFrame object.
@@ -16,7 +25,7 @@ class Frame {
     ///
     /// A pointer to the encapsulated AVFrame object.
     ///
-    var pointer: UnsafeMutablePointer<AVFrame>!
+    private var pointer: UnsafeMutablePointer<AVFrame>!
     
     ///
     /// Describes the number and physical / spatial arrangement of the channels. (e.g. "5.1 surround" or "stereo")
@@ -27,13 +36,13 @@ class Frame {
     /// Number of channels of audio data.
     ///
     var channelCount: Int32 {avFrame.channels}
+    
+    lazy var intChannelCount: Int = Int(channelCount)
 
     ///
     /// PCM format of the samples.
     ///
-    var sampleFormat: SampleFormat
-    
-    var actualSampleCount: Int32 {avFrame.nb_samples}
+    var sampleFormat: FFmpegSampleFormat
     
     ///
     /// Total number of samples in this frame.
@@ -48,7 +57,11 @@ class Frame {
     ///
     /// See member **truncatedSampleCount** for an explanation of frame truncation.
     ///
-    var sampleCount: Int32 {truncatedSampleCount ?? actualSampleCount}
+    var sampleCount: Int32 {truncatedSampleCount ?? avFrame.nb_samples}
+    
+    lazy var intSampleCount: Int = Int(sampleCount)
+    
+    var actualSampleCount: Int32 {avFrame.nb_samples}
     
     ///
     /// The (lesser) number of samples to read, as a result of frame truncation. May be nil (if no truncation has occurred).
@@ -100,20 +113,9 @@ class Frame {
     var firstSampleIndex: Int32
     
     ///
-    /// Whether or not this frame has any samples.
-    ///
-    var hasSamples: Bool {avFrame.nb_samples.isPositive}
-    
-    ///
     /// Sample rate of the decoded data (i.e. number of samples per second or Hz).
     ///
     var sampleRate: Int32 {avFrame.sample_rate}
-    
-    ///
-    /// For interleaved (packed) samples, this value will equal the size in bytes of data for all channels.
-    /// For non-interleaved (planar) samples, this value will equal the size in bytes of data for a single channel.
-    ///
-    var lineSize: Int {Int(avFrame.linesize.0)}
     
     ///
     /// A timestamp indicating this frame's position (order) within the parent audio stream,
@@ -139,6 +141,30 @@ class Frame {
     var pts: Int64 {avFrame.pts}
     
     ///
+    /// The frame's starting timestamp, in seconds.
+    ///
+    /// ```
+    /// This value is useful when scheduling segment loops, for example.
+    /// It can be directly compared to the loop's start/end time.
+    ///
+    /// It will be set by the decoder.
+    /// ```
+    ///
+    var startTimestampSeconds: Double = -1
+    
+    ///
+    /// The frame's ending timestamp, in seconds.
+    ///
+    /// ```
+    /// This value is useful when scheduling segment loops, for example.
+    /// It can be directly compared to the loop's start/end time.
+    ///
+    /// It will be set by the decoder.
+    /// ```
+    ///
+    var endTimestampSeconds: Double = -1
+    
+    ///
     /// Pointers to the raw data (unsigned bytes) constituting this frame's samples.
     ///
     var dataPointers: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>! {avFrame.extended_data}
@@ -150,7 +176,7 @@ class Frame {
     ///
     /// - Parameter sampleFormat: The format of the samples in this frame.
     ///
-    init?(readingFrom codecCtx: UnsafeMutablePointer<AVCodecContext>, withSampleFormat sampleFormat: SampleFormat) {
+    init?(readingFrom codecCtx: UnsafeMutablePointer<AVCodecContext>, withSampleFormat sampleFormat: FFmpegSampleFormat) {
         
         // Allocate memory for the frame.
         self.pointer = av_frame_alloc()
@@ -158,7 +184,7 @@ class Frame {
         // Check if memory allocation was successful. Can't proceed otherwise.
         guard pointer != nil else {
             
-            print("\nFrame.init(): Unable to allocate memory for frame.")
+            NSLog("Unable to allocate memory for frame.")
             return nil
         }
         
@@ -204,7 +230,7 @@ class Frame {
         
         if sampleCount < self.actualSampleCount {
 
-            firstSampleIndex = self.sampleCount - sampleCount
+            firstSampleIndex = self.actualSampleCount - sampleCount
             truncatedSampleCount = sampleCount
         }
     }
@@ -224,8 +250,7 @@ class Frame {
         if destroyed {return}
         
         // Free up the space allocated to this frame.
-        av_frame_unref(pointer)
-        av_freep(pointer)
+        av_frame_free(&pointer)
         
         destroyed = true
     }

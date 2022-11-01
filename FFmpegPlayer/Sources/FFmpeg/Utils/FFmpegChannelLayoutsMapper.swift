@@ -1,12 +1,21 @@
+//
+//  FFmpegChannelLayoutsMapper.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import AVFoundation
 
 ///
-/// Helps map ffmpeg channel layout identifiers to their corresponding AVFoundation channel layout tags.
+/// Helps map ffmpeg channel layout identifiers to their corresponding **AVFoundation** channel layout tags.
 ///
 /// This is required when setting the format for an audio buffer that is to be scheduled for playback, so that
 /// upmixing / downmixing can be performed correctly.
 ///
-struct ChannelLayouts {
+struct FFmpegChannelLayoutsMapper {
     
     ///
     /// A comprehensive mapping of ffmpeg layout identifiers to their corresponding AVFoundation channel layout tags.
@@ -69,10 +78,8 @@ struct ChannelLayouts {
         // L R C LFE Rls Rrs Ls Rs
         CH_LAYOUT_7POINT1: kAudioChannelLayoutTag_WAVE_7_1,
         
-        // MARK: The following mappings are not exact, but the closest possible matches. ---------------------------------------
+        // MARK: The following mappings are not exact, but the closest possible matches.
         // NOTE - Some channels may be dropped entirely.
-        
-        // TODO: Create custom AudioChannelLayouts and AVAudioChannelLayouts with exact channel mappings
         
         // L R C Cs Ls Rs -> L R C Cs
         CH_LAYOUT_6POINT0: kAudioChannelLayoutTag_DVD_8,
@@ -121,74 +128,18 @@ struct ChannelLayouts {
     static func mapLayout(ffmpegLayout: Int) -> AVAudioChannelLayout? {
         
         if let layoutTag = layoutsMap[ffmpegLayout] {
-         
-            // NOTE - It's safe to force unwrap the optional AVAudioChannelLayout
-            // because we are using only valid pre-defined channel layout tags.
-            return AVAudioChannelLayout(layoutTag: layoutTag)!
+            return AVAudioChannelLayout(layoutTag: layoutTag)
         }
         
         return nil
     }
     
-    ///
-    /// Provides a human-readable string for a given channel layout.
-    ///
-    /// - Parameter channelLayout: The identifier for an ffmpeg channel layout.
-    ///
-    /// - Parameter channelCount:  The number of channels in **channelLayout**.
-    ///
-    /// - returns:                 A human-readable string describing the given channel layout.
-    ///
     static func readableString(for channelLayout: Int64, channelCount: Int32) -> String {
         
         let layoutStringPointer = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
-        av_get_channel_layout_string(layoutStringPointer, 100, channelCount, UInt64(channelLayout))
-        
         defer {layoutStringPointer.deallocate()}
         
+        av_get_channel_layout_string(layoutStringPointer, 100, channelCount, UInt64(channelLayout))
         return String(cString: layoutStringPointer).replacingOccurrences(of: "(", with: " (").capitalized
-    }
-    
-    // MARK: Debugging functions ------------------------------------------------------
-    
-    static func printLayouts() {
-        
-        for layout in layoutsMap.keys.sorted(by: {$0 < $1}).map({UInt64($0)}) {
-            printLayout(layout, av_get_channel_layout_nb_channels(layout))
-        }
-    }
-    
-    static func printLayout(_ layout: UInt64, _ channelCount: Int32) {
-        
-        let layoutString = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
-        av_get_channel_layout_string(layoutString, 100, channelCount, layout)
-        
-        var channelNames: [String] = []
-        for index in 0..<channelCount {
-            channelNames.append(String(cString: av_get_channel_name(av_channel_layout_extract_channel(UInt64(layout), index))))
-        }
-        
-        let ls = String(cString: layoutString)
-        let ffLay = channelNames.joined(separator: " ")
-        let avfLay = AVFLayout(ffLay)
-        
-        print("\nLayout:", layout, ls, ffLay)
-        print("AVF Layout:", avfLay)
-    }
-    
-    static func AVFLayout(_ lyt: String) -> String {
-        
-        return lyt
-            .replacingOccurrences(of: "BL", with: "Rls")
-            .replacingOccurrences(of: "BR", with: "Rrs")
-            .replacingOccurrences(of: "BC", with: "Cs")
-            .replacingOccurrences(of: "SL", with: "Ls")
-            .replacingOccurrences(of: "SR", with: "Rs")
-            .replacingOccurrences(of: "FLC", with: "Lc")
-            .replacingOccurrences(of: "FRC", with: "Rc")
-            .replacingOccurrences(of: "FL", with: "L")
-            .replacingOccurrences(of: "FR", with: "R")
-            .replacingOccurrences(of: "FC", with: "C")
-        
     }
 }

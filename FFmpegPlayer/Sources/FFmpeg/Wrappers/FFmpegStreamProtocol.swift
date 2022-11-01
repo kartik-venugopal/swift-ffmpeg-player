@@ -1,9 +1,18 @@
+//
+//  FFmpegStreamProtocol.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// A contract for all AVStream wrapper classes.
+/// A contract for all **AVStream** wrapper classes.
 ///
-protocol StreamProtocol {
+protocol FFmpegStreamProtocol {
     
     ///
     /// The encapsulated AVStream object.
@@ -26,18 +35,12 @@ protocol StreamProtocol {
     var metadata: [String: String] {get}
 }
 
-extension StreamProtocol {
-    
-    func hasDisposition(field: Int32) -> Bool {
-        return avStream.disposition & field == field
-    }
-}
-
 ///
 /// Convenience functions that are useful when converting between stream time units and seconds (used by the user interface).
 ///
 extension AVRational {
 
     var ratio: Double {Double(num) / Double(den)}
-    var reciprocal: Double {Double(den) / Double(num)}
+    
+    var reciprocalRatio: Double {Double(den) / Double(num)}
 }

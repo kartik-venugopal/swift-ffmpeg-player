@@ -1,19 +1,28 @@
+//
+//  FFmpegAudioCodec.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// A Codec that decodes (encoded) audio data packets into raw (PCM) frames.
+/// Encapsulates an ffmpeg audio codec that decodes audio data packets into raw (PCM) frames.
 ///
-class AudioCodec: Codec {
+class FFmpegAudioCodec: FFmpegCodec {
     
     ///
     /// Constant value to use as the number of parallel threads to use when decoding.
     ///
     /// This should equal the number of physical CPU cores in the system.
     ///
-    static let threadCount: Int32 = Int32(systemNumberOfCores)
+    static let threadCount: Int32 = 8
     
     ///
-    /// The type of multithreading used by ffmpeg when decoding.
+    /// The type of multithreading used by **FFmpeg** when decoding.
     ///
     /// *FF_THREAD_SLICE* means decode multiple segments
     /// or "slices" of a frame concurrently.
@@ -33,25 +42,7 @@ class AudioCodec: Codec {
     ///
     /// PCM format of the samples.
     ///
-    var sampleFormat: SampleFormat = SampleFormat(encapsulating: AVSampleFormat(0))
-    
-    ///
-    /// A collection of all sample formats supported by this codec.
-    ///
-    lazy var supportedSampleFormats: [SampleFormat] = {
-       
-        var formats: [SampleFormat] = []
-        let avFormatsPtr = self.avCodec.sample_fmts
-        var index: Int = 0
-        
-        while let format = avFormatsPtr?[index], format.rawValue.isNonNegative {
-            
-            formats.append(SampleFormat(encapsulating: format))
-            index += 1
-        }
-        
-        return formats
-    }()
+    var sampleFormat: FFmpegSampleFormat = FFmpegSampleFormat(encapsulating: AVSampleFormat(0))
     
     ///
     /// Number of channels of audio data.
@@ -68,25 +59,32 @@ class AudioCodec: Codec {
     ///
     /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
     ///
-    override init?(fromParameters paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    override init(fromParameters paramsPointer: UnsafeMutablePointer<AVCodecParameters>) throws {
         
-        super.init(fromParameters: paramsPointer)
+        try super.init(fromParameters: paramsPointer)
         
-        self.sampleFormat = SampleFormat(encapsulating: context.sample_fmt)
+        self.sampleFormat = FFmpegSampleFormat(encapsulating: context.sample_fmt)
         self.channelCount = params.channels
         
         // Correct channel layout if necessary.
         // NOTE - This is necessary for some files like WAV files that don't specify a channel layout.
         self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
         
-        // Request floating-point non-interleaved samples.
-        // NOTE - This is only a request. Codecs may not
-        // support this format.
-        self.contextPointer.pointee.request_sample_fmt = AV_SAMPLE_FMT_FLTP
-        
         // Use multithreading to speed up decoding.
         self.contextPointer.pointee.thread_count = Self.threadCount
         self.contextPointer.pointee.thread_type = Self.threadType
+    }
+    
+    override func open() throws {
+        
+        try super.open()
+        
+        // The channel layout / sample format may change as a result of opening the codec.
+        // Some streams may contain the wrong header information. So, recompute these
+        // values after opening the codec.
+        
+        self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
+        self.sampleFormat = FFmpegSampleFormat(encapsulating: context.sample_fmt)
     }
     
     ///
@@ -98,23 +96,23 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs during decoding.
     ///
-    func decode(packet: Packet) throws -> PacketFrames {
+    func decode(packet: FFmpegPacket) throws -> FFmpegPacketFrames {
         
         // Send the packet to the decoder for decoding.
-        let resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
+        let resultCode: ResultCode = packet.sendToCodec(withContext: contextPointer)
         
         // If the packet send failed, log a message and throw an error.
         if resultCode.isNegative {
             
-            print("\nCodec.decode(): Failed to send packet. Error: \(resultCode) \(resultCode.errorDescription))")
+            NSLog("Codec failed to send packet. Error: \(resultCode) \(resultCode.errorDescription))")
             throw DecoderError(resultCode)
         }
         
         // Collect the received frames in an array.
-        let packetFrames: PacketFrames = PacketFrames()
+        let packetFrames: FFmpegPacketFrames = FFmpegPacketFrames()
         
         // Keep receiving decoded frames while no errors are encountered
-        while let frame = Frame(readingFrom: contextPointer, withSampleFormat: self.sampleFormat) {
+        while let frame = FFmpegFrame(readingFrom: contextPointer, withSampleFormat: self.sampleFormat) {
             packetFrames.appendFrame(frame)
         }
         
@@ -131,10 +129,10 @@ class AudioCodec: Codec {
     /// till the desired seek position is reached.
     /// ```
     ///
-    func decodeAndDrop(packet: Packet) {
+    func decodeAndDrop(packet: FFmpegPacket) {
         
         // Send the packet to the decoder for decoding.
-        var resultCode: ResultCode = avcodec_send_packet(contextPointer, packet.pointer)
+        var resultCode: ResultCode = packet.sendToCodec(withContext: contextPointer)
         if resultCode.isNegative {return}
         
         var avFrame: AVFrame = AVFrame()
@@ -153,38 +151,26 @@ class AudioCodec: Codec {
     ///
     /// - throws: **DecoderError** if an error occurs while draining the codec.
     ///
-    func drain() throws -> PacketFrames {
+    func drain() throws -> FFmpegPacketFrames {
         
         // Send the "flush packet" to the decoder
         let resultCode: Int32 = avcodec_send_packet(contextPointer, nil)
         
         if resultCode.isNonZero {
             
-            print("\nCodec.decode(): Failed to send packet. Error: \(resultCode) \(resultCode.errorDescription))")
+            NSLog("Codec failed to send packet while draining. Error: \(resultCode) \(resultCode.errorDescription))")
             throw DecoderError(resultCode)
         }
         
         // Collect the received frames in an array.
-        let packetFrames: PacketFrames = PacketFrames()
+        let packetFrames: FFmpegPacketFrames = FFmpegPacketFrames()
         
         // Keep receiving decoded frames while no errors are encountered
-        while let frame = Frame(readingFrom: contextPointer, withSampleFormat: self.sampleFormat) {
+        while let frame = FFmpegFrame(readingFrom: contextPointer, withSampleFormat: self.sampleFormat) {
             packetFrames.appendFrame(frame)
         }
         
         return packetFrames
-    }
-    
-    override func open() throws {
-        
-        try super.open()
-        
-        // The channel layout / sample format may change as a result of opening the codec.
-        // Some streams may contain the wrong header information. So, recompute these
-        // values after opening the codec.
-        
-        self.channelLayout = context.channel_layout != 0 ? Int64(context.channel_layout) : av_get_default_channel_layout(context.channels)
-        self.sampleFormat = SampleFormat(encapsulating: context.sample_fmt)
     }
     
     ///
@@ -195,6 +181,8 @@ class AudioCodec: Codec {
     func flushBuffers() {
         avcodec_flush_buffers(contextPointer)
     }
+    
+#if DEBUG
     
     ///
     /// Print some codec info to the console.
@@ -214,4 +202,7 @@ class AudioCodec: Codec {
         
         print("---------------------------------\n")
     }
+    
+#endif
+    
 }

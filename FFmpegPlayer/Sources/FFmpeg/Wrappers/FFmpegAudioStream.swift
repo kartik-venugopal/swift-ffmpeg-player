@@ -1,12 +1,21 @@
+//
+//  FFmpegAudioStream.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVStream struct that represents a single audio stream,
+/// Encapsulates an ffmpeg **AVStream** struct that represents a single audio stream,
 /// and provides convenient Swift-style access to its functions and member variables.
 ///
 /// Instantiates and provides the codec corresponding to the stream, and a codec context.
 ///
-class AudioStream: StreamProtocol {
+class FFmpegAudioStream: FFmpegStreamProtocol {
     
     ///
     /// A pointer to the encapsulated AVStream object.
@@ -18,6 +27,20 @@ class AudioStream: StreamProtocol {
     ///
     var avStream: AVStream {pointer.pointee}
     
+    var codecParams: AVCodecParameters {avStream.codecpar.pointee}
+    
+    lazy var codecLongName: String? = {
+        
+        let codecID = codecParams.codec_id
+        let pointer = avcodec_find_decoder(codecID)
+        
+        if let name = pointer?.pointee.long_name {
+            return String(cString: name)
+        }
+        
+        return nil
+    }()
+    
     ///
     /// The media type of data contained within this stream (e.g. audio, video, etc)
     ///
@@ -27,11 +50,6 @@ class AudioStream: StreamProtocol {
     /// The index of this stream within its container.
     ///
     let index: Int32
-    
-    ///
-    /// The codec associated with this stream.
-    ///
-    lazy var codec: AudioCodec? = AudioCodec(fromParameters: avStream.codecpar)
     
     ///
     /// The duration of this stream, in seconds, if available. Nil if not available.
@@ -48,6 +66,10 @@ class AudioStream: StreamProtocol {
     ///
     var timeBase: AVRational {avStream.time_base}
     
+    private(set) lazy var timeBaseRatio: Double = timeBase.ratio
+    
+    private(set) lazy var timeBaseReciprocalRatio: Double = timeBase.reciprocalRatio
+    
     ///
     /// The duration of this stream, in time base units.
     ///
@@ -58,10 +80,16 @@ class AudioStream: StreamProtocol {
     ///
     var timeBaseDuration: Int64 {avStream.duration}
     
+    var sampleRate: Int32 {codecParams.sample_rate}
+    
+    var channelCount: Int32 {codecParams.channels}
+    
+    var channelLayout: UInt64 {codecParams.channel_layout}
+    
     ///
     /// All metadata key / value pairs available for this stream.
     ///
-    lazy var metadata: [String: String] = MetadataDictionary(readingFrom: avStream.metadata).dictionary
+    lazy var metadata: [String: String] = FFmpegMetadataReader.read(from: avStream.metadata)
     
     ///
     /// Instantiates this stream object and its associated codec and codec context.
@@ -74,8 +102,10 @@ class AudioStream: StreamProtocol {
         
         self.pointer = pointer
         self.index = pointer.pointee.index
-        self.duration = avStream.duration > 0 ? Double(avStream.duration) * avStream.time_base.ratio : nil
+        self.duration = timeBaseDuration > 0 ? Double(timeBaseDuration) * timeBaseRatio : nil
     }
+    
+#if DEBUG
     
     ///
     /// Print some stream info to the console.
@@ -93,4 +123,7 @@ class AudioStream: StreamProtocol {
         
         print("---------------------------------\n")
     }
+    
+#endif
+    
 }

@@ -51,7 +51,7 @@ extension Player {
             }
             
             // Schedule one buffer for immediate playback
-            decodeAndScheduleOneBuffer(maxSampleCount: sampleCountForImmediatePlayback)
+            decodeAndScheduleOneBuffer(maxSampleCount: playingFile.sampleCountForImmediatePlayback)
             
             // Schedule a second buffer asynchronously, for later, to avoid a gap in playback.
             // If this is not done, when the first buffer finishes playing, there will be
@@ -61,7 +61,7 @@ extension Player {
             // So, at any given time, while a file is playing, there will always be one
             // extra buffer in the playback queue.
             //
-            decodeAndScheduleOneBufferAsync(maxSampleCount: sampleCountForDeferredPlayback)
+            decodeAndScheduleOneBufferAsync(maxSampleCount: playingFile.sampleCountForDeferredPlayback)
             
         } catch {
             print("\nDecoder threw error: \(error)")
@@ -116,57 +116,47 @@ extension Player {
         if eof {return}
         
         // Ask the decoder to decode up to the given number of samples.
-        let frameBuffer: FrameBuffer = decoder.decode(maxSampleCount: maxSampleCount)
-        
         // Transfer the decoded samples into an audio buffer that the audio engine can schedule for playback.
-        if let playbackBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: AVAudioFrameCount(frameBuffer.sampleCount)) {
+        guard let playbackBuffer: AVAudioPCMBuffer = decoder.decode(maxSampleCount: maxSampleCount, intoFormat: playingFile.audioFormat) else {return}
+        
+        // Pass off the audio buffer to the audio engine. The completion handler is executed when
+        // the buffer has finished playing.
+        //
+        // Note that:
+        //
+        // 1 - the completion handler recursively triggers another decoding / scheduling task.
+        // 2 - the completion handler will be invoked by a background thread.
+        // 3 - the completion handler will execute even when the player is stopped, i.e. the buffer
+        //      has not really completed playback but has been removed from the playback queue.
+        
+        audioEngine.scheduleBuffer(playbackBuffer, completionHandler: {
             
-            if frameBuffer.needsFormatConversion {
-                sampleConverter.convert(samplesIn: frameBuffer, andCopyTo: playbackBuffer)
-                
-            } else {
-                frameBuffer.copySamples(to: playbackBuffer)
-            }
+            // Audio buffer has completed playback, so decrement the counter.
+            self.scheduledBufferCount.decrement()
             
-            // Pass off the audio buffer to the audio engine. The completion handler is executed when
-            // the buffer has finished playing.
-            //
-            // Note that:
-            //
-            // 1 - the completion handler recursively triggers another decoding / scheduling task.
-            // 2 - the completion handler will be invoked by a background thread.
-            // 3 - the completion handler will execute even when the player is stopped, i.e. the buffer
-            //      has not really completed playback but has been removed from the playback queue.
-            
-            audioEngine.scheduleBuffer(playbackBuffer, completionHandler: {
+            // We don't want the completion handler to do anything if the player has simply been stopped
+            // (i.e. no further scheduling is to be done). So, only respond if the player is currently playing.
+            if self.state == .playing {
                 
-                // Audio buffer has completed playback, so decrement the counter.
-                self.scheduledBufferCount.decrement()
-                
-                // We don't want the completion handler to do anything if the player has simply been stopped
-                // (i.e. no further scheduling is to be done). So, only respond if the player is currently playing.
-                if self.state == .playing {
+                if !self.eof {
                     
-                    if !self.eof {
-
-                        // If EOF has not been reached, continue recursively decoding / scheduling.
-                        self.decodeAndScheduleOneBufferAsync(maxSampleCount: self.sampleCountForDeferredPlayback)
-
-                    } else if self.scheduledBufferCount.value == 0 {
-                        
-                        // EOF has been reached, and all buffers have completed playback.
-                        // Signal playback completion (on the main thread).
-
-                        DispatchQueue.main.async {
-                            self.playbackCompleted()
-                        }
+                    // If EOF has not been reached, continue recursively decoding / scheduling.
+                    self.decodeAndScheduleOneBufferAsync(maxSampleCount: self.playingFile.sampleCountForDeferredPlayback)
+                    
+                } else if self.scheduledBufferCount.value == 0 {
+                    
+                    // EOF has been reached, and all buffers have completed playback.
+                    // Signal playback completion (on the main thread).
+                    
+                    DispatchQueue.main.async {
+                        self.playbackCompleted()
                     }
                 }
-            })
-            
-            // Upon scheduling the buffer, increment the counter.
-            scheduledBufferCount.increment()
-        }
+            }
+        })
+        
+        // Upon scheduling the buffer, increment the counter.
+        scheduledBufferCount.increment()
     }
     
     ///

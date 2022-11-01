@@ -1,3 +1,12 @@
+//
+//  FFmpegPacketFrames.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
@@ -6,10 +15,10 @@ import Foundation
 /// Performs operations such as truncation (discarding unwanted frames / samples)
 /// on the frames together as a single unit.
 ///
-class PacketFrames {
+class FFmpegPacketFrames {
     
     /// The individual constituent frames.
-    var frames: [Frame] = []
+    var frames: [FFmpegFrame] = []
     
     /// The total number of samples (i.e. from all frames).
     var sampleCount: Int32 = 0
@@ -19,7 +28,7 @@ class PacketFrames {
     ///
     /// - Parameter frame: The new frame to append.
     ///
-    func appendFrame(_ frame: Frame) {
+    func appendFrame(_ frame: FFmpegFrame) {
             
         // Update the sample count, and append the frame.
         self.sampleCount += frame.sampleCount

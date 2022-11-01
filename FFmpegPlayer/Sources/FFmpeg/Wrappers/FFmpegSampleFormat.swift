@@ -1,12 +1,21 @@
+//
+//  FFmpegSampleFormat.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// Wrapper around an AVSampleFormat.
+/// Wrapper around an **AVSampleFormat**.
 ///
 /// Reads and provides useful information about the format of audio samples,
 /// e.g. whether or not samples of this format need to be resampled for playback.
 ///
-struct SampleFormat {
+struct FFmpegSampleFormat {
     
     ///
     /// The AVSampleFormat that this object describes.
@@ -58,6 +67,8 @@ struct SampleFormat {
     ///
     let needsFormatConversion: Bool
     
+    static let integralFormats: Set<AVSampleFormat> = [AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P]
+    
     ///
     /// Instantiates a SampleFormat from an AVSampleFormat.
     ///
@@ -81,10 +92,9 @@ struct SampleFormat {
         
         self.isInterleaved = !isPlanar
         
-        self.isIntegral = [AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
-        AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P].contains(avFormat)
+        self.isIntegral = Self.integralFormats.contains(avFormat)
         
-        // Apparently, AVAudioEngine can only play 32-bit floating point samples.
+        // Apparently, AVAudioEngine can only play 32-bit non-interleaved (planar) floating point samples.
         self.needsFormatConversion = avFormat != AV_SAMPLE_FMT_FLTP
     }
     
@@ -122,5 +132,14 @@ struct SampleFormat {
         default:                      return "<Unknown Sample Format>"
             
         }
+    }
+}
+
+extension AVSampleFormat: Hashable {
+    
+    public var hashValue: Int {rawValue.hashValue}
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
     }
 }

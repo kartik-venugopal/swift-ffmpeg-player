@@ -1,18 +1,25 @@
+//
+//  FFmpegPacket.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVPacket struct that represents a single packet
+/// Encapsulates an ffmpeg **AVPacke**t struct that represents a single packet
 /// i.e. audio data in its encoded / compressed form, prior to decoding,
 /// and provides convenient Swift-style access to their functions and member variables.
 ///
-class Packet {
+class FFmpegPacket {
     
     ///
     /// The encapsulated AVPacket object.
     ///
     var avPacket: AVPacket
-    
-    var pointer: UnsafeMutablePointer<AVPacket>
     
     ///
     /// Index of the stream from which this packet was read.
@@ -40,21 +47,21 @@ class Packet {
     var pts: Int64 {avPacket.pts}
     
     ///
-    /// The raw data (unsigned bytes) contained in this packet.
+    /// Pointer to the raw data (unsigned bytes) contained in this packet.
     ///
-    var rawData: UnsafeMutablePointer<UInt8>! {avPacket.data}
+    var rawDataPointer: UnsafeMutablePointer<UInt8>! {avPacket.data}
     
     ///
     /// The raw data encapsulated in a byte buffer, if there is any raw data. Nil if there is no raw data.
     ///
-    var data: Data? {
+    private(set) lazy var data: Data? = {
         
-        if let theData = rawData, size > 0 {
+        if let theData = rawDataPointer, size > 0 {
             return Data(bytes: theData, count: Int(size))
         }
         
         return nil
-    }
+    }()
     
     ///
     /// Instantiates a Packet from a format context (container), if it can be read. Returns nil otherwise.
@@ -63,10 +70,9 @@ class Packet {
     ///
     /// - throws: **PacketReadError** if the read fails.
     ///
-    init(_ formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
+    init(readingFromFormat formatCtx: UnsafeMutablePointer<AVFormatContext>?) throws {
         
         self.avPacket = AVPacket()
-        self.pointer = withUnsafeMutablePointer(to: &avPacket, {$0})
         
         // Try to read a packet.
         let readResult: Int32 = av_read_frame(formatCtx, &avPacket)
@@ -76,7 +82,7 @@ class Packet {
             
             // No need to log a message for EOF as it is considered harmless.
             if !isEOF(code: readResult) {
-                print("\nPacket.init(): Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
+                NSLog("Unable to read packet. Error: \(readResult) (\(readResult.errorDescription)))")
             }
             
             throw PacketReadError(readResult)
@@ -86,12 +92,11 @@ class Packet {
     ///
     /// Instantiates a Packet from an AVPacket that has already been read from the source stream.
     ///
-    /// - Parameter avPacket: A pre-existing AVPacket that has already been read.
+    /// - Parameter pointer: A pointer to a pre-existing AVPacket that has already been read.
     ///
-    init(avPacket: AVPacket) {
+    init(encapsulating pointer: UnsafeMutablePointer<AVPacket>) {
         
-        self.avPacket = avPacket
-        self.pointer = withUnsafeMutablePointer(to: &self.avPacket, {$0})
+        self.avPacket = pointer.pointee
         
         // Since this avPacket was not allocated by this object, we
         // cannot deallocate it here. It is the caller's responsibility
@@ -99,6 +104,10 @@ class Packet {
         //
         // So, set the destroyed flag, to prevent deallocation.
         destroyed = true
+    }
+    
+    func sendToCodec(withContext contextPointer: UnsafeMutablePointer<AVCodecContext>!) -> ResultCode {
+        avcodec_send_packet(contextPointer, &avPacket)
     }
 
     /// Indicates whether or not this object has already been destroyed.
@@ -115,8 +124,8 @@ class Packet {
         // thrown.
         if destroyed {return}
         
-        av_packet_unref(pointer)
-        av_freep(pointer)
+        av_packet_unref(&avPacket)
+        av_freep(&avPacket)
         
         destroyed = true
     }

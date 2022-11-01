@@ -1,3 +1,12 @@
+//
+//  ffmpeg.c
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 #include "ffmpeg.h"
 
 /**
@@ -9,8 +18,6 @@
  * The error code corresponding to end of file (EOF). Defined in <libavutil/error.h>.
  */
 int ERROR_EOF = AVERROR_EOF;
-
-AVRational TIME_BASE_Q = AV_TIME_BASE_Q;
 
 /**
  * The following definitions are identifiers for several ffmpeg channel layouts defined in <libavutil/channel_layout.h>.

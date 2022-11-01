@@ -1,12 +1,21 @@
+//
+//  FFmpegImageStream.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVStream struct that represents a single image (video) stream,
+/// Encapsulates an ffmpeg **AVStream** struct that represents a single image (video) stream,
 /// and provides convenient Swift-style access to its functions and member variables.
 ///
 /// Instantiates and provides the codec corresponding to the stream, and a codec context.
 ///
-class ImageStream: StreamProtocol {
+class FFmpegImageStream: FFmpegStreamProtocol {
     
     ///
     /// A pointer to the encapsulated AVStream object.
@@ -16,7 +25,7 @@ class ImageStream: StreamProtocol {
     ///
     /// The encapsulated AVStream object.
     ///
-    var avStream: AVStream {pointer.pointee}
+    lazy var avStream: AVStream = pointer.pointee
     
     ///
     /// The media type of data contained within this stream (e.g. audio, video, etc)
@@ -29,22 +38,15 @@ class ImageStream: StreamProtocol {
     let index: Int32
     
     ///
-    /// The codec associated with this stream.
-    ///
-    lazy var codec: ImageCodec? = ImageCodec(fromParameters: avStream.codecpar)
-    
-    ///
     /// The packet (optionally) containing an attached picture.
     /// This can be used to read cover art.
     ///
-    lazy var attachedPic: Packet? = {
-        hasDisposition(field: AV_DISPOSITION_ATTACHED_PIC) ? Packet(avPacket: avStream.attached_pic) : nil
-    }()
+    private(set) lazy var attachedPic: FFmpegPacket = FFmpegPacket(encapsulating: &avStream.attached_pic)
     
     ///
     /// All metadata key / value pairs available for this stream.
     ///
-    lazy var metadata: [String: String] = MetadataDictionary(readingFrom: avStream.metadata).dictionary
+    private(set) lazy var metadata: [String: String] = FFmpegMetadataReader.read(from: avStream.metadata)
     
     ///
     /// Instantiates this stream object and its associated codec and codec context.
@@ -58,6 +60,8 @@ class ImageStream: StreamProtocol {
         self.pointer = pointer
         self.index = pointer.pointee.index
     }
+    
+#if DEBUG
     
     ///
     /// Print some stream info to the console.
@@ -73,4 +77,7 @@ class ImageStream: StreamProtocol {
         
         print("---------------------------------\n")
     }
+    
+#endif
+    
 }

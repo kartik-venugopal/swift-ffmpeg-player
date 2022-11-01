@@ -1,10 +1,19 @@
+//
+//  FFmpegCodec.swift
+//  Aural
+//
+//  Copyright © 2021 Kartik Venugopal. All rights reserved.
+//
+//  This software is licensed under the MIT software license.
+//  See the file "LICENSE" in the project root directory for license terms.
+//
 import Foundation
 
 ///
-/// Encapsulates an ffmpeg AVCodec, AVCodecContext, and AVCodecParameters struct,
+/// Encapsulates an ffmpeg **AVCodec**, **AVCodecContext**, and **AVCodecParameters** struct,
 /// and provides convenient Swift-style access to their functions and member variables.
 ///
-class Codec {
+class FFmpegCodec {
     
     ///
     /// A pointer to the encapsulated AVCodec object.
@@ -51,42 +60,38 @@ class Codec {
     ///
     var longName: String {String(cString: avCodec.long_name)}
     
+    var isOpen: Bool = false
+    
     ///
     /// Instantiates a Codec object, given a pointer to its parameters.
     ///
     /// - Parameter paramsPointer: A pointer to parameters for the associated AVCodec object.
     ///
-    init?(fromParameters paramsPointer: UnsafeMutablePointer<AVCodecParameters>) {
+    init(fromParameters paramsPointer: UnsafeMutablePointer<AVCodecParameters>) throws {
         
         self.paramsPointer = paramsPointer
         
         // Find the codec by ID.
         let codecID = paramsPointer.pointee.codec_id
+        
         self.pointer = avcodec_find_decoder(codecID)
         
         guard self.pointer != nil else {
-            
-            let codecName: String = String(cString: avcodec_get_name(codecID))
-            print("\nCodec.init(): Unable to find codec: \(codecName)")
-            return nil
+            throw CodecInitializationError(description: "Unable to find required codec '\(String(cString: avcodec_get_name(codecID)))'")
         }
         
         // Allocate a context for the codec.
         self.contextPointer = avcodec_alloc_context3(pointer)
         
         guard self.contextPointer != nil else {
-            
-            print("\nCodec.init(): Unable to allocate context for codec with ID: \(codecID)")
-            return nil
+            throw CodecInitializationError(description: "Unable to allocate context for codec '\(String(cString: avcodec_get_name(codecID)))'")
         }
         
         // Copy the codec's parameters to the codec context.
         let codecCopyResult: ResultCode = avcodec_parameters_to_context(contextPointer, paramsPointer)
         
         guard codecCopyResult.isNonNegative else {
-            
-            print("\nCodec.init(): Unable to copy codec parameters to codec context, for codec with ID: \(codecID). Error: \(codecCopyResult) (\(codecCopyResult.errorDescription)")
-            return nil
+            throw CodecInitializationError(description: "Unable to copy codec parameters to codec context, for codec '\(String(cString: avcodec_get_name(codecID)))'. Error: \(codecCopyResult) (\(codecCopyResult.errorDescription)")
         }
     }
     
@@ -100,9 +105,11 @@ class Codec {
         let codecOpenResult: ResultCode = avcodec_open2(contextPointer, pointer, nil)
         if codecOpenResult.isNonZero {
             
-            print("\nCodec.open(): Failed to open codec '\(name)'. Error: \(codecOpenResult.errorDescription))")
+            NSLog("Failed to open codec '\(name)'. Error: \(codecOpenResult.errorDescription))")
             throw DecoderInitializationError(codecOpenResult)
         }
+        
+        isOpen = true
     }
     
     /// Indicates whether or not this object has already been destroyed.
@@ -129,8 +136,3 @@ class Codec {
         destroy()
     }
 }
-
-///
-/// A Codec that reads image data (i.e. cover art).
-///
-class ImageCodec: Codec {}

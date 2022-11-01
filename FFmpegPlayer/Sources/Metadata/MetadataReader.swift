@@ -14,41 +14,39 @@ class MetadataReader {
     ///
     /// Given a file context, reads and returns all available track metadata.
     ///
-    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    /// - Parameter fileCtx: A valid FFmpegFileContext for the file being read.
     ///
     /// - returns: All available track metadata for the file pointed to by **fileCtx**.
     ///
     func readMetadata(forFile fileContext: AudioFileContext) -> TrackInfo {
         
         let audioInfo: AudioInfo = readAudioInfo(fileContext)
-        let metadata: [String: String] = readAudioMetadata(fileContext)
+        let metadata: [String: String] = readAudioMetadata(fileContext.format)
         
         let coverArt: NSImage? = readCoverArt(fileContext)
         let artMetadata: [String: String]? = fileContext.imageStream?.metadata
         
-        let chapters: [Chapter] = fileContext.format.chapters
-        
-        return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata, chapters: chapters)
+        return TrackInfo(audioInfo: audioInfo, metadata: metadata, art: coverArt, artMetadata: artMetadata)
     }
     
     ///
     /// Given a file context, reads and returns all available stream and container metadata, e.g. ID3 / iTunes tags.
     ///
-    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    /// - Parameter fileCtx: A valid FFmpegFileContext for the file being read.
     ///
     /// - returns: All available stream / container metadata for the file pointed to by **fileCtx**.
     ///
-    private func readAudioMetadata(_ fileCtx: AudioFileContext) -> [String: String] {
+    private func readAudioMetadata(_ formatCtx: FFmpegFormatContext) -> [String: String] {
         
         // Combine metadata from the format context and audio stream.
         
         var metadata: [String: String] = [:]
         
-        for (key, value) in fileCtx.format.metadata {
+        for (key, value) in formatCtx.metadata {
             metadata[key] = value
         }
         
-        for (key, value) in fileCtx.audioStream.metadata {
+        for (key, value) in formatCtx.bestAudioStream?.metadata ?? [:] {
             metadata[key] = value
         }
         
@@ -58,7 +56,7 @@ class MetadataReader {
     ///
     /// Given a file context, reads and returns technical audio data for its audio stream. e.g. codec name, sample rate, bit rate, etc.
     ///
-    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    /// - Parameter fileCtx: A valid FFmpegFileContext for the file being read.
     ///
     /// - returns: All available technical audio stream data.
     ///
@@ -70,9 +68,9 @@ class MetadataReader {
         let codecName: String = codec.longName
         let duration: Double = fileCtx.format.duration
         let sampleRate: Int = Int(codec.sampleRate)
-        let sampleFormat: SampleFormat = codec.sampleFormat
+        let sampleFormat: FFmpegSampleFormat = codec.sampleFormat
         let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate
-        let channelLayoutString: String = ChannelLayouts.readableString(for: codec.channelLayout, channelCount: codec.channelCount)
+        let channelLayoutString: String = FFmpegChannelLayoutsMapper.readableString(for: codec.channelLayout, channelCount: codec.channelCount)
         
         let frames: Int64 = Int64(floor(duration * Double(sampleRate)))
 
@@ -83,7 +81,7 @@ class MetadataReader {
     ///
     /// Given a file context, reads and returns cover art for the file, if present.
     ///
-    /// - Parameter fileCtx: A valid AudioFileContext for the file being read.
+    /// - Parameter fileCtx: A valid FFmpegFileContext for the file being read.
     ///
     /// - returns: An NSImage containing the cover art for the file, if present. Nil otherwise.
     ///
@@ -92,7 +90,7 @@ class MetadataReader {
         // If no image (video) stream is present within the file, there is no cover art.
         // Check if the attached pic in the image stream
         // has any data.
-        if let imageData = fileCtx.imageStream?.attachedPic?.data {
+        if let imageData = fileCtx.imageStream?.attachedPic.data {
             return NSImage(data: imageData)
         }
         

@@ -26,11 +26,6 @@ struct TrackInfo {
     var artMetadata: [String: String]?
     
     ///
-    /// Chapter markings in the track, if present. Empty array if none present.
-    ///
-    var chapters: [Chapter]
-    
-    ///
     /// A UI-friendly formatted title for this track. May be nil.
     /// It is computed from the artist and/or title tags in the metadata, if present.
     ///
@@ -188,7 +183,7 @@ struct AudioInfo {
     var sampleRate: Int
     
     /// Format of the PCM samples in this audio stream. (eg. Signed 32-bit integer planar)
-    var sampleFormat: SampleFormat
+    var sampleFormat: FFmpegSampleFormat
     
     /// Bit rate of the audio stream, in bits per second.
     var bitRate: Int64
