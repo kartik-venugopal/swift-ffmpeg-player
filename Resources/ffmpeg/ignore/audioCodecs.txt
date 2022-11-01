@@ -1,0 +1,190 @@
+ ..A... = Audio codec
+ ..AIL. 4gv                  4GV (Fourth Generation Vocoder)
+ D.AIL. 8svx_exp             8SVX exponential
+ D.AIL. 8svx_fib             8SVX fibonacci
+ DEAIL. aac                  AAC (Advanced Audio Coding) (decoders: aac aac_fixed aac_at ) (encoders: aac aac_at )
+ D.AIL. aac_latm             AAC LATM (Advanced Audio Coding LATM syntax)
+ DEAIL. ac3                  ATSC A/52A (AC-3) (decoders: ac3 ac3_fixed ac3_at ) (encoders: ac3 ac3_fixed )
+ D.AIL. acelp.kelvin         Sipro ACELP.KELVIN
+ D.AIL. adpcm_4xm            ADPCM 4X Movie
+ DEAIL. adpcm_adx            SEGA CRI ADX ADPCM
+ D.AIL. adpcm_afc            ADPCM Nintendo Gamecube AFC
+ D.AIL. adpcm_agm            ADPCM AmuseGraphics Movie AGM
+ D.AIL. adpcm_aica           ADPCM Yamaha AICA
+ D.AIL. adpcm_argo           ADPCM Argonaut Games
+ D.AIL. adpcm_ct             ADPCM Creative Technology
+ D.AIL. adpcm_dtk            ADPCM Nintendo Gamecube DTK
+ D.AIL. adpcm_ea             ADPCM Electronic Arts
+ D.AIL. adpcm_ea_maxis_xa    ADPCM Electronic Arts Maxis CDROM XA
+ D.AIL. adpcm_ea_r1          ADPCM Electronic Arts R1
+ D.AIL. adpcm_ea_r2          ADPCM Electronic Arts R2
+ D.AIL. adpcm_ea_r3          ADPCM Electronic Arts R3
+ D.AIL. adpcm_ea_xas         ADPCM Electronic Arts XAS
+ DEAIL. adpcm_g722           G.722 ADPCM (decoders: g722 ) (encoders: g722 )
+ DEAIL. adpcm_g726           G.726 ADPCM (decoders: g726 ) (encoders: g726 )
+ DEAIL. adpcm_g726le         G.726 ADPCM little-endian (decoders: g726le ) (encoders: g726le )
+ D.AIL. adpcm_ima_alp        ADPCM IMA High Voltage Software ALP
+ D.AIL. adpcm_ima_amv        ADPCM IMA AMV
+ D.AIL. adpcm_ima_apc        ADPCM IMA CRYO APC
+ D.AIL. adpcm_ima_apm        ADPCM IMA Ubisoft APM
+ D.AIL. adpcm_ima_cunning    ADPCM IMA Cunning Developments
+ D.AIL. adpcm_ima_dat4       ADPCM IMA Eurocom DAT4
+ D.AIL. adpcm_ima_dk3        ADPCM IMA Duck DK3
+ D.AIL. adpcm_ima_dk4        ADPCM IMA Duck DK4
+ D.AIL. adpcm_ima_ea_eacs    ADPCM IMA Electronic Arts EACS
+ D.AIL. adpcm_ima_ea_sead    ADPCM IMA Electronic Arts SEAD
+ D.AIL. adpcm_ima_iss        ADPCM IMA Funcom ISS
+ D.AIL. adpcm_ima_mtf        ADPCM IMA Capcom's MT Framework
+ D.AIL. adpcm_ima_oki        ADPCM IMA Dialogic OKI
+ DEAIL. adpcm_ima_qt         ADPCM IMA QuickTime (decoders: adpcm_ima_qt adpcm_ima_qt_at )
+ D.AIL. adpcm_ima_rad        ADPCM IMA Radical
+ D.AIL. adpcm_ima_smjpeg     ADPCM IMA Loki SDL MJPEG
+ DEAIL. adpcm_ima_ssi        ADPCM IMA Simon & Schuster Interactive
+ DEAIL. adpcm_ima_wav        ADPCM IMA WAV
+ D.AIL. adpcm_ima_ws         ADPCM IMA Westwood
+ DEAIL. adpcm_ms             ADPCM Microsoft
+ D.AIL. adpcm_mtaf           ADPCM MTAF
+ D.AIL. adpcm_psx            ADPCM Playstation
+ D.AIL. adpcm_sbpro_2        ADPCM Sound Blaster Pro 2-bit
+ D.AIL. adpcm_sbpro_3        ADPCM Sound Blaster Pro 2.6-bit
+ D.AIL. adpcm_sbpro_4        ADPCM Sound Blaster Pro 4-bit
+ DEAIL. adpcm_swf            ADPCM Shockwave Flash
+ D.AIL. adpcm_thp            ADPCM Nintendo THP
+ D.AIL. adpcm_thp_le         ADPCM Nintendo THP (Little-Endian)
+ D.AIL. adpcm_vima           LucasArts VIMA audio
+ D.AIL. adpcm_xa             ADPCM CDROM XA
+ DEAIL. adpcm_yamaha         ADPCM Yamaha
+ D.AIL. adpcm_zork           ADPCM Zork
+ DEAI.S alac                 ALAC (Apple Lossless Audio Codec) (decoders: alac alac_at ) (encoders: alac alac_at )
+ DEAIL. amr_nb               AMR-NB (Adaptive Multi-Rate NarrowBand) (decoders: amrnb amr_nb_at libopencore_amrnb ) (encoders: libopencore_amrnb )
+ D.AIL. amr_wb               AMR-WB (Adaptive Multi-Rate WideBand) (decoders: amrwb libopencore_amrwb )
+ D.AI.S ape                  Monkey's Audio
+ DEAIL. aptx                 aptX (Audio Processing Technology for Bluetooth)
+ DEAIL. aptx_hd              aptX HD (Audio Processing Technology for Bluetooth)
+ D.AIL. atrac1               ATRAC1 (Adaptive TRansform Acoustic Coding)
+ D.AIL. atrac3               ATRAC3 (Adaptive TRansform Acoustic Coding 3)
+ D.AI.S atrac3al             ATRAC3 AL (Adaptive TRansform Acoustic Coding 3 Advanced Lossless)
+ D.AIL. atrac3p              ATRAC3+ (Adaptive TRansform Acoustic Coding 3+) (decoders: atrac3plus )
+ D.AI.S atrac3pal            ATRAC3+ AL (Adaptive TRansform Acoustic Coding 3+ Advanced Lossless) (decoders: atrac3plusal )
+ D.AIL. atrac9               ATRAC9 (Adaptive TRansform Acoustic Coding 9)
+ D.AIL. avc                  On2 Audio for Video Codec (decoders: on2avc )
+ D.AIL. binkaudio_dct        Bink Audio (DCT)
+ D.AIL. binkaudio_rdft       Bink Audio (RDFT)
+ D.AIL. bmv_audio            Discworld II BMV audio
+ ..AIL. celt                 Constrained Energy Lapped Transform (CELT)
+ ..AIL. codec2               codec2 (very low bitrate speech codec)
+ DEAIL. comfortnoise         RFC 3389 Comfort Noise
+ D.AIL. cook                 Cook / Cooker / Gecko (RealAudio G2)
+ D.AIL. derf_dpcm            DPCM Xilam DERF
+ D.AIL. dolby_e              Dolby E
+ D.AIL. dsd_lsbf             DSD (Direct Stream Digital), least significant bit first
+ D.AIL. dsd_lsbf_planar      DSD (Direct Stream Digital), least significant bit first, planar
+ D.AIL. dsd_msbf             DSD (Direct Stream Digital), most significant bit first
+ D.AIL. dsd_msbf_planar      DSD (Direct Stream Digital), most significant bit first, planar
+ D.AIL. dsicinaudio          Delphine Software International CIN audio
+ D.AIL. dss_sp               Digital Speech Standard - Standard Play mode (DSS SP)
+ D.AI.S dst                  DST (Direct Stream Transfer)
+ DEAILS dts                  DCA (DTS Coherent Acoustics) (decoders: dca ) (encoders: dca )
+ D.AIL. dvaudio              DV audio
+ DEAIL. eac3                 ATSC A/52B (AC-3, E-AC-3) (decoders: eac3 eac3_at )
+ D.AIL. evrc                 EVRC (Enhanced Variable Rate Codec)
+ DEAI.S flac                 FLAC (Free Lossless Audio Codec)
+ DEAIL. g723_1               G.723.1
+ D.AIL. g729                 G.729
+ D.AIL. gremlin_dpcm         DPCM Gremlin
+ D.AIL. gsm                  GSM
+ D.AIL. gsm_ms               GSM Microsoft variant (decoders: gsm_ms gsm_ms_at )
+ D.AIL. hca                  CRI HCA
+ D.AIL. hcom                 HCOM Audio
+ D.AIL. iac                  IAC (Indeo Audio Coder)
+ DEAIL. ilbc                 iLBC (Internet Low Bitrate Codec) (decoders: ilbc ilbc_at ) (encoders: ilbc_at )
+ D.AIL. imc                  IMC (Intel Music Coder)
+ D.AIL. interplay_dpcm       DPCM Interplay
+ D.AIL. interplayacm         Interplay ACM
+ D.AIL. mace3                MACE (Macintosh Audio Compression/Expansion) 3:1
+ D.AIL. mace6                MACE (Macintosh Audio Compression/Expansion) 6:1
+ D.AIL. metasound            Voxware MetaSound
+ DEAI.S mlp                  MLP (Meridian Lossless Packing)
+ D.AIL. mp1                  MP1 (MPEG audio layer 1) (decoders: mp1 mp1float mp1_at )
+ DEAIL. mp2                  MP2 (MPEG audio layer 2) (decoders: mp2 mp2float mp2_at ) (encoders: mp2 mp2fixed )
+ DEAIL. mp3                  MP3 (MPEG audio layer 3) (decoders: mp3float mp3 mp3_at ) (encoders: libmp3lame )
+ D.AIL. mp3adu               ADU (Application Data Unit) MP3 (MPEG audio layer 3) (decoders: mp3adufloat mp3adu )
+ D.AIL. mp3on4               MP3onMP4 (decoders: mp3on4float mp3on4 )
+ D.AI.S mp4als               MPEG-4 Audio Lossless Coding (ALS) (decoders: als )
+ ..A.L. mpegh_3d_audio       MPEG-H 3D Audio
+ D.AIL. musepack7            Musepack SV7 (decoders: mpc7 )
+ D.AIL. musepack8            Musepack SV8 (decoders: mpc8 )
+ DEAIL. nellymoser           Nellymoser Asao
+ DEAIL. opus                 Opus (Opus Interactive Audio Codec) (decoders: opus libopus ) (encoders: opus libopus )
+ D.AIL. paf_audio            Amazing Studio Packed Animation File Audio
+ DEAIL. pcm_alaw             PCM A-law / G.711 A-law (decoders: pcm_alaw pcm_alaw_at ) (encoders: pcm_alaw pcm_alaw_at )
+ D.AI.S pcm_bluray           PCM signed 16|20|24-bit big-endian for Blu-ray media
+ DEAI.S pcm_dvd              PCM signed 20|24-bit big-endian
+ D.AI.S pcm_f16le            PCM 16.8 floating point little-endian
+ D.AI.S pcm_f24le            PCM 24.0 floating point little-endian
+ DEAI.S pcm_f32be            PCM 32-bit floating point big-endian
+ DEAI.S pcm_f32le            PCM 32-bit floating point little-endian
+ DEAI.S pcm_f64be            PCM 64-bit floating point big-endian
+ DEAI.S pcm_f64le            PCM 64-bit floating point little-endian
+ D.AI.S pcm_lxf              PCM signed 20-bit little-endian planar
+ DEAIL. pcm_mulaw            PCM mu-law / G.711 mu-law (decoders: pcm_mulaw pcm_mulaw_at ) (encoders: pcm_mulaw pcm_mulaw_at )
+ DEAI.S pcm_s16be            PCM signed 16-bit big-endian
+ DEAI.S pcm_s16be_planar     PCM signed 16-bit big-endian planar
+ DEAI.S pcm_s16le            PCM signed 16-bit little-endian
+ DEAI.S pcm_s16le_planar     PCM signed 16-bit little-endian planar
+ DEAI.S pcm_s24be            PCM signed 24-bit big-endian
+ DEAI.S pcm_s24daud          PCM D-Cinema audio signed 24-bit
+ DEAI.S pcm_s24le            PCM signed 24-bit little-endian
+ DEAI.S pcm_s24le_planar     PCM signed 24-bit little-endian planar
+ DEAI.S pcm_s32be            PCM signed 32-bit big-endian
+ DEAI.S pcm_s32le            PCM signed 32-bit little-endian
+ DEAI.S pcm_s32le_planar     PCM signed 32-bit little-endian planar
+ DEAI.S pcm_s64be            PCM signed 64-bit big-endian
+ DEAI.S pcm_s64le            PCM signed 64-bit little-endian
+ DEAI.S pcm_s8               PCM signed 8-bit
+ DEAI.S pcm_s8_planar        PCM signed 8-bit planar
+ DEAI.S pcm_u16be            PCM unsigned 16-bit big-endian
+ DEAI.S pcm_u16le            PCM unsigned 16-bit little-endian
+ DEAI.S pcm_u24be            PCM unsigned 24-bit big-endian
+ DEAI.S pcm_u24le            PCM unsigned 24-bit little-endian
+ DEAI.S pcm_u32be            PCM unsigned 32-bit big-endian
+ DEAI.S pcm_u32le            PCM unsigned 32-bit little-endian
+ DEAI.S pcm_u8               PCM unsigned 8-bit
+ DEAIL. pcm_vidc             PCM Archimedes VIDC
+ D.AIL. qcelp                QCELP / PureVoice
+ D.AIL. qdm2                 QDesign Music Codec 2 (decoders: qdm2 qdm2_at )
+ D.AIL. qdmc                 QDesign Music (decoders: qdmc qdmc_at )
+ DEAIL. ra_144               RealAudio 1.0 (14.4K) (decoders: real_144 ) (encoders: real_144 )
+ D.AIL. ra_288               RealAudio 2.0 (28.8K) (decoders: real_288 )
+ D.AI.S ralf                 RealAudio Lossless
+ DEAIL. roq_dpcm             DPCM id RoQ
+ DEAI.S s302m                SMPTE 302M
+ DEAIL. sbc                  SBC (low-complexity subband codec)
+ D.AIL. sdx2_dpcm            DPCM Squareroot-Delta-Exact
+ D.AI.S shorten              Shorten
+ D.AIL. sipr                 RealAudio SIPR / ACELP.NET
+ D.AIL. siren                Siren
+ D.AIL. smackaudio           Smacker audio (decoders: smackaud )
+ ..AIL. smv                  SMV (Selectable Mode Vocoder)
+ D.AIL. sol_dpcm             DPCM Sol
+ DEAI.. sonic                Sonic
+ .EAI.. sonicls              Sonic lossless
+ DEAIL. speex                Speex (decoders: libspeex ) (encoders: libspeex )
+ D.AI.S tak                  TAK (Tom's lossless Audio Kompressor)
+ DEA..S truehd               TrueHD
+ D.AIL. truespeech           DSP Group TrueSpeech
+ DEAI.S tta                  TTA (True Audio)
+ D.AIL. twinvq               VQF TwinVQ
+ D.AIL. vmdaudio             Sierra VMD audio
+ DEAIL. vorbis               Vorbis (decoders: vorbis libvorbis ) (encoders: vorbis libvorbis )
+ D.AI.. wavesynth            Wave synthesis pseudo-codec
+ DEAILS wavpack              WavPack
+ D.AIL. westwood_snd1        Westwood Audio (SND1) (decoders: ws_snd1 )
+ D.AI.S wmalossless          Windows Media Audio Lossless
+ D.AIL. wmapro               Windows Media Audio 9 Professional
+ DEAIL. wmav1                Windows Media Audio 1
+ DEAIL. wmav2                Windows Media Audio 2
+ D.AIL. wmavoice             Windows Media Audio Voice
+ D.AIL. xan_dpcm             DPCM Xan
+ D.AIL. xma1                 Xbox Media Audio 1
+ D.AIL. xma2                 Xbox Media Audio 2

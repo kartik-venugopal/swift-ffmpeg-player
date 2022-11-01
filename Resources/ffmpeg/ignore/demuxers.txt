@@ -1,0 +1,306 @@
+ D  3dostr          3DO STR
+ D  4xm             4X Technologies
+ D  aa              Audible AA format files
+ D  aac             raw ADTS AAC (Advanced Audio Coding)
+ D  ac3             raw AC-3
+ D  acm             Interplay ACM
+ D  act             ACT Voice file format
+ D  adf             Artworx Data Format
+ D  adp             ADP
+ D  ads             Sony PS2 ADS
+ D  adx             CRI ADX
+ D  aea             MD STUDIO audio
+ D  afc             AFC
+ D  aiff            Audio IFF
+ D  aix             CRI AIX
+ D  alaw            PCM A-law
+ D  alias_pix       Alias/Wavefront PIX image
+ D  alp             LEGO Racers ALP
+ D  amr             3GPP AMR
+ D  amrnb           raw AMR-NB
+ D  amrwb           raw AMR-WB
+ D  anm             Deluxe Paint Animation
+ D  apc             CRYO APC
+ D  ape             Monkey's Audio
+ D  apm             Ubisoft Rayman 2 APM
+ D  apng            Animated Portable Network Graphics
+ D  aptx            raw aptX
+ D  aptx_hd         raw aptX HD
+ D  aqtitle         AQTitle subtitles
+ D  argo_asf        Argonaut Games ASF
+ D  asf             ASF (Advanced / Active Streaming Format)
+ D  asf_o           ASF (Advanced / Active Streaming Format)
+ D  ass             SSA (SubStation Alpha) subtitle
+ D  ast             AST (Audio Stream)
+ D  au              Sun AU
+ D  av1             AV1 Annex B
+ D  avfoundation    AVFoundation input device
+ D  avi             AVI (Audio Video Interleaved)
+ D  avr             AVR (Audio Visual Research)
+ D  avs             Argonaut Games Creature Shock
+ D  avs2            raw AVS2-P2/IEEE1857.4
+ D  bethsoftvid     Bethesda Softworks VID
+ D  bfi             Brute Force & Ignorance
+ D  bfstm           BFSTM (Binary Cafe Stream)
+ D  bin             Binary text
+ D  bink            Bink
+ D  bit             G.729 BIT file format
+ D  bmp_pipe        piped bmp sequence
+ D  bmv             Discworld II BMV
+ D  boa             Black Ops Audio
+ D  brender_pix     BRender PIX image
+ D  brstm           BRSTM (Binary Revolution Stream)
+ D  c93             Interplay C93
+ D  caf             Apple CAF (Core Audio Format)
+ D  cavsvideo       raw Chinese AVS (Audio Video Standard)
+ D  cdg             CD Graphics
+ D  cdxl            Commodore CDXL video
+ D  cine            Phantom Cine
+ D  codec2          codec2 .c2 demuxer
+ D  codec2raw       raw codec2 demuxer
+ D  concat          Virtual concatenation script
+ D  data            raw data
+ D  daud            D-Cinema audio
+ D  dcstr           Sega DC STR
+ D  dds_pipe        piped dds sequence
+ D  derf            Xilam DERF
+ D  dfa             Chronomaster DFA
+ D  dhav            Video DAV
+ D  dirac           raw Dirac
+ D  dnxhd           raw DNxHD (SMPTE VC-3)
+ D  dpx_pipe        piped dpx sequence
+ D  dsf             DSD Stream File (DSF)
+ D  dsicin          Delphine Software International CIN
+ D  dss             Digital Speech Standard (DSS)
+ D  dts             raw DTS
+ D  dtshd           raw DTS-HD
+ D  dv              DV (Digital Video)
+ D  dvbsub          raw dvbsub
+ D  dvbtxt          dvbtxt
+ D  dxa             DXA
+ D  ea              Electronic Arts Multimedia
+ D  ea_cdata        Electronic Arts cdata
+ D  eac3            raw E-AC-3
+ D  epaf            Ensoniq Paris Audio File
+ D  exr_pipe        piped exr sequence
+ D  f32be           PCM 32-bit floating-point big-endian
+ D  f32le           PCM 32-bit floating-point little-endian
+ D  f64be           PCM 64-bit floating-point big-endian
+ D  f64le           PCM 64-bit floating-point little-endian
+ D  ffmetadata      FFmpeg metadata in text
+ D  film_cpk        Sega FILM / CPK
+ D  filmstrip       Adobe Filmstrip
+ D  fits            Flexible Image Transport System
+ D  flac            raw FLAC
+ D  flic            FLI/FLC/FLX animation
+ D  flv             FLV (Flash Video)
+ D  frm             Megalux Frame
+ D  fsb             FMOD Sample Bank
+ D  fwse            Capcom's MT Framework sound
+ D  g722            raw G.722
+ D  g723_1          G.723.1
+ D  g726            raw big-endian G.726 ("left aligned")
+ D  g726le          raw little-endian G.726 ("right aligned")
+ D  g729            G.729 raw format demuxer
+ D  gdv             Gremlin Digital Video
+ D  genh            GENeric Header
+ D  gif             CompuServe Graphics Interchange Format (GIF)
+ D  gif_pipe        piped gif sequence
+ D  gsm             raw GSM
+ D  gxf             GXF (General eXchange Format)
+ D  h261            raw H.261
+ D  h263            raw H.263
+ D  h264            raw H.264 video
+ D  hca             CRI HCA
+ D  hcom            Macintosh HCOM
+ D  hevc            raw HEVC video
+ D  hls             Apple HTTP Live Streaming
+ D  hnm             Cryo HNM v4
+ D  ico             Microsoft Windows ICO
+ D  idcin           id Cinematic
+ D  idf             iCE Draw File
+ D  iff             IFF (Interchange File Format)
+ D  ifv             IFV CCTV DVR
+ D  ilbc            iLBC storage
+ D  image2          image2 sequence
+ D  image2pipe      piped image2 sequence
+ D  ingenient       raw Ingenient MJPEG
+ D  ipmovie         Interplay MVE
+ D  ircam           Berkeley/IRCAM/CARL Sound Format
+ D  iss             Funcom ISS
+ D  iv8             IndigoVision 8000 video
+ D  ivf             On2 IVF
+ D  ivr             IVR (Internet Video Recording)
+ D  j2k_pipe        piped j2k sequence
+ D  jacosub         JACOsub subtitle format
+ D  jpeg_pipe       piped jpeg sequence
+ D  jpegls_pipe     piped jpegls sequence
+ D  jv              Bitmap Brothers JV
+ D  kux             KUX (YouKu)
+ D  kvag            Simon & Schuster Interactive VAG
+ D  lavfi           Libavfilter virtual input device
+ D  live_flv        live RTMP FLV (Flash Video)
+ D  lmlm4           raw lmlm4
+ D  loas            LOAS AudioSyncStream
+ D  lrc             LRC lyrics
+ D  lvf             LVF
+ D  lxf             VR native stream (LXF)
+ D  m4v             raw MPEG-4 video
+ D  matroska,webm   Matroska / WebM
+ D  mgsts           Metal Gear Solid: The Twin Snakes
+ D  microdvd        MicroDVD subtitle format
+ D  mjpeg           raw MJPEG video
+ D  mjpeg_2000      raw MJPEG 2000 video
+ D  mlp             raw MLP
+ D  mlv             Magic Lantern Video (MLV)
+ D  mm              American Laser Games MM
+ D  mmf             Yamaha SMAF
+ D  mov,mp4,m4a,3gp,3g2,mj2 QuickTime / MOV
+ D  mp3             MP2/3 (MPEG audio layer 2/3)
+ D  mpc             Musepack
+ D  mpc8            Musepack SV8
+ D  mpeg            MPEG-PS (MPEG-2 Program Stream)
+ D  mpegts          MPEG-TS (MPEG-2 Transport Stream)
+ D  mpegtsraw       raw MPEG-TS (MPEG-2 Transport Stream)
+ D  mpegvideo       raw MPEG video
+ D  mpjpeg          MIME multipart JPEG
+ D  mpl2            MPL2 subtitles
+ D  mpsub           MPlayer subtitles
+ D  msf             Sony PS3 MSF
+ D  msnwctcp        MSN TCP Webcam stream
+ D  mtaf            Konami PS2 MTAF
+ D  mtv             MTV
+ D  mulaw           PCM mu-law
+ D  musx            Eurocom MUSX
+ D  mv              Silicon Graphics Movie
+ D  mvi             Motion Pixels MVI
+ D  mxf             MXF (Material eXchange Format)
+ D  mxg             MxPEG clip
+ D  nc              NC camera feed
+ D  nistsphere      NIST SPeech HEader REsources
+ D  nsp             Computerized Speech Lab NSP
+ D  nsv             Nullsoft Streaming Video
+ D  nut             NUT
+ D  nuv             NuppelVideo
+ D  ogg             Ogg
+ D  oma             Sony OpenMG audio
+ D  paf             Amazing Studio Packed Animation File
+ D  pam_pipe        piped pam sequence
+ D  pbm_pipe        piped pbm sequence
+ D  pcx_pipe        piped pcx sequence
+ D  pgm_pipe        piped pgm sequence
+ D  pgmyuv_pipe     piped pgmyuv sequence
+ D  pictor_pipe     piped pictor sequence
+ D  pjs             PJS (Phoenix Japanimation Society) subtitles
+ D  pmp             Playstation Portable PMP
+ D  png_pipe        piped png sequence
+ D  pp_bnk          Pro Pinball Series Soundbank
+ D  ppm_pipe        piped ppm sequence
+ D  psd_pipe        piped psd sequence
+ D  psxstr          Sony Playstation STR
+ D  pva             TechnoTrend PVA
+ D  pvf             PVF (Portable Voice Format)
+ D  qcp             QCP
+ D  qdraw_pipe      piped qdraw sequence
+ D  r3d             REDCODE R3D
+ D  rawvideo        raw video
+ D  realtext        RealText subtitle format
+ D  redspark        RedSpark
+ D  rl2             RL2
+ D  rm              RealMedia
+ D  roq             id RoQ
+ D  rpl             RPL / ARMovie
+ D  rsd             GameCube RSD
+ D  rso             Lego Mindstorms RSO
+ D  rtp             RTP input
+ D  rtsp            RTSP input
+ D  s16be           PCM signed 16-bit big-endian
+ D  s16le           PCM signed 16-bit little-endian
+ D  s24be           PCM signed 24-bit big-endian
+ D  s24le           PCM signed 24-bit little-endian
+ D  s32be           PCM signed 32-bit big-endian
+ D  s32le           PCM signed 32-bit little-endian
+ D  s337m           SMPTE 337M
+ D  s8              PCM signed 8-bit
+ D  sami            SAMI subtitle format
+ D  sap             SAP input
+ D  sbc             raw SBC (low-complexity subband codec)
+ D  sbg             SBaGen binaural beats script
+ D  scc             Scenarist Closed Captions
+ D  sdp             SDP
+ D  sdr2            SDR2
+ D  sds             MIDI Sample Dump Standard
+ D  sdx             Sample Dump eXchange
+ D  ser             SER (Simple uncompressed video format for astronomical capturing)
+ D  sgi_pipe        piped sgi sequence
+ D  shn             raw Shorten
+ D  siff            Beam Software SIFF
+ D  sln             Asterisk raw pcm
+ D  smjpeg          Loki SDL MJPEG
+ D  smk             Smacker
+ D  smush           LucasArts Smush
+ D  sol             Sierra SOL
+ D  sox             SoX native
+ D  spdif           IEC 61937 (compressed data in S/PDIF)
+ D  srt             SubRip subtitle
+ D  stl             Spruce subtitle format
+ D  subviewer       SubViewer subtitle format
+ D  subviewer1      SubViewer v1 subtitle format
+ D  sunrast_pipe    piped sunrast sequence
+ D  sup             raw HDMV Presentation Graphic Stream subtitles
+ D  svag            Konami PS2 SVAG
+ D  svg_pipe        piped svg sequence
+ D  swf             SWF (ShockWave Flash)
+ D  tak             raw TAK
+ D  tedcaptions     TED Talks captions
+ D  thp             THP
+ D  tiertexseq      Tiertex Limited SEQ
+ D  tiff_pipe       piped tiff sequence
+ D  tmv             8088flex TMV
+ D  truehd          raw TrueHD
+ D  tta             TTA (True Audio)
+ D  tty             Tele-typewriter
+ D  txd             Renderware TeXture Dictionary
+ D  ty              TiVo TY Stream
+ D  u16be           PCM unsigned 16-bit big-endian
+ D  u16le           PCM unsigned 16-bit little-endian
+ D  u24be           PCM unsigned 24-bit big-endian
+ D  u24le           PCM unsigned 24-bit little-endian
+ D  u32be           PCM unsigned 32-bit big-endian
+ D  u32le           PCM unsigned 32-bit little-endian
+ D  u8              PCM unsigned 8-bit
+ D  v210            Uncompressed 4:2:2 10-bit
+ D  v210x           Uncompressed 4:2:2 10-bit
+ D  vag             Sony PS2 VAG
+ D  vc1             raw VC-1
+ D  vc1test         VC-1 test bitstream
+ D  vidc            PCM Archimedes VIDC
+ D  vividas         Vividas VIV
+ D  vivo            Vivo
+ D  vmd             Sierra VMD
+ D  vobsub          VobSub subtitle format
+ D  voc             Creative Voice
+ D  vpk             Sony PS2 VPK
+ D  vplayer         VPlayer subtitles
+ D  vqf             Nippon Telegraph and Telephone Corporation (NTT) TwinVQ
+ D  w64             Sony Wave64
+ D  wav             WAV / WAVE (Waveform Audio)
+ D  wc3movie        Wing Commander III movie
+ D  webm_dash_manifest WebM DASH Manifest
+ D  webp_pipe       piped webp sequence
+ D  webvtt          WebVTT subtitle
+ D  wsaud           Westwood Studios audio
+ D  wsd             Wideband Single-bit Data (WSD)
+ D  wsvqa           Westwood Studios VQA
+ D  wtv             Windows Television (WTV)
+ D  wv              WavPack
+ D  wve             Psion 3 audio
+ D  xa              Maxis XA
+ D  xbin            eXtended BINary text (XBIN)
+ D  xmv             Microsoft XMV
+ D  xpm_pipe        piped xpm sequence
+ D  xvag            Sony PS3 XVAG
+ D  xwd_pipe        piped xwd sequence
+ D  xwma            Microsoft xWMA
+ D  yop             Psygnosis YOP
+ D  yuv4mpegpipe    YUV4MPEG pipe
