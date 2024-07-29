@@ -55,11 +55,8 @@ class FFmpegResamplingContext {
         
         didSet {
             
-            if let channelLayout = inputChannelLayout {
-                
-                withUnsafePointer(to: channelLayout) {ptr -> Void in
-                    av_opt_set_chlayout(rawPointer, "in_channel_layout", ptr, 0)
-                }
+            if var inputChannelLayout = self.inputChannelLayout {
+                av_opt_set_chlayout(rawPointer, "in_chlayout", &inputChannelLayout, 0)
             }
         }
     }
@@ -71,11 +68,8 @@ class FFmpegResamplingContext {
         
         didSet {
             
-            if let channelLayout = outputChannelLayout {
-                
-                withUnsafePointer(to: channelLayout) {ptr -> Void in
-                    av_opt_set_chlayout(rawPointer, "out_channel_layout", ptr, 0)
-                }
+            if var outputChannelLayout = self.outputChannelLayout {
+                av_opt_set_chlayout(rawPointer, "out_chlayout", &outputChannelLayout, 0)
             }
         }
     }

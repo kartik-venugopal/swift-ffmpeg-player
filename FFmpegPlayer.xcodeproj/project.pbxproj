@@ -11,7 +11,6 @@
 		3E1B587C2C58198E0097ABBF /* common.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58742C58198E0097ABBF /* common.sh */; };
 		3E1B58802C58198E0097ABBF /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58782C58198E0097ABBF /* README.txt */; };
 		3E1B58842C583F210097ABBF /* FFmpegChannelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1B58832C583F210097ABBF /* FFmpegChannelLayout.swift */; };
-		3E1B58852C58423A0097ABBF /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B64A2291199B600FDB51F /* ffmpeg.c */; };
 		3E7B652D291199B600FDB51F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6481291199B600FDB51F /* Constants.swift */; };
 		3E7B652E291199B600FDB51F /* OpenDialogButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */; };
 		3E7B652F291199B600FDB51F /* SliderCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6484291199B600FDB51F /* SliderCells.swift */; };
@@ -113,7 +112,6 @@
 		3E7B649E291199B600FDB51F /* FFmpegErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFmpegErrors.swift; sourceTree = "<group>"; };
 		3E7B649F291199B600FDB51F /* FFmpegPacketFrames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFmpegPacketFrames.swift; sourceTree = "<group>"; };
 		3E7B64A1291199B600FDB51F /* FFmpegMetadataReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFmpegMetadataReader.swift; sourceTree = "<group>"; };
-		3E7B64A2291199B600FDB51F /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
 		3E7B64A4291199B600FDB51F /* UtilsExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilsExtensions.swift; sourceTree = "<group>"; };
 		3E7B64A5291199B600FDB51F /* ConcurrentArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentArray.swift; sourceTree = "<group>"; };
 		3E7B64A6291199B600FDB51F /* NumericStringFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericStringFormatter.swift; sourceTree = "<group>"; };
@@ -215,7 +213,6 @@
 			isa = PBXGroup;
 			children = (
 				3E7B6498291199B600FDB51F /* ffmpeg.h */,
-				3E7B64A2291199B600FDB51F /* ffmpeg.c */,
 				3E7B648A291199B600FDB51F /* Wrappers */,
 				3E7B6499291199B600FDB51F /* Utils */,
 			);
@@ -406,7 +403,6 @@
 				3E7B6540291199B600FDB51F /* FFmpegDecoder.swift in Sources */,
 				3E1B58842C583F210097ABBF /* FFmpegChannelLayout.swift in Sources */,
 				3E7B6543291199B600FDB51F /* FFmpegDecoder+PCMBuffer.swift in Sources */,
-				3E1B58852C58423A0097ABBF /* ffmpeg.c in Sources */,
 				3E7B6551291199B600FDB51F /* MetadataReader.swift in Sources */,
 				3E7B6536291199B600FDB51F /* FFmpegResamplingContext.swift in Sources */,
 				3E7B6547291199B600FDB51F /* FFmpegMetadataReader.swift in Sources */,

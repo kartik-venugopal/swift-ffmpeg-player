@@ -19,7 +19,7 @@
 /**
  * The error code corresponding to end of file (EOF). Defined in <libavutil/error.h>.
  */
-int ERROR_EOF;
+static const int ERROR_EOF = AVERROR_EOF;
 
 /**
  * The following definitions are identifiers for several ffmpeg channel layouts defined in <libavutil/channel_layout.h>.
