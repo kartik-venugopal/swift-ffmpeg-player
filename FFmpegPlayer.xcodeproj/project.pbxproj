@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E1B587A2C58198E0097ABBF /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58722C58198E0097ABBF /* build.sh */; };
+		3E1B587C2C58198E0097ABBF /* common.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58742C58198E0097ABBF /* common.sh */; };
+		3E1B58802C58198E0097ABBF /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58782C58198E0097ABBF /* README.txt */; };
 		3E7B652D291199B600FDB51F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6481291199B600FDB51F /* Constants.swift */; };
 		3E7B652E291199B600FDB51F /* OpenDialogButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */; };
 		3E7B652F291199B600FDB51F /* SliderCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6484291199B600FDB51F /* SliderCells.swift */; };
@@ -78,6 +81,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3E1B58722C58198E0097ABBF /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		3E1B58742C58198E0097ABBF /* common.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = common.sh; sourceTree = "<group>"; };
+		3E1B58782C58198E0097ABBF /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		3E7B64702911993300FDB51F /* FFmpegPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7B6481291199B600FDB51F /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenDialogButtonCell.swift; sourceTree = "<group>"; };
@@ -148,10 +154,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E1B58792C58198E0097ABBF /* FFmpegBuild */ = {
+			isa = PBXGroup;
+			children = (
+				3E1B58722C58198E0097ABBF /* build.sh */,
+				3E1B58742C58198E0097ABBF /* common.sh */,
+				3E1B58782C58198E0097ABBF /* README.txt */,
+			);
+			path = FFmpegBuild;
+			sourceTree = SOURCE_ROOT;
+		};
 		3E7B64672911993300FDB51F = {
 			isa = PBXGroup;
 			children = (
 				3E7B6480291199B600FDB51F /* Sources */,
+				3E1B58792C58198E0097ABBF /* FFmpegBuild */,
 				3E7B6557291199BF00FDB51F /* Resources */,
 				3E7B6588291199C700FDB51F /* Frameworks */,
 				3EF9C61629119E3B002DEC4B /* Info.plist */,
@@ -370,7 +387,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E1B587C2C58198E0097ABBF /* common.sh in Resources */,
+				3E1B58802C58198E0097ABBF /* README.txt in Resources */,
 				3E7B6585291199BF00FDB51F /* Assets.xcassets in Resources */,
+				3E1B587A2C58198E0097ABBF /* build.sh in Resources */,
 				3E7B6531291199B600FDB51F /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -585,7 +605,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Resources/ffmpeg/sharedLibs",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0;
 				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kv.FFmpegPlayer;
@@ -627,7 +647,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Resources/ffmpeg/sharedLibs",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0;
 				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kv.FFmpegPlayer;
