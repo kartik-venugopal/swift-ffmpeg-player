@@ -19,7 +19,7 @@
 # related to the use of this script.
 #
 
-source ./common.sh
+source ./common-7.sh
 
 # MARK: Constants -------------------------------------------------------------------------------------
 

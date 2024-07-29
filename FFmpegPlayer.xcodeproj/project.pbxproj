@@ -10,6 +10,7 @@
 		3E1B587A2C58198E0097ABBF /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58722C58198E0097ABBF /* build.sh */; };
 		3E1B587C2C58198E0097ABBF /* common.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58742C58198E0097ABBF /* common.sh */; };
 		3E1B58802C58198E0097ABBF /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58782C58198E0097ABBF /* README.txt */; };
+		3E1B58822C5824320097ABBF /* common-7.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58812C5824320097ABBF /* common-7.sh */; };
 		3E7B652D291199B600FDB51F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6481291199B600FDB51F /* Constants.swift */; };
 		3E7B652E291199B600FDB51F /* OpenDialogButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */; };
 		3E7B652F291199B600FDB51F /* SliderCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6484291199B600FDB51F /* SliderCells.swift */; };
@@ -84,6 +85,7 @@
 		3E1B58722C58198E0097ABBF /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		3E1B58742C58198E0097ABBF /* common.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = common.sh; sourceTree = "<group>"; };
 		3E1B58782C58198E0097ABBF /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		3E1B58812C5824320097ABBF /* common-7.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "common-7.sh"; sourceTree = "<group>"; };
 		3E7B64702911993300FDB51F /* FFmpegPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7B6481291199B600FDB51F /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenDialogButtonCell.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 			children = (
 				3E1B58722C58198E0097ABBF /* build.sh */,
 				3E1B58742C58198E0097ABBF /* common.sh */,
+				3E1B58812C5824320097ABBF /* common-7.sh */,
 				3E1B58782C58198E0097ABBF /* README.txt */,
 			);
 			path = FFmpegBuild;
@@ -388,6 +391,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E1B587C2C58198E0097ABBF /* common.sh in Resources */,
+				3E1B58822C5824320097ABBF /* common-7.sh in Resources */,
 				3E1B58802C58198E0097ABBF /* README.txt in Resources */,
 				3E7B6585291199BF00FDB51F /* Assets.xcassets in Resources */,
 				3E1B587A2C58198E0097ABBF /* build.sh in Resources */,
