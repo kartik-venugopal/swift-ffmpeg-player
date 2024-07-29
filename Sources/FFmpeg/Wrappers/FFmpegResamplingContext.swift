@@ -51,12 +51,15 @@ class FFmpegResamplingContext {
     ///
     /// The channel layout of the input samples.
     ///
-    var inputChannelLayout: Int64? {
+    var inputChannelLayout: AVChannelLayout? {
         
         didSet {
             
             if let channelLayout = inputChannelLayout {
-                av_opt_set_channel_layout(rawPointer, "in_channel_layout", channelLayout, 0)
+                
+                withUnsafePointer(to: channelLayout) {ptr -> Void in
+                    av_opt_set_chlayout(rawPointer, "in_channel_layout", ptr, 0)
+                }
             }
         }
     }
@@ -64,12 +67,15 @@ class FFmpegResamplingContext {
     ///
     /// The (desired) channel layout of the output samples.
     ///
-    var outputChannelLayout: Int64? {
+    var outputChannelLayout: AVChannelLayout? {
         
         didSet {
             
             if let channelLayout = outputChannelLayout {
-                av_opt_set_channel_layout(rawPointer, "out_channel_layout", channelLayout, 0)
+                
+                withUnsafePointer(to: channelLayout) {ptr -> Void in
+                    av_opt_set_chlayout(rawPointer, "out_channel_layout", ptr, 0)
+                }
             }
         }
     }
@@ -183,7 +189,7 @@ class FFmpegAVAEResamplingContext: FFmpegResamplingContext {
     ///
     private static let standardSampleFormat: AVSampleFormat = AV_SAMPLE_FMT_FLTP
     
-    init?(channelLayout: Int64, sampleRate: Int64, inputSampleFormat: AVSampleFormat) {
+    init?(channelLayout: AVChannelLayout, sampleRate: Int64, inputSampleFormat: AVSampleFormat) {
         
         super.init()
         

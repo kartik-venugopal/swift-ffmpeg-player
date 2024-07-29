@@ -125,21 +125,25 @@ struct FFmpegChannelLayoutsMapper {
     /// - returns: A corresponding AVFoundation channel layout, if there exists a mapping for the given
     ///            ffmpeg channel layout. Nil otherwise.
     ///
-    static func mapLayout(ffmpegLayout: Int) -> AVAudioChannelLayout? {
+    static func mapLayout(ffmpegLayout: AVChannelLayout) -> AVAudioChannelLayout? {
         
-        if let layoutTag = layoutsMap[ffmpegLayout] {
+        if let layoutTag = layoutsMap[Int(ffmpegLayout.u.mask)] {
             return AVAudioChannelLayout(layoutTag: layoutTag)
         }
         
         return nil
     }
     
-    static func readableString(for channelLayout: Int64, channelCount: Int32) -> String {
+    static func readableString(for channelLayout: AVChannelLayout, channelCount: Int32) -> String {
         
         let layoutStringPointer = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
         defer {layoutStringPointer.deallocate()}
         
-        av_get_channel_layout_string(layoutStringPointer, 100, channelCount, UInt64(channelLayout))
+        withUnsafePointer(to: channelLayout) {ptr -> Void in
+            av_channel_layout_describe(ptr, layoutStringPointer, 100)
+        }
+        
+//        av_get_channel_layout_string(layoutStringPointer, 100, channelCount, UInt64(channelLayout))
         return String(cString: layoutStringPointer).replacingOccurrences(of: "(", with: " (").capitalized
     }
 }

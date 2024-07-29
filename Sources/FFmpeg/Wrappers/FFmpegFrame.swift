@@ -30,12 +30,12 @@ class FFmpegFrame {
     ///
     /// Describes the number and physical / spatial arrangement of the channels. (e.g. "5.1 surround" or "stereo")
     ///
-    var channelLayout: UInt64 {avFrame.channel_layout}
+    var channelLayout: AVChannelLayout {avFrame.ch_layout}
     
     ///
     /// Number of channels of audio data.
     ///
-    var channelCount: Int32 {avFrame.channels}
+    var channelCount: Int32 {avFrame.ch_layout.nb_channels}
     
     lazy var intChannelCount: Int = Int(channelCount)
 
