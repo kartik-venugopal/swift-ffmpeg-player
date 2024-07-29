@@ -11,7 +11,7 @@
 # MARK: Constants -------------------------------------------------------------------------------------
 
 # FFmpeg release version
-export ffmpegVersion="4.4"
+export ffmpegVersion="7.0.1"
 
 export avcodecLibName="libavcodec"
 export avformatLibName="libavformat"
@@ -19,10 +19,10 @@ export avutilLibName="libavutil"
 export swresampleLibName="libswresample"
 
 # Library versions
-export avcodecVersion=58
-export avformatVersion=58
-export avutilVersion=56
-export swresampleVersion=3
+export avcodecVersion=61
+export avformatVersion=61
+export avutilVersion=59
+export swresampleVersion=5
 
 # Aliases for the library files.
 export avcodecLib="${avcodecLibName}.${avcodecVersion}.dylib"
@@ -36,16 +36,16 @@ export parsersToEnable="bmp,cook,flac,gif,jpeg2000,mjpeg,mpegaudio,opus,png,sipr
 export decodersToEnable="ape,cook,dsd_lsbf,dsd_lsbf_planar,dsd_msbf,dsd_msbf_planar,flac,mpc7,mpc8,musepack7,musepack8,opus,ra_144,ra_288,ralf,sipr,tta,tak,vorbis,wavpack,wmav1,wmav2,wmalossless,wmapro,wmavoice"
 
 # Names of public headers to include in XCFrameworks
-export avcodecHeaderNames=("ac3_parser.h" "adts_parser.h" "avcodec.h" "avdct.h" "avfft.h" "bsf.h" "codec.h" "codec_desc.h" "codec_id.h" "codec_par.h" "d3d11va.h" "dirac.h" "dv_profile.h" "dxva2.h" "jni.h" "mediacodec.h" "packet.h" "qsv.h" "vaapi.h" "vdpau.h" "version.h" "videotoolbox.h" "vorbis_parser.h" "xvmc.h")
+export avcodecHeaderNames=("ac3_parser.h" "adts_parser.h" "avcodec.h" "avdct.h" "avfft.h" "bsf.h" "codec.h" "codec_desc.h" "codec_id.h" "codec_par.h" "d3d11va.h" "defs.h" "dirac.h" "dv_profile.h" "dxva2.h" "jni.h" "mediacodec.h" "packet.h" "qsv.h" "vdpau.h" "version.h" "version_major.h" "videotoolbox.h" "vorbis_parser.h")
 
-export avformatHeaderNames=("avformat.h" "avio.h" "version.h")
+export avformatHeaderNames=("avformat.h" "avio.h" "version.h" "version_major.h")
 
-export avutilHeaderNames=("adler32.h" "aes.h" "aes_ctr.h" "attributes.h" "audio_fifo.h" "avassert.h" "avconfig.h" "avstring.h" "avutil.h" "base64.h" "blowfish.h" "bprint.h" "bswap.h" "buffer.h" "camellia.h" "cast5.h" "channel_layout.h" "common.h" "cpu.h" "crc.h" "des.h" "dict.h" "display.h" "dovi_meta.h" "downmix_info.h" "encryption_info.h" "error.h" "eval.h" "fifo.h" "file.h" "film_grain_params.h" "frame.h" "hash.h" "hdr_dynamic_metadata.h" "hmac.h" "hwcontext.h" "hwcontext_cuda.h" "hwcontext_d3d11va.h" "hwcontext_drm.h" "hwcontext_dxva2.h" "hwcontext_mediacodec.h" "hwcontext_opencl.h" "hwcontext_qsv.h" "hwcontext_vaapi.h" "hwcontext_vdpau.h" "hwcontext_videotoolbox.h" "hwcontext_vulkan.h" "imgutils.h" "intfloat.h" "intreadwrite.h" "lfg.h" "log.h" "lzo.h" "macros.h" "mastering_display_metadata.h" "mathematics.h" "md5.h" "mem.h" "motion_vector.h" "murmur3.h" "opt.h" "parseutils.h" "pixdesc.h" "pixelutils.h" "pixfmt.h" "random_seed.h" "rational.h" "rc4.h" "replaygain.h" "ripemd.h" "samplefmt.h" "sha.h" "sha512.h" "spherical.h" "stereo3d.h" "tea.h" "threadmessage.h" "time.h" "timecode.h" "timestamp.h" "tree.h" "twofish.h" "tx.h" "version.h" "video_enc_params.h" "xtea.h")
+export avutilHeaderNames=("adler32.h" "aes.h" "aes_ctr.h" "attributes.h" "audio_fifo.h" "avassert.h" "avconfig.h" "avstring.h" "avutil.h" "base64.h" "blowfish.h" "bprint.h" "bswap.h" "buffer.h" "camellia.h" "cast5.h" "channel_layout.h" "common.h" "cpu.h" "crc.h" "des.h" "dict.h" "display.h" "dovi_meta.h" "downmix_info.h" "encryption_info.h" "error.h" "eval.h" "fifo.h" "file.h" "film_grain_params.h" "frame.h" "hash.h" "hdr_dynamic_metadata.h" "hmac.h" "hwcontext.h" "hwcontext_cuda.h" "hwcontext_d3d11va.h" "hwcontext_drm.h" "hwcontext_dxva2.h" "hwcontext_mediacodec.h" "hwcontext_opencl.h" "hwcontext_qsv.h" "hwcontext_vaapi.h" "hwcontext_vdpau.h" "hwcontext_videotoolbox.h" "hwcontext_vulkan.h" "imgutils.h" "intfloat.h" "intreadwrite.h" "lfg.h" "log.h" "lzo.h" "macros.h" "mastering_display_metadata.h" "mathematics.h" "md5.h" "mem.h" "motion_vector.h" "murmur3.h" "opt.h" "parseutils.h" "pixdesc.h" "pixelutils.h" "pixfmt.h" "random_seed.h" "rational.h" "rc4.h" "replaygain.h" "ripemd.h" "samplefmt.h" "sha.h" "sha512.h" "spherical.h" "stereo3d.h" "tea.h" "threadmessage.h" "time.h" "timecode.h" "timestamp.h" "tree.h" "twofish.h" "tx.h" "version.h" "version_major.h" "video_enc_params.h" "xtea.h")
 
-export swresampleHeaderNames=("swresample.h" "version.h")
+export swresampleHeaderNames=("swresample.h" "version.h" "version_major.h")
 
 # The name of the FFmpeg source archive file.
-export srcArchiveName="ffmpeg-${ffmpegVersion}.tar.bz2"
+export srcArchiveName="ffmpeg-${ffmpegVersion}.tar.xz"
 
 # The name of the FFmpeg source directory (once the archive has been uncompressed).
 export srcDirName="ffmpeg-${ffmpegVersion}"

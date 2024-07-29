@@ -5,9 +5,9 @@ extension AVAudioFormat {
     ///
     /// A convenient way to instantiate an AVAudioFormat given an ffmpeg sample format, sample rate, and channel layout identifier.
     ///
-    convenience init?(from sampleFormat: FFmpegSampleFormat, sampleRate: Int32, channelLayout: AVChannelLayout) {
+    convenience init?(from sampleFormat: FFmpegSampleFormat, sampleRate: Int32, channelLayout: FFmpegChannelLayout) {
         
-        guard let channelLayout = FFmpegChannelLayoutsMapper.mapLayout(ffmpegLayout: channelLayout) else {
+        guard let channelLayout = channelLayout.avfLayout else {
             return nil
         }
         

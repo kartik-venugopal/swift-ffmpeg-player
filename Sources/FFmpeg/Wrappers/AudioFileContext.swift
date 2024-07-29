@@ -125,7 +125,7 @@ class AudioFileContext {
         self.sampleRate = sampleRateDouble
         self.frameCount = Int64(sampleRateDouble * theFormatContext.duration)
         
-        let channelLayout: AVAudioChannelLayout = FFmpegChannelLayoutsMapper.mapLayout(ffmpegLayout: codec.channelLayout) ?? .stereo
+        let channelLayout: AVAudioChannelLayout = codec.channelLayout.avfLayout ?? .stereo
         
         self.audioFormat = AVAudioFormat(standardFormatWithSampleRate: sampleRateDouble, channelLayout: channelLayout)
 

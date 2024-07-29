@@ -189,7 +189,7 @@ class FFmpegAVAEResamplingContext: FFmpegResamplingContext {
     ///
     private static let standardSampleFormat: AVSampleFormat = AV_SAMPLE_FMT_FLTP
     
-    init?(channelLayout: AVChannelLayout, sampleRate: Int64, inputSampleFormat: AVSampleFormat) {
+    init?(channelLayout: FFmpegChannelLayout, sampleRate: Int64, inputSampleFormat: AVSampleFormat) {
         
         super.init()
         
@@ -197,8 +197,8 @@ class FFmpegAVAEResamplingContext: FFmpegResamplingContext {
         // NOTE - Our output channel layout will be the same as that of the input, since we don't
         // need to do any upmixing / downmixing here.
         
-        self.inputChannelLayout = channelLayout
-        self.outputChannelLayout = channelLayout
+        self.inputChannelLayout = channelLayout.avChannelLayout
+        self.outputChannelLayout = channelLayout.avChannelLayout
         
         // Set the input / output sample rates as options prior to resampling.
         // NOTE - Our output sample rate will be the same as that of the input, since we don't

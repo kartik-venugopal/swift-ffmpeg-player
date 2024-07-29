@@ -70,7 +70,7 @@ class MetadataReader {
         let sampleRate: Int = Int(codec.sampleRate)
         let sampleFormat: FFmpegSampleFormat = codec.sampleFormat
         let bitRate: Int64 = codec.bitRate > 0 ? codec.bitRate : fileCtx.format.bitRate
-        let channelLayoutString: String = FFmpegChannelLayoutsMapper.readableString(for: codec.channelLayout, channelCount: codec.channelCount)
+        let channelLayoutString: String = codec.channelLayout.description
         let frames: Int64 = Int64(floor(duration * Double(sampleRate)))
 
         return AudioInfo(fileType: fileType, codec: codecName, duration: duration, sampleRate: sampleRate, sampleFormat: sampleFormat, bitRate: bitRate,
