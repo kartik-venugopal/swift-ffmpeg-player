@@ -7,10 +7,6 @@ extension AVAudioFormat {
     ///
     convenience init?(from sampleFormat: FFmpegSampleFormat, sampleRate: Int32, channelLayout: FFmpegChannelLayout) {
         
-        guard let channelLayout = channelLayout.avfLayout else {
-            return nil
-        }
-        
         var commonFmt: AVAudioCommonFormat
         
         switch sampleFormat.avFormat {
@@ -32,7 +28,10 @@ extension AVAudioFormat {
             return nil
         }
         
-        self.init(commonFormat: commonFmt, sampleRate: Double(sampleRate), interleaved: sampleFormat.isInterleaved, channelLayout: channelLayout)
+        self.init(commonFormat: commonFmt, 
+                  sampleRate: Double(sampleRate),
+                  interleaved: sampleFormat.isInterleaved,
+                  channelLayout: channelLayout.avfLayout)
     }
 }
 

@@ -10,6 +10,15 @@
 
 # MARK: Constants -------------------------------------------------------------------------------------
 
+# Architectures
+export architectures=("x86_64" "arm64")
+
+# Deployment target for Aural Player.
+export deploymentTarget="11.0"
+
+# Points to the latest MacOS SDK installed.
+export sdk="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+
 # FFmpeg release version
 export ffmpegVersion="7.0.1"
 
@@ -56,12 +65,7 @@ function runBuild {
 
     cleanXCFrameworksDir
     buildFFmpeg
-    
-    if [[ "$createFatLibs" == "true" ]]
-    then
     createFatLibs
-    fi
-    
     copyHeaders
 }
 
@@ -72,12 +76,17 @@ function cleanXCFrameworksDir {
     fi
 }
 
-function buildFFmpeg {
+function extractSources {
 
     # Extract source code from archive.
     if [ ! -d ${srcDirName} ]; then
         tar xjf ${srcArchiveName}
     fi
+}
+
+function buildFFmpeg {
+
+    extractSources
     
     # Run all builds in parallel and wait till they all finish.
     for arch in ${architectures[@]}; do
@@ -103,6 +112,27 @@ function buildFFmpegForArch {
 
     copyLibs $arch
     fixInstallNames $arch
+}
+
+# Determine compiler / linker flags based on architecture.
+function setCompilerAndLinkerFlags {
+
+    arch=$1
+    
+    export compiler="/usr/bin/clang"
+    
+    # Architecture of the host machine running this build.
+    hostArchitecture=$(uname -m)
+    
+    if [[ "$arch" != "$hostArchitecture" ]]
+    then
+        archInFlags="-arch ${arch} "
+        export crossCompileOption="--enable-cross-compile"
+        export archOption="--arch=${arch}"
+    fi
+    
+    export extraCompilerFlags="${archInFlags}-mmacosx-version-min=${deploymentTarget} -isysroot ${sdk}"
+    export extraLinkerFlags=${extraCompilerFlags}
 }
 
 function configureFFmpeg {
@@ -229,6 +259,19 @@ function createFatLibs {
     cd ..
 }
 
+function copyHeaders {
+
+    mkdir "headers"
+    
+    srcBaseDir="src/arm64"
+    headersBaseDir="headers"
+    
+    copyHeadersForLib $srcBaseDir $avcodecLibName $headersBaseDir "${avcodecHeaderNames[@]}"
+    copyHeadersForLib $srcBaseDir $avformatLibName $headersBaseDir "${avformatHeaderNames[@]}"
+    copyHeadersForLib $srcBaseDir $avutilLibName $headersBaseDir "${avutilHeaderNames[@]}"
+    copyHeadersForLib $srcBaseDir $swresampleLibName $headersBaseDir "${swresampleHeaderNames[@]}"
+}
+
 function copyHeadersForLib {
 
     srcBaseDir=$1
@@ -261,6 +304,16 @@ function createXCFrameworks {
     createXCFrameworkForLib ${swresampleLibName} ${swresampleLib}
 }
 
+function createXCFrameworkForLib {
+
+    libName=$1
+    lib=$2
+    
+    xcrun xcodebuild -create-xcframework \
+        -library "dylibs/${lib}" -headers "headers/${libName}" \
+        -output "xcframeworks/${libName}.xcframework"
+}
+
 function cleanUp {
 
     rm -rf ${srcDirName}
@@ -268,3 +321,9 @@ function cleanUp {
     rm -rf dylibs
     rm -rf headers
 }
+
+runBuild
+createXCFrameworks
+cleanUp
+
+echo "\nAll done !\n"
