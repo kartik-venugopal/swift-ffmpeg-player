@@ -11,8 +11,6 @@ extension AVChannelLayout {
     
     var computedAVFLayout: AVAudioChannelLayout {
         
-        print("Order: \(self.order)")
-        
         switch order {
             
         case AV_CHANNEL_ORDER_NATIVE:
@@ -71,13 +69,10 @@ extension AVChannelLayout {
         layout.mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelBitmap
         
         let avfLayout = AVAudioChannelLayout.init(layout: &layout)
-        print("Muthu is: \(channels) \(layout.muthu)")
         return avfLayout
     }
     
     private var defaultLayoutForChannelCount: AVAudioChannelLayout {
-        
-        print("Def. layout for \(nb_channels) channel count: ...")
         
         switch self.nb_channels {
             

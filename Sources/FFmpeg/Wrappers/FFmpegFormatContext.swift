@@ -156,6 +156,8 @@ class FFmpegFormatContext {
     ///
     lazy var fileSize: UInt64 = file.sizeBytes
     
+    lazy var replayGain: FFmpegReplayGain? = .init(metadata: self.metadata)
+    
     ///
     /// Attempts to construct a FormatContext instance for the given file.
     ///
@@ -206,6 +208,8 @@ class FFmpegFormatContext {
         
         self.duration = (bestAudioStream?.duration ?? estimatedDuration) ?? 0
         if self.bitRate == 0 {self.bitRate = duration == 0 ? 0 : Int64(round(Double(fileSize) / duration))}
+        
+        _ = self.replayGain
     }
     
     func findBestStream(ofType mediaType: AVMediaType) -> FFmpegStreamProtocol? {

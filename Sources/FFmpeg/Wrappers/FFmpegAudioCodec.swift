@@ -54,6 +54,8 @@ class FFmpegAudioCodec: FFmpegCodec {
     ///
     var channelLayout: FFmpegChannelLayout = .init(avChannelLayout: AVChannelLayout_Stereo)
     
+    var replayGain: FFmpegReplayGain? = nil
+    
     ///
     /// Instantiates an AudioCodec object, given a pointer to its parameters.
     ///
@@ -74,6 +76,10 @@ class FFmpegAudioCodec: FFmpegCodec {
         // Use multithreading to speed up decoding.
         self.contextPointer.pointee.thread_count = Self.threadCount
         self.contextPointer.pointee.thread_type = Self.threadType
+        
+        if let sideDataPtr = av_packet_side_data_get(context.coded_side_data, context.nb_coded_side_data, AV_PKT_DATA_REPLAYGAIN) {
+            self.replayGain = .init(sideData: sideDataPtr.pointee)
+        }
     }
     
     override func open() throws {

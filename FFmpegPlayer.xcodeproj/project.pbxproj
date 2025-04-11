@@ -10,6 +10,7 @@
 		3E1B587C2C58198E0097ABBF /* build-ffmpeg.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58742C58198E0097ABBF /* build-ffmpeg.sh */; };
 		3E1B58802C58198E0097ABBF /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3E1B58782C58198E0097ABBF /* README.txt */; };
 		3E1B58842C583F210097ABBF /* FFmpegChannelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1B58832C583F210097ABBF /* FFmpegChannelLayout.swift */; };
+		3E5701942C6EA5FB007B8611 /* FFmpegReplayGain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5701932C6EA5FB007B8611 /* FFmpegReplayGain.swift */; };
 		3E7B652D291199B600FDB51F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6481291199B600FDB51F /* Constants.swift */; };
 		3E7B652E291199B600FDB51F /* OpenDialogButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */; };
 		3E7B652F291199B600FDB51F /* SliderCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7B6484291199B600FDB51F /* SliderCells.swift */; };
@@ -84,6 +85,7 @@
 		3E1B58742C58198E0097ABBF /* build-ffmpeg.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "build-ffmpeg.sh"; sourceTree = "<group>"; };
 		3E1B58782C58198E0097ABBF /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		3E1B58832C583F210097ABBF /* FFmpegChannelLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegChannelLayout.swift; sourceTree = "<group>"; };
+		3E5701932C6EA5FB007B8611 /* FFmpegReplayGain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegReplayGain.swift; sourceTree = "<group>"; };
 		3E7B64702911993300FDB51F /* FFmpegPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7B6481291199B600FDB51F /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3E7B6483291199B600FDB51F /* OpenDialogButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenDialogButtonCell.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				3E7B6496291199B600FDB51F /* FFmpegStreamProtocol.swift */,
 				3E7B6497291199B600FDB51F /* FFmpegCodec.swift */,
 				3E1B58832C583F210097ABBF /* FFmpegChannelLayout.swift */,
+				3E5701932C6EA5FB007B8611 /* FFmpegReplayGain.swift */,
 			);
 			path = Wrappers;
 			sourceTree = "<group>";
@@ -448,6 +451,7 @@
 				3E7B652E291199B600FDB51F /* OpenDialogButtonCell.swift in Sources */,
 				3E7B654A291199B600FDB51F /* ConcurrentArray.swift in Sources */,
 				3E7B6556291199B600FDB51F /* AudioEngine.swift in Sources */,
+				3E5701942C6EA5FB007B8611 /* FFmpegReplayGain.swift in Sources */,
 				3E7B653F291199B600FDB51F /* FFmpegCodec.swift in Sources */,
 				3E7B6545291199B600FDB51F /* FFmpegPacketFrames.swift in Sources */,
 				3E7B6541291199B600FDB51F /* FFmpegPacketTable.swift in Sources */,
